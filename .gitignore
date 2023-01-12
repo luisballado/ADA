@@ -1,4 +1,8 @@
+*.tex~
+*.log
+*.aux
 *.cpp~
+.DS_Store
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
