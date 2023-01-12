@@ -1,18 +1,14 @@
 #include <iostream>
 #include <vector>
 
-//Funcion dummy para revisar si un elemento esta dentro del arr
+//Funcion dummy para revisar si un
+//elemento esta dentro de un vector
 bool existe(std::vector<int> _vector_, int valor){
-  
-  int v_length = _vector_.size();
-  
-  for(int i = 0; i < v_length; i++){
+  for(int i = 0; i < _vector_.size(); i++){
     if (_vector_[i] == valor){
-      //std::cout << "Elemento encontrado";
       return true;
     }
   }
-
   return false;
 }
 
@@ -25,9 +21,7 @@ int main(){
 
   int a_length = sizeof(a)/sizeof(a[0]); //longitud array1
   int b_length = sizeof(b)/sizeof(b[0]); //longitud array2
-
-  int arr_length;
-
+  
   //Usando fuerza bruta
   for (int i = 0; i < a_length; i++){
     for (int j = 0; j < b_length; j++){
@@ -40,6 +34,10 @@ int main(){
       }
     }
   }
+
+  //--------------------
+  // Imprimir resultado
+  //--------------------
   
   std::cout << "El resultado es: \n";
   for(int i = 0; i<arr.size(); i++){
