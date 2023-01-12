@@ -54,7 +54,8 @@
   \textbf{¿Cuál es el número máximo de comparaciones que realiza su algoritmo en función de las longitudes de las listas (m y n) respectivamente?}
 
   %se responde aquí
-  In hac habitasse platea dictumst. Curabitur mattis elit sit amet justo luctus vestibulum. In hac habitasse platea dictumst. Pellentesque lobortis justo enim, a condimentum massa tempor eu. Ut quis nulla a quam pretium eleifend nec eu nisl. Nam cursus porttitor eros, sed luctus ligula convallis quis. Nam convallis, ligula in auctor euismod, ligula mauris fringilla tellus, et egestas mauris odio eget diam. Praesent sodales in ipsum eu dictum.
+  \textbf{Máximo de comparaciones}
+    
 \end{question}
 
 %------------------------------------------------
@@ -62,35 +63,112 @@
 \subsection{Pseudocodigo}
 
 \begin{center}
-	\begin{minipage}{0.5\linewidth} % Adjust the minipage width to accomodate for the length of algorithm lines
-		\begin{algorithm}[H]
-			\KwIn{$(a, b)$, two floating-point numbers}  % Algorithm inputs
-			\KwResult{$(c, d)$, such that $a+b = c + d$} % Algorithm outputs/results
-			\medskip
-			\If{$\vert b\vert > \vert a\vert$}{
-				exchange $a$ and $b$ \;
-			}
-			$c \leftarrow a + b$ \;
-			$z \leftarrow c - a$ \;
-			$d \leftarrow b - z$ \;
-			{\bf return} $(c,d)$ \;
-			\caption{\texttt{FastTwoSum}} % Algorithm name
-			\label{alg:fastTwoSum}   % optional label to refer to
-		\end{algorithm}
-	\end{minipage}
+  \begin{minipage}{0.7\linewidth} % Adjust the minipage width to accomodate for the length of algorithm lines
+    \begin{algorithm}[H] 
+      \SetKwInOut{Input}{entrada}\SetKwInOut{Output}{salida}
+      \Input{$Arreglo_{1}, Arreglo_{2}$}
+      \Output{$Arreglo_{3}$ (arreglo con repetidos)}
+      \DontPrintSemicolon
+      
+      \caption{Sum of Array Elements}
+      \label{alg:loop}
+            {$CalcularLongitud(arreglo_{1})$}\\
+            {$CalcularLongitud(arreglo_{2})$}
+
+            \For{$i \gets 0$ to $longitud(arreglo_{1})$} {
+              \For{$j \gets 0$ to $longitud(arreglo_{2})$} {
+                \If{$arreglo_{1}[i]==arreglo_{2}[j]$}{
+                  \If{$NO Existe(arr,arreglo_{1}[i]$)}{
+                    agregar al arreglo de resultado a[i]\;
+                  }
+                }
+                break;\;
+              }
+            }
+            
+            
+      
+    \end{algorithm}
+  \end{minipage}
+\end{center}
+
+\begin{center}
+  \begin{minipage}{0.7\linewidth} % Adjust the minipage width to accomodate for the length of algorithm lines
+    \begin{algorithm}[H] 
+      \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+      \Input{$A_{1} \dots A_{N}$}
+      \Output{$Sum$ (sum of values in the array)}
+      \DontPrintSemicolon
+      \caption{Sum of Array Elements}
+      \label{alg:loop}
+      \SetKwFunction{FLoop}{Loop}
+      \SetKwProg{Fn}{Function}{}{}
+      \BlankLine
+      \Fn{\FLoop{$A[\;]$}}{
+        {$Sum$ $\gets$ {$0$}} \;
+        {$N$ $\gets$ {$length(A)$}} \;
+        \For{$k \gets 1$ to $N$} {
+          {$Sum$ $\gets$ {$Sum + A_{k}$}}
+        }
+        \KwRet {$Sum$}
+      }
+    \end{algorithm}
+  \end{minipage}
 \end{center}
 
 %------------------------------------------------
 
+\newpage
 \subsection{Implementación}
 
 % File contents
-\begin{file}[hello.py]
-\begin{lstlisting}[language=Python]
-#! /usr/bin/python
+\begin{file}[tarea1.cpp]
+\begin{lstlisting}[language=C++]
+#include <iostream>
+#include <vector>
 
-import sys
-sys.stdout.write("Hello World!\n")
+bool existe(std::vector<int> _vector_, int valor){
+  for(int i = 0; i < _vector_.size(); i++){ // n
+    if (_vector_[i] == valor){              // 1
+      return true;
+    }
+  }
+  return false;
+}
+
+//Complejidad funcion principal O(n^2)
+int main(){
+
+  int a[] = {2,5,5,5};                     // 1
+  int b[] = {2,2,3,5,5,7};                 // 1
+
+  //vector de resultados
+  std::vector<int>arr;                     // 1
+
+  //longitud array1
+  int a_length = sizeof(a)/sizeof(a[0]);   // 1
+  //longitud array2
+  int b_length = sizeof(b)/sizeof(b[0]);   // 1
+  
+  //Usando fuerza bruta                    // O(n^2)
+  for (int i = 0; i < a_length; i++){      
+    for (int j = 0; j < b_length; j++){    
+      if (a[i] == b[j]){                   // 1
+        //revisar si ya existe en el array
+        if (!existe(arr,a[i])){            // 1
+          arr.push_back(a[i]);
+        }
+        break;
+      }
+    }
+  }
+
+  // Imprimir resultado
+  std::cout << "El resultado es: \n";       // 1
+  for(int i = 0; i<arr.size(); i++){        // n
+    std::cout << arr[i] << "\n";            // 1
+  } 
+}
 \end{lstlisting}
 \end{file}
 
@@ -99,23 +177,21 @@ Ejecutar desde una terminal
 % Command-line "screenshot"
 \begin{commandline}
 	\begin{verbatim}
-		$ chmod +x hello.py
-		$ ./hello.py
-
-		Hello World!
+		$ g++ -o ./tarea1 ./tarea1.cpp
+		$ ./tarea1
 	\end{verbatim}
 \end{commandline}
 
 
 
 %----------------------------------------------------------------------------------------
-
+\newpage
 \subsection{Análisis de complejidad del mejor y peor caso}
 \begin{warn}[MEJOR CASO:]
-  In congue risus leo, in gravida enim viverra id. Donec eros mauris, bibendum vel dui at, tempor commodo augue. In vel lobortis lacus. Nam ornare ullamcorper mauris vel molestie. Maecenas vehicula ornare turpis, vitae fringilla orci consectetur vel. Nam pulvinar justo nec neque egestas tristique. Donec ac dolor at libero congue varius sed vitae lectus. Donec et tristique nulla, sit amet scelerisque orci. Maecenas a vestibulum lectus, vitae gravida nulla. Proin eget volutpat orci. Morbi eu aliquet turpis. Vivamus molestie urna quis tempor tristique. Proin hendrerit sem nec tempor sollicitudin.
+  Explicar aqui
 \end{warn}
 \begin{warn}[PEOR CASO:]
-  In congue risus leo, in gravida enim viverra id. Donec eros mauris, bibendum vel dui at, tempor commodo augue. In vel lobortis lacus. Nam ornare ullamcorper mauris vel molestie. Maecenas vehicula ornare turpis, vitae fringilla orci consectetur vel. Nam pulvinar justo nec neque egestas tristique. Donec ac dolor at libero congue varius sed vitae lectus. Donec et tristique nulla, sit amet scelerisque orci. Maecenas a vestibulum lectus, vitae gravida nulla. Proin eget volutpat orci. Morbi eu aliquet turpis. Vivamus molestie urna quis tempor tristique. Proin hendrerit sem nec tempor sollicitudin.
+  Explicar aqui
 \end{warn}
 
 \end{document}
