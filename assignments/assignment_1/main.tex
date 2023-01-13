@@ -54,7 +54,7 @@
   \textbf{¿Cuál es el número máximo de comparaciones que realiza su algoritmo en función de las longitudes de las listas (m y n) respectivamente?}
 
   %se responde aquí
-  \textbf{Máximo de comparaciones}
+  \textit{El número máximo de comparaciones viene dado por la busqueda de los elementos del primer arreglo con el segundo, es decir aplicando la regla del producto m x n, pero se puede reducir con los elementos repetidos y reducir las comparaciones}
     
 \end{question}
 
@@ -70,16 +70,16 @@
       \Output{$Arreglo_{3}$ (arreglo con repetidos)}
       \DontPrintSemicolon
       
-      \caption{Sum of Array Elements}
+      \caption{Encontrar elementos iguales}
       \label{alg:loop}
             {$CalcularLongitud(arreglo_{1})$}\\
             {$CalcularLongitud(arreglo_{2})$}
 
-            \For{$i \gets 0$ to $longitud(arreglo_{1})$} {
-              \For{$j \gets 0$ to $longitud(arreglo_{2})$} {
+            \For{$i \gets 0$ hasta $longitud(arreglo_{1})$} {
+              \For{$j \gets 0$ hasta $longitud(arreglo_{2})$} {
                 \If{$arreglo_{1}[i]==arreglo_{2}[j]$}{
                   \If{$!Existe(arr,arreglo_{1}[i]$)}{
-                    agregar al arreglo de resultado a[i]\;
+                    $arreglo_{3}.agregar(a[i])$\;
                   }
                 }
                 break;\;
@@ -102,7 +102,7 @@
       \SetKwProg{Fn}{Function}{}{}
       \BlankLine
       \Fn{\FLoop{$arreglo_{3},valor$}}{
-        \For{$i \gets 0$ to $longitud(arreglo_{3})$} {
+        \For{$i \gets 0$ hasta $longitud(arreglo_{3})$} {
           \If{$arreglo_{3}[i]==valor$}{
             \KwRet {$Verdadero$}
           }
@@ -185,10 +185,10 @@ Ejecutar desde una terminal
 \newpage
 \subsection{Análisis de complejidad del mejor y peor caso}
 \begin{warn}[MEJOR CASO:]
-  Explicar aqui
+  encontrar todos los elementos del primer arreglo en el segundo arreglo de forma secuencial, sin el analisis de numeros que pertenezcan al primer arreglo
 \end{warn}
 \begin{warn}[PEOR CASO:]
-  Explicar aqui
+  analizar todas las posibilidades y no encontrar similitudes $O(n^{2})$
 \end{warn}
 
 \end{document}
