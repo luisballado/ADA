@@ -18,28 +18,34 @@ bool existe(std::vector<int> _vector_, int valor){
 //por el doble for que recorre los arreglos
 int main(){
 
-  int a[] = {2,5,5,5};                     // 1
-  int b[] = {2,2,3,5,5,7};                 // 1
+  std::vector<int>::iterator it;
+  
+  std::vector<int> a;
+  a.push_back(2);
+  a.push_back(5);
+  a.push_back(5);
+  a.push_back(5);
+
+  std::vector<int> b;
+  b.push_back(2);
+  b.push_back(2);
+  b.push_back(3);
+  b.push_back(5);
+  b.push_back(5);
+  b.push_back(7);
 
   //vector de resultados
   std::vector<int>arr;                     // 1
-
-  //Solucion tomada del ejemplo 3
-  //https://www.digitalocean.com/community/tutorials/find-array-length-in-c-plus-plus
-  //longitud array1
-  int a_length = sizeof(a)/sizeof(a[0]);   // 1
-  //longitud array2
-  int b_length = sizeof(b)/sizeof(b[0]);   // 1
   
   //Usando fuerza bruta                    // O(n²)
-  for (int i = 0; i < a_length; i++){      
-    for (int j = 0; j < b_length; j++){    
-      std::cout << "comp\n";       // 1
+  for (int i = 0; i < a.size(); i++){      
+    for (int j = 0; j < b.size(); j++){    
+      std::cout << j << "comparacion \n";       // 1
       if (a[i] == b[j]){                   // 1
 	//revisar si ya existe en el array donde se guarda
-	if (!existe(arr,a[i])){            // 1
-	  arr.push_back(a[i]);             
-	}
+	//if (!existe(arr,a[i])){            // 1
+	  arr.push_back(a[i]);
+	  //}
 	break;
       }
     }
