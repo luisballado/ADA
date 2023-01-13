@@ -78,16 +78,13 @@
             \For{$i \gets 0$ to $longitud(arreglo_{1})$} {
               \For{$j \gets 0$ to $longitud(arreglo_{2})$} {
                 \If{$arreglo_{1}[i]==arreglo_{2}[j]$}{
-                  \If{$NO Existe(arr,arreglo_{1}[i]$)}{
+                  \If{$!Existe(arr,arreglo_{1}[i]$)}{
                     agregar al arreglo de resultado a[i]\;
                   }
                 }
                 break;\;
               }
             }
-            
-            
-      
     \end{algorithm}
   \end{minipage}
 \end{center}
@@ -96,21 +93,21 @@
   \begin{minipage}{0.7\linewidth} % Adjust the minipage width to accomodate for the length of algorithm lines
     \begin{algorithm}[H] 
       \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
-      \Input{$A_{1} \dots A_{N}$}
-      \Output{$Sum$ (sum of values in the array)}
+      \Input{$arreglo_{3},valor$}
+      \Output{$verdadero$ ó $falso$ (booleano si existe el elemento ó no)}
       \DontPrintSemicolon
-      \caption{Sum of Array Elements}
+      \caption{Función Existe}
       \label{alg:loop}
-      \SetKwFunction{FLoop}{Loop}
+      \SetKwFunction{FLoop}{Existe}
       \SetKwProg{Fn}{Function}{}{}
       \BlankLine
-      \Fn{\FLoop{$A[\;]$}}{
-        {$Sum$ $\gets$ {$0$}} \;
-        {$N$ $\gets$ {$length(A)$}} \;
-        \For{$k \gets 1$ to $N$} {
-          {$Sum$ $\gets$ {$Sum + A_{k}$}}
+      \Fn{\FLoop{$arreglo_{3},valor$}}{
+        \For{$i \gets 0$ to $longitud(arreglo_{3})$} {
+          \If{$arreglo_{3}[i]==valor$}{
+            \KwRet {$Verdadero$}
+          }
         }
-        \KwRet {$Sum$}
+        \KwRet {$Falso$}
       }
     \end{algorithm}
   \end{minipage}

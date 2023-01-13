@@ -34,6 +34,7 @@ int main(){
   //Usando fuerza bruta                    // O(n²)
   for (int i = 0; i < a_length; i++){      
     for (int j = 0; j < b_length; j++){    
+      std::cout << "comp\n";       // 1
       if (a[i] == b[j]){                   // 1
 	//revisar si ya existe en el array donde se guarda
 	if (!existe(arr,a[i])){            // 1
