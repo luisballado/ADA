@@ -42,28 +42,25 @@ int main(){
   for (int i = 0; i < a.size(); i++){      // O(n)
     for (int j = i; j < b.size(); j++){    // O(n)
       
+      std::cout << a[i] << "<-a comparacion b->"<< b[last_index] << "\n";
       
-      //std::cout << i << "comparacion "<< j << "\n";       // 1
-      //std::cout << last_index << "last_index \n";       // 1
-      std::cout << a[i] << "<-a comparacion b->"<< b[last_index] << "\n";       // 1
-
-      if (a[i] == b[last_index]){                   // 1
+      if (a[i] == b[last_index]){
 	arr.push_back(a[i]);
 	break; // romper ciclo cuando sean iguales
       }
       
       last_index = i+1; //indice auxiliar para avanzar 
       
-      }
+    }
   }
-
+  
   //--------------------
   // Imprimir resultado
   //--------------------
   
   std::cout << "El resultado es: \n";       // 1
   for(int i = 0; i<arr.size(); i++){        // n
-    std::cout << arr[i] << "\n";            // 1
+    std::cout << arr[i] << "\n";
   }
   
 }
