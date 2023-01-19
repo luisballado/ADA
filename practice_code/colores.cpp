@@ -36,7 +36,7 @@ int main(){
 
   int ccc;
   
-  for(ccc=1; ccc<=10;ccc++){
+  for(ccc=0; ccc<=10;ccc++){
     
     system("clear");
     std::cout << '\a'; //hacer un sonido de beep
@@ -52,6 +52,20 @@ int main(){
 	}else{
 	  a[i][j] = 'o';
 	}
+
+	if(i == robot_x - ccc and j == robot_y){
+	  if ((robot_x - ccc) <= 1){
+	    a[i][j] = 'R';
+	    
+	  }else{
+	    a[i][j] = 'R';
+	  }
+	  
+	  
+	}else if(i == goal_x and j == goal_y) {
+	  a[i][j] = 'G';
+	}
+	
       }
     }
     
@@ -73,22 +87,19 @@ int main(){
     system("clear");
     
     //xx
+    /**
     for(int i = 0; i < size_x; i++){
       for(int j = 0; j < size_y; j++){
 
-	/**
-	   if(a[i][j] == 'o'){
-	   a[i][j] = 'o';
-	   }
-	**/
+      
+      //if(a[i][j] == 'o'){
+      //a[i][j] = 'o';
+      //}
+      //
 	
 	//std::cout << '\a'; //hacer un sonido de beep
 	
-	if(i == robot_x and j == robot_y){
-	  a[i][j] = 'R';
-	}else if(i == goal_x and j == goal_y) {
-	  a[i][j] = 'G';
-	}
+	
 	
 	std::cout << a[i][j] << " ";
 	
@@ -97,7 +108,7 @@ int main(){
       //salto de linea
       std::cout << std::endl;
       
-    }
+}**/
     
     std::cout << std::endl; //salto de linea
     
