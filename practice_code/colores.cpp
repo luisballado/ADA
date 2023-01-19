@@ -34,54 +34,54 @@ int main(){
   int goal_x = 8;
   int goal_y = 13;
 
-  for(int i=0; i<10;i++){
+  int ccc;
+  
+  for(ccc=1; ccc<=10;ccc++){
     
     system("clear");
+    std::cout << '\a'; //hacer un sonido de beep
+    printf("steps: %d\n",ccc);
     //std::cout << std::endl; //salto de linea
     
-    //cargar la matriz
+    //crear la matriz
     for(int i = 0; i < size_x; i++){
       for(int j = 0; j < size_y; j++){
-	a[i][j] = 'o';
-      }
-    }
-
-    //IMPRIMIR-IMPRIMIR-IMPRIMIR-IMPRIMIR-IMPRIMIR-
-    for(int i = 0; i < size_x; i++){
-      for(int j = 0; j < size_y; j++){
-	std::cout << a[i][j] << " ";
-      }
-      //salto de linea
-      std::cout << std::endl;
-    }
-
-    sleep(1);
-    system("clear");
-    
-    //Superficies poner una X
-    for(int i = 0; i < size_x; ++i){
-      for(int j = 0; j < size_y; ++j){
+	//Superficies poner una X si no una o
 	if(i == 0 || i == size_x - 1 || j == 0 || j == size_y - 1){
 	  a[i][j] = 'X';
+	}else{
+	  a[i][j] = 'o';
 	}
       }
     }
     
     //IMPRIMIR-IMPRIMIR-IMPRIMIR-IMPRIMIR-IMPRIMIR-
-
+    for(int i = 0; i < size_x; i++){
+      for(int j = 0; j < size_y; j++){
+	std::cout << a[i][j] << " ";
+      }
+      //imprimir todo cout con la matriz
+      std::cout << std::endl;
+    }
+    
+    //IMPRIMIR-IMPRIMIR-IMPRIMIR-IMPRIMIR-IMPRIMIR-
+    
     //std::cout << std::endl; //salto de linea
     //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     
-    
+    sleep(1);
+    system("clear");
     
     //xx
     for(int i = 0; i < size_x; i++){
       for(int j = 0; j < size_y; j++){
+
 	/**
 	   if(a[i][j] == 'o'){
 	   a[i][j] = 'o';
 	   }
 	**/
+	
 	//std::cout << '\a'; //hacer un sonido de beep
 	
 	if(i == robot_x and j == robot_y){
@@ -91,16 +91,17 @@ int main(){
 	}
 	
 	std::cout << a[i][j] << " ";
+	
       }
+      
       //salto de linea
       std::cout << std::endl;
+      
     }
     
     std::cout << std::endl; //salto de linea
     
   }
-  
-  
   
   return 0;
 }
