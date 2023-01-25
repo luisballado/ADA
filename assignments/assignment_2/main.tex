@@ -45,43 +45,60 @@
 
 \section{Para los siguientes pares de funciones indique si la primera tiene un orden de crecimiento menor, mayor o igual al de la segunda}
 
-\begin{itemize}
-\item $n(n+1)$ y $200n^{2}$
-\item $100n^{2}$ y $0,01n^{3}$
-\item $log_{2}n$ y $ln n$
-\item $log_{2} n$ y $log_{2}n^{2}$
-\item $2^{n-1}$ y $2^{n}$
-\item $(n-1)!$ y $n!$
-\end{itemize}
+\begin{enumerate}[(a)]
+\item $n(n+1)$ y $2000n^{2}$\\
+  La primera tiene un orden de crecimiento \textbf{$O(n^2)$} y la segunda también, siendo ambas del mismo orden de crecimiento.
+\item $100n^{2}$ y $0,01n^{3}$\\
+  La primera tiene un orden de crecimiento \textbf{$O(n^2)$} y la segunda \textbf{$O(n^3)$}, siendo la segunda $O(n^3)$ la función que más rápido crece
+\item $\log_{2}n$ y $\ln n$\\
+  Considerando a ambas funciones logaritmicas, siendo ambas del mismo orden de crecimiento debido a que forman parte de la misma clase $\Theta(\log n)$
+\item $\log_{2}^{2} n$ y $\log_{2}n^{2}$\\\\
+  La primera función $\log_{2}^{2} n$ es la función con mayor orden de crecimiento.
+\item $2^{n-1}$ y $2^{n}$ \\
+  Tienen el mismo orden de crecimiento, forman parte de la misma clase $\Theta(2^{n})$
+\item $(n-1)!$ y $n!$ \\
+  Tienen el mismo orden de crecimiento, forman parte de la misma clase $\Theta(n!)$
+\end{enumerate}
 
-\newpage
 \section{Compare el orden de crecimiento de los siguientes pares de fuciones empleando límites e indique el resultado usando la notación adecuada ($O$,$\Omega$,$\Theta$,etc).}
 
-\begin{itemize}
-\item $n!$ y $2^{n}$
-\item $n^{3}$ y $2^{n}$
-\end{itemize}
+\begin{enumerate}[(a)]
+\item $n!$ y $2^{n}$ \\ Con uso de la formula de stirling donde n! es aproximadamente $\sqrt{2\pi n}(\frac{n}{e})^n$ y al aplicar la regla de l'Hôpital se obtiene:
+  \[ \lim_{n\to\infty} \frac{n!}{2^{n}} = \lim_{n\to\infty} \frac{\sqrt{2\pi n} (\frac{n}{e})^n}{2^{n}} = \lim_{n\to\infty} \sqrt{2\pi n}(\frac{n}{2e})^{n} = \infty\], siendo $n!$ la función que más rápido crece $n! \in \Omega(2^{n})$
+\item $n^{3}$ y $2^{n}$\\
+  \[ \lim_{n\to\infty} \frac{n^{3}}{2^{n}} = \lim_{n\to\infty} \frac{3n^2}{2^{n}\ln (2)} = \infty \], siendo $n^{3}$ la función que más rápido crece
+\end{enumerate}
 
 %----------------------------------------------------------------------------------------
 \newpage
 \section{Calcule las siguientes sumatorias describiendo en su respuesta las propiedades que emplea en cada paso:}
 
-\begin{itemize}
-\item 
-\item
-\item 
-\item 
-\end{itemize}
+\begin{enumerate}[(a)]
+\item $$ \sum_{i=51}^{100} \left(2i - 1\right)$$
+\item Suponga que $\sum_{i=1}^{5} a_{i}=7$, y $\sum_{i=6}^{12} a_{i}=25$ encuentre el valor de la siguiente sumatoria
+  $$\sum_{i=1}^{12} \left(1-a_{i}\right)$$
+\item Suponga que $ \sum_{i=1}^{5} a_{i}=7$, $\sum_{i=6}^{12} a_{i}=25$ y $\sum_{i=2}^{13} b_{i} = -4$ encuentre el valor de la siguiente sumatoria $$\sum_{i=1}^{12}\left(a_{i}+2b_{i+1}\right)$$
+\item $$ \sum_{k=0}^{99} 2(3^{k})$$
+\end{enumerate}
 
+\newpage
 \section{Considere el algoritmo mostrado y responda las siguientes preguntas:}
 
-\begin{itemize}
-\item ¿Qué calcula el algoritmo?
-\item ¿Cuál es la operación básica?
+\includegraphics[scale=0.7]{algo.png}
+
+\begin{enumerate}[(a)]
+\item ¿Qué calcula el algoritmo?\\
+  Dada una matriz, el Algoritmo calcula si ésta es simetrica o no.
+\item ¿Cuál es la operación básica?\\
+  La operación básica es la comparación de los elementos de la matriz.
 \item ¿Cuántas veces se ejecuta la operación básica?
+  En el mejor de los casos si dentro de la primera pasada la operación básica regresa que la matriz no es simetrica. En su peor caso deberá recorrer el ciclo anidado for, siendo de complejidad $O(n^2)$, pero el número de comparaciones dependerá del tamaño de la matriz.
 \item ¿Cuál es la clase de eficiencia a la que petenece este algoritmo?
+  $O(n^2)$
 \item Sugiera una mejora, o un mejor algoritmo e indique su clase de eficiencia. Si esto no es posible, pruébelo.
-\end{itemize}
+\end{enumerate}
+
+\newpage
 
 \section{En un máximo de dos párrafos comente sus conclusiones personales acerca de esta tarea. Podría en ellas tocar algunos de los siguientes puntos: qué aprendí o, qué piensa acerca del uso de estos conceptos matemáticos para analizar algoritmos, qué se le facilitó(dificultó) más al hacer esta tarea, comente un potencial ejemplo de cómo usaría estos conceptos para analizar un algoritmo visto en otro curso, etc.}
 
