@@ -70,14 +70,13 @@ int determinantOfMatrix(int mat[N][N], int n){
 // Driver code
 int main(){
   
-  int mat[N][N] = {
-    { 1, 0, 2, -1 },
-    { 3, 0, 0, 5 },
-    { 2, 1, 4, -3 },
-    { 1, 0, 5, 0 }
-  };
+  int mat[N][N] = { { 1, 0, 2, -1 },
+		    { 3, 0, 0, 5 },
+		    { 2, 1, 4, -3 },
+		    { 1, 0, 5, 0 } };
   
   // Function call
-  printf("Determinant of the matrix is : %d",determinantOfMatrix(mat, N));
+  printf("Determinant of the matrix is : %d",
+	 determinantOfMatrix(mat, N));
   return 0;
 }

@@ -66,7 +66,7 @@
 \item $n!$ y $2^{n}$ \\ Con uso de la formula de stirling donde n! es aproximadamente $\sqrt{2\pi n}(\frac{n}{e})^n$ y al aplicar la regla de l'Hôpital se obtiene:
   \[ \lim_{n\to\infty} \frac{n!}{2^{n}} = \lim_{n\to\infty} \frac{\sqrt{2\pi n} (\frac{n}{e})^n}{2^{n}} = \lim_{n\to\infty} \sqrt{2\pi n}(\frac{n}{2e})^{n} = \infty\], siendo $n!$ la función que más rápido crece $n! \in \Omega(2^{n})$
 \item $n^{3}$ y $2^{n}$\\
-  \[ \lim_{n\to\infty} \frac{n^{3}}{2^{n}} = \lim_{n\to\infty} \frac{3n^2}{2^{n}\ln (2)} = \infty \], siendo $n^{3}$ la función que más rápido crece
+  \[ \lim_{n\to\infty} \frac{n^{3}}{2^{n}} = \lim_{n\to\infty} \frac{3n^2}{2^{n}\ln (n)} = \infty \], siendo $n^{3}$ la función que más rápido crece $n^{3} \in \Omega (2^{n})$
 \end{enumerate}
 
 %----------------------------------------------------------------------------------------
@@ -74,11 +74,36 @@
 \section{Calcule las siguientes sumatorias describiendo en su respuesta las propiedades que emplea en cada paso:}
 
 \begin{enumerate}[(a)]
-\item $$ \sum_{i=51}^{100} \left(2i - 1\right)$$
+\item $$ \sum_{i=51}^{100} \left(2i - 1\right)$$ \\
+  Haciendo uso de la propiedad 8, separando en intervalos\\
+  $$\sum_{i=1}^{100} (2i-1) - \sum_{i=0}^{50}(2i-1)$$\\
+  propiedad 7, distribuyendo la sumatoria en los elementos\\
+  $$\sum_{i=1}^{100} (2i) + \sum_{i=1}^{100} (-1) - \left(\sum_{i=0}^{50}(2i)+\sum_{i=0}^{50}(-1)\right)$$\\
+  propiedad 2\\
+  $$\sum_{i=1}^{100}(2i) = \frac{2(100(100+1))}{2} = 10,100$$ \\
+  propiedad 1\\
+  $$\sum_{i=1}^{100}(-1) = -100 $$\\
+  propiedad 2\\
+  $$\sum_{i=0}^{50}(2i) = \frac{2(50(50+1))}{2} = 2,550$$\\
+  propiedad 1\\
+  $$\sum_{i=0}^{50}(-1) = -50 $$\\
+  sustituyendo los resultados\\
+  10,100 - 100 - 2550 + 50 = 7,500
 \item Suponga que $\sum_{i=1}^{5} a_{i}=7$, y $\sum_{i=6}^{12} a_{i}=25$ encuentre el valor de la siguiente sumatoria
-  $$\sum_{i=1}^{12} \left(1-a_{i}\right)$$
-\item Suponga que $ \sum_{i=1}^{5} a_{i}=7$, $\sum_{i=6}^{12} a_{i}=25$ y $\sum_{i=2}^{13} b_{i} = -4$ encuentre el valor de la siguiente sumatoria $$\sum_{i=1}^{12}\left(a_{i}+2b_{i+1}\right)$$
-\item $$ \sum_{k=0}^{99} 2(3^{k})$$
+  $$\sum_{i=1}^{12} \left(1-a_{i}\right)$$\\
+  partiendo de la información brindada, $a_{i}$ en el rango de i=1 hasta 5 toma un valor de 7 y de i=6 hasta 12 toma un valor de 25. Podemos decir que la sumatoria total es 32.\\
+  Sustituyendo $$\sum_{i=1}^{12}(a_{i})=32$$ y aplicando la propiedad 1 $$\sum_{i=1}^{12}(1)-32 = 12-32 = -20$$ 
+\item Suponga que $ \sum_{i=1}^{5} a_{i}=7$, $\sum_{i=6}^{12} a_{i}=25$ y $\sum_{i=2}^{13} b_{i} = -4$ encuentre el valor de la siguiente sumatoria $$\sum_{i=1}^{12}\left(a_{i}+2b_{i+1}\right)$$\\
+  Distribuyendo la sumatoria, aplicando la propiedad 7\\
+  $$\sum_{i=1}^{12}(a_{i})+\sum_{i=1}^{12}2b_{i+1}$$\\
+  Considerando que $$\sum_{i=2}^{13}b_{i}=-4$$ y que $$\sum_{i=1}^{5}a_{i}=7$$, $$\sum_{i=6}^{12}a_{i}=25$$\\
+  $$\sum_{i=1}^{12}a_{i}=32$$ y $$2\sum_{i=1}^{12}(b_{i}) = -8$$\\
+  resultando $$32-8=24$$
+\item $$ \sum_{k=0}^{99} 2(3^{k})$$\\
+  Aplicando la multiplicación\\
+  $$\sum_{k=0}^{99} 6^{k}$$\\
+  propiedad 4\\
+  $$\sum_{k=0}^{99}6^{k}=\frac{6^{k+1}-1}{6-1}=\frac{6^{k+1-1}}{5}$$
 \end{enumerate}
 
 \newpage
@@ -92,15 +117,16 @@
 \item ¿Cuál es la operación básica?\\
   La operación básica es la comparación de los elementos de la matriz.
 \item ¿Cuántas veces se ejecuta la operación básica?
-  En el mejor de los casos si dentro de la primera pasada la operación básica regresa que la matriz no es simetrica. En su peor caso deberá recorrer el ciclo anidado for, siendo de complejidad $O(n^2)$, pero el número de comparaciones dependerá del tamaño de la matriz.
+  En el mejor de los casos si dentro de la primera pasada la operación básica regresa que la matriz no es simetrica. En su peor caso deberá recorrer el ciclo anidado for, siendo de complejidad $O(n^2)$, pero el número de comparaciones dependerá del tamaño de la matriz.\\
 \item ¿Cuál es la clase de eficiencia a la que petenece este algoritmo?
   $O(n^2)$
-\item Sugiera una mejora, o un mejor algoritmo e indique su clase de eficiencia. Si esto no es posible, pruébelo.
+\item Sugiera una mejora, o un mejor algoritmo e indique su clase de eficiencia. Si esto no es posible, pruébelo.\\
+  No hay un mejor algoritmo, ya que se necesita el doble ciclo for para expolorar la diagonal principal y asegurarnos que no exista diferencia en la comparación para decir que la matriz dada es simetrica.
 \end{enumerate}
 
-\newpage
-
 \section{En un máximo de dos párrafos comente sus conclusiones personales acerca de esta tarea. Podría en ellas tocar algunos de los siguientes puntos: qué aprendí o, qué piensa acerca del uso de estos conceptos matemáticos para analizar algoritmos, qué se le facilitó(dificultó) más al hacer esta tarea, comente un potencial ejemplo de cómo usaría estos conceptos para analizar un algoritmo visto en otro curso, etc.}
+
+Me ayudó a identificar mis deficiencias, para así trabajar en ellas siendo los temas de la notación sigma y el uso adecuado de las notaciones Gran-O,Gran-Omega,Gran-Theta los temas de mayor área de oportunidad que encontré. Los conceptos para la identificación de los ordenes de crecimiento son de gran ayuda, así como en la Ingenieria Cívil responde preguntas del cuanto peso puede soportat una estructura, encontramos en la Ingenieria de Software estas herramientas para poder analizar nuestros algoritmos/códigos y dar respuesta de cuanto tiempo se puede demorar dicho código en base a la cantidad de demanda solicitada. 
 
 \end{document}
 
