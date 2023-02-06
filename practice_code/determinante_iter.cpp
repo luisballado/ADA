@@ -8,6 +8,7 @@ using namespace std;
 
 // Dimension of input square matrix
 #define N 4
+
 // Function to get determinant of matrix
 int determinantOfMatrix(int mat[N][N], int n){
   int num1, num2, det = 1, index, total = 1; // Initialize result

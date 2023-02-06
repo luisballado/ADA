@@ -1,0 +1,240 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Lachaise Assignment
+% LaTeX Template
+% Version 1.0 (26/6/2018)
+%
+% This template originates from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Marion Lachaise & François Févotte
+% Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\input{structure.tex} % Include the file specifying the document structure and custom commands
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{ITC-ADA-C1-2023: Assignment \#3} % Title of the assignment
+
+\author{Luis Ballado\\ \texttt{luis.ballado@cinvestav.mx}} % Author name and email address
+
+\date{CINVESTAV UNIDAD TAMAULIPAS --- \today} % University, school and/or department name(s) and a date
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\section{Considerando el algoritmo recursivo mostrado a continuación, responda las siguientes preguntas}
+
+\begin{center}
+  \begin{minipage}{0.7\linewidth} % Adjust the minipage width to accomodate for the length of algorithm lines
+    \begin{algorithm}[H] 
+      \SetKwInOut{Input}{entrada}\SetKwInOut{Output}{salida}
+      \Input{Un arreglo $A[0..n-1]$ de números reales}
+      \DontPrintSemicolon
+      \caption{Algoritmo Misterio}
+      \label{alg:loop}
+      \If{n==1}{
+        return A[0];
+      }\Else{
+        $temp \gets Misterio(A[0..n-2])$\\
+        \If{temp <= A[n-1]}{
+          return temp;
+        }\Else{
+          return A[n-1];
+        }
+      }
+    \end{algorithm}
+  \end{minipage}
+\end{center}
+
+\begin{question}
+  \textbf{¿Qué calcula el algoritmo?}
+  
+  %se responde aquí
+  \textit{}
+    
+\end{question}
+
+\begin{question}
+  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+    %se responde aquí
+  \textit{}
+    
+\end{question}
+
+\begin{question}
+  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+    %se responde aquí
+  \textit{}
+    
+\end{question}
+\begin{question}
+  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+    %se responde aquí
+  \textit{}
+    
+\end{question}
+\begin{question}
+  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+    %se responde aquí
+  \textit{}
+    
+\end{question}
+\begin{question}
+  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+    %se responde aquí
+  \textit{}
+    
+\end{question}
+
+\begin{question}
+  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+    %se responde aquí
+  \textit{}
+    
+\end{question}
+
+\section{Dado el problema de encontrar el determinante de una matriz A de nxn , desarrolle los siguiente puntos:}
+
+\begin{question}
+  \textbf{Programe las versiones iterativa y recursiva del algoritmo para resolver el problema}
+  %se responde aquí
+  %\textit{Respuesta aqui}
+\end{question}
+
+\subsection{Implementación}
+% File contents
+\begin{file}[tarea1.cpp]
+\begin{lstlisting}[language=C++]
+#include <iostream>
+#include <vector>
+
+//Complejidad funcion principal O(n^2)
+//por el doble for que recorre los arreglos
+int main(){
+  
+  std::vector<int> a;
+  a.push_back(2);
+  a.push_back(5);
+  a.push_back(5);
+  a.push_back(5);
+
+  std::vector<int> b;
+  b.push_back(2);
+  b.push_back(2);
+  b.push_back(3);
+  b.push_back(5);
+  b.push_back(5);
+  b.push_back(7);
+  
+  //vector de resultados
+  std::vector<int>arr;
+
+  int last_index = 0;
+
+  //Usando fuerza bruta                    // O(n^2)
+  for (int i = 0; i < a.size(); i++){      // O(n)
+    for (int j = i; j < b.size(); j++){    // O(n)
+      
+      //std::cout << a[i] << "<-a comparacion b->"<< b[last_index] << "\n";
+      
+      if (a[i] == b[last_index]){
+        arr.push_back(a[i]);
+        break; // romper ciclo cuando sean iguales
+      }
+      
+      last_index = i+1; //indice auxiliar para avanzar 
+      
+    }
+  }
+  
+  //--------------------
+  // Imprimir resultado
+  //--------------------
+  
+  std::cout << "El resultado es: \n";       // 1
+  for(int i = 0; i<arr.size(); i++){        // n
+    std::cout << arr[i] << "\n";
+  }
+  
+}
+
+\end{lstlisting}
+\end{file}
+\href{https://github.com/luisballado/ADA/blob/main/practice_code/tarea1.cpp}{ver código en github}\\
+
+Ejecutar desde una terminal
+
+% Command-line "screenshot"
+\begin{commandline}
+	\begin{verbatim}
+		$ g++ -o ./tarea1 ./tarea1.cpp
+		$ ./tarea1
+	\end{verbatim}
+\end{commandline}
+
+\begin{question}
+  \textbf{Analice matemáticamente cada versión el algoritmo por separado usando las metodologías vistas en clase.}
+    %se responde aquí
+  \textit{Respuesta aqui}
+\end{question}
+
+\begin{question}
+  \textbf{En base a los resultados obtenidos en el punto anterior determine cuál de los dos algoritmos es más eficiente}
+    %se responde aquí
+  \textit{Respuesta aqui}
+\end{question}
+
+\begin{question}
+  \textbf{Para cada uno de los dos algoritmos desarrollados aplique el método descrito en el apartado "Doubling ratio experiments" del libro Algorithms de Sedgewick y Wayne, generando instancias de tamaños 1000,2000,etc; hasta lograr un radio de $2^{b}$, ejecutando 20 pruebas con cada tamaño y con cada algoritmo. Registre sus resultados.}
+    %se responde aquí
+  \textit{Respuesta aqui}
+\end{question}
+
+\begin{question}
+  \textbf{Para cada algoritmo comparado realice una tabla con 5 predicciones, posteriores al tamaño con que se logró obtener el radio $2^{b}$}
+    %se responde aquí
+  \textit{Respuesta aqui}
+\end{question}
+
+\begin{question}
+  \textbf{Para cada algoritmo comparado grafique los siguientes resultados de sus ejecuciones}
+    %se responde aquí
+  \textit{Respuesta aqui}
+\end{question}
+
+\begin{question}
+  \textbf{Con base en los experimentos realizados y considerando un tiempo máximo de ejecución sobre su computadora de 7 días, ¿Cuál es el tamaño máximo de entrada que puede resolver cada algoritmo analizado?}
+    %se responde aquí
+  \textit{Respuesta aqui}
+\end{question}
+
+\begin{question}
+  \textbf{Conclusiones respecto al orden de crecimiento de cada algoritmo observado empíricamente y constrástelas contra los resultados de sus análisis matemático}
+    %se responde aquí
+  \textit{Respuesta aqui}
+\end{question}
+
+
+\end{document}
+
