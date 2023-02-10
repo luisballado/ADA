@@ -1,16 +1,16 @@
 // C++ program to find Determinant of a matrix
-#include <stdlib.h>
+
 #include <iostream>
 #include <cmath>
-#include <unistd.h>
+#include <chrono>
+#include <cstdlib>
+using namespace std::chrono;
 
-using namespace std;
+// rango de la matrix de entrada
+const int mat_size = 5;
 
-// Dimension of input square matrix
-#define N 4
-
-// Function to get determinant of matrix
-int determinantOfMatrix(int mat[N][N], int n){
+// funcion para obtener la determinante de una matriz
+int determinante_iterativo(int mat[mat_size][mat_size], int n){
   int num1, num2, det = 1, index, total = 1; // Initialize result
   
   // temporary array for storing row
@@ -33,7 +33,7 @@ int determinantOfMatrix(int mat[N][N], int n){
       // loop for swapping the diagonal element row and
       // index row
       for (int j = 0; j < n; j++){
-	swap(mat[index][j], mat[i][j]);
+	std::swap(mat[index][j], mat[i][j]);
       }
       // determinant sign changes when we shift rows
       // go through determinant properties
@@ -70,14 +70,37 @@ int determinantOfMatrix(int mat[N][N], int n){
 
 // Driver code
 int main(){
+
+
+  int mat[mat_size][mat_size] = {
+    { 1, 0, 2, -1, 1 },
+    { 3, 0, 0, 5, 1 },
+    { 3, 0, 0, 5, 1 },
+    { 2, 1, 4, -3, 1 },
+    { 1, 0, 5, 0, 1 }
+  };
   
-  int mat[N][N] = { { 1, 0, 2, -1 },
-		    { 3, 0, 0, 5 },
-		    { 2, 1, 4, -3 },
-		    { 1, 0, 5, 0 } };
+
+  //int mat[mat_size][mat_size];
+
+  //poblar la matriz
+  /**
+  for(int i(0); i != mat_size; ++i)
+    for(int j(0); j != mat_size; ++j)
+        mat[i][j] = rand() % 10;;
+  **/
+  auto start = high_resolution_clock::now();
   
-  // Function call
-  printf("Determinant of the matrix is : %d",
-	 determinantOfMatrix(mat, N));
+  //Imprimir resultado
+  int resultado = determinante_iterativo(mat,mat_size);
+  
+  auto stop = high_resolution_clock::now();
+  std::cout << "el resultado es: " << resultado << std::endl;
+
+  auto duration = duration_cast<microseconds>(stop - start);
+  
+  std::cout << "Tiempo corrida: "
+	    << duration.count() << " microseconds" << std::endl;
+  
   return 0;
 }

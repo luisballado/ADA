@@ -71,49 +71,60 @@
   \textbf{¿Qué calcula el algoritmo?}
   
   %se responde aquí
-  \textit{}
+  \textit{El algoritmo recursivo calcula el elemento de minimo valor del arreglo}
     
 \end{question}
 
 \begin{question}
   \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
     %se responde aquí
-  \textit{}
+  \textit{n, siendo este el tamaño del arreglo de entrada. Apartir de este valor se puede llegar al caso base.}
     
 \end{question}
 
 \begin{question}
-  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
-    %se responde aquí
-  \textit{}
+  \textbf{¿Cuál es la operación básica del algoritmo?}
+  %se responde aquí
+  
+  \textit{La comparación es la operación básica de tiempo constante $O(1)$ en cada llamada, el algoritmo compara el valor minimo del subarreglo con el último elemento del subarreglo}
     
 \end{question}
 \begin{question}
-  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+  \textbf{¿Cuáles son el mejor caso y el peor caso para este algoritmo?}
     %se responde aquí
-  \textit{}
+  \textit{El mejor caso ocurre cuando el valor minimo es encontrado en la primera llamada donde el arreglo de entrada es pequeño A[0] y seria de tiempo constante $O(1)$}\\
+  \textit{El peor caso ocurre cuando el minimo valor es encontrado en la última llamada a la función. En este caso el algoritmo hace \textbf{n} llamadas a función, siendo n el tamaño del arreglo. Convirtiendose en una complejidad lineal $O(n)$}
     
 \end{question}
 \begin{question}
-  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+  \textbf{Proporcione una expresión matemática (relación de recurrencia), en función del tamaño de la entrada del algoritmo, que permita calcular cuántas veces se ejecuta la operación básica en este algoritmo.}\\
     %se responde aquí
-  \textit{}
-    
+  \textit{T(n) = 1 cuando n = 1}\\
+  \textit{T(n) = T(n-1)+1 cuando n > 1}\\
+  \textit{T(n-1)+1 = T(n-2)+2 = T(n-3)+3 podemos decir que la recurrencia esta expresada como: $T(n-i)+i$ al ser $n-i=0$ para llegar al caso base $n=i$}\\
+  \textit{T(0)+n = n+1; por lo tanto $T(n) \in \Theta(n)$ }
 \end{question}
 \begin{question}
-  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+  \textbf{Resuelva la relación de recurrencia propuesta mediante substitución hacia atrás}\\
     %se responde aquí
-  \textit{}
-    
+  \textit{Partiendo de la relación propuesta: $T(n) = T(n-1)+O(1)$}\\
+  \textit{$T(n)$ es el tiempo de complejidad del algoritmo para tamaños de entrada n, $T(n-1)$ es el tiempo de complejidad para tamaños $n-1$ }\\
+  \textit{$O(1)$ tiempo de complejidad por las comparaciones. La relación de recurrencia mediante substitución hacia atrás:}\\
+  $T(n)=T(n-1)+O(1)$\\
+  $T(n)=(T(n-2)+O(1))+O(1)$\\
+  $T(n)=(T(n-3)+O(1)+O(1))+O(1)$\\
+  $T(n)=(T(n-4)+O(1)+O(1)+O(1))+O(1)$\\
+  podemos concluir que $T(n) = (T(1)+O(1)+O(1)+...+O(1))+O(1))$ donde $T(n)$ es el tiempo de complejidad para un array de tamaño n, $T(1)$ es la complejidad para tamaño 1 por la comparación constante
 \end{question}
 
 \begin{question}
-  \textbf{¿Cuál es el parámetro que indica el tamaño de la entrada del algoritmo?}
+  \textbf{¿Cuál es la clase de eficiencia?}
     %se responde aquí
-  \textit{}
+  \textit{$T(n) \in O(n)$}
     
 \end{question}
 
+\newpage
 \section{Dado el problema de encontrar el determinante de una matriz A de nxn , desarrolle los siguiente puntos:}
 
 \begin{question}
@@ -196,13 +207,23 @@ Ejecutar desde una terminal
 \begin{question}
   \textbf{Analice matemáticamente cada versión el algoritmo por separado usando las metodologías vistas en clase.}
     %se responde aquí
-  \textit{Respuesta aqui}
+  \textit{versión recursiva $T(n) = T(n-1) + O(n^{2})$ donde $O(n^{2})$ es el tiempo de complejidad del calculo de las submatrices, y $T(n-1)$ tiempo de complejidad cuando se reduce la matriz $n-1$ en un análisis por cofactores}\\
+  El tiempo de complejidad del cálculo de submatrices puede estar expresado por $O(n^{2})$ ya que cada elemento pertenece a la primera fila, se va creando una submatriz de tamaño reducido $n-1 x n-1$ para ir llegando al caso base.\\
+  $T(n) = T(n-1)+O(n^{2})$\\
+  $T(n) = (T(n-2)+ O(n^{2}))+O(n^{2})$\\
+  hasta llegar al caso base\\
+  $T(n) = (T(1) + O(n^{2})+O(n^{2})+...+O(n^{2})+O(n^{2}))$\\
+  podemos concluir que $T(n) = T(1) + n*O(n^{2})$\\
+  $T(n) = O(n^{3})$, pero para un peor caso donde la matriz es muy grande, \\el algoritmo en su versión recursiva $T(n) \in \Theta(n!)$
+
+  
+
 \end{question}
 
 \begin{question}
   \textbf{En base a los resultados obtenidos en el punto anterior determine cuál de los dos algoritmos es más eficiente}
     %se responde aquí
-  \textit{Respuesta aqui}
+  \textit{A pesar del crecimiento del orden polinomial, la versión iterativa tiene un mejor comportamiento contra su versión recursiva}
 \end{question}
 
 \begin{question}
@@ -232,7 +253,7 @@ Ejecutar desde una terminal
 \begin{question}
   \textbf{Conclusiones respecto al orden de crecimiento de cada algoritmo observado empíricamente y constrástelas contra los resultados de sus análisis matemático}
     %se responde aquí
-  \textit{Respuesta aqui}
+  \textit{Debido a los tiempos de ejecución altos para los calculos de matrices con grandes tamaños los experimientos fueron reducidos a tamaños pequeños, pero de igual forma se pudo apreciar el mejor comportamiento para la versión iterativa del calculo de una determinante}
 \end{question}
 
 

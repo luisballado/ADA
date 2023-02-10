@@ -1,62 +1,92 @@
 #include <iostream>
-#include <cmath>
+#include <chrono>
+#include <cstdlib>
+using namespace std::chrono;
 
 /*
-Note that this implementation uses a recursive approach, which has a time complexity of O(n!). A more efficient approach is to use a matrix library with an in-place LU decomposition to calculate the determinant, which has a time complexity of O(n^3).
+  Tiempo de complejidad O(n!)
 */
 
-const int N = 3;
+const int mat_size = 8;
 
-// Function to find the determinant of a NxN matrix
-double determinant(double mat[N][N], int n)
-{
-    double D = 0; // Initialize result
+// funcion para encontrar el terminante de una Matrix cuadrada
+int determinante_recursion(int mat[mat_size][mat_size], int n, std::string call_txt){
 
-    // Base case: if the matrix contains a single element
-    if (n == 1)
-        return mat[0][0];
-
-    // Temporary matrix to store cofactors
-    double temp[N][N];
-
-    int sign = 1; // To store sign multiplier
-
-    // Iterate through each element of the first row
-    for (int f = 0; f < n; f++)
-    {
-        // Get the cofactor matrix
-        int temp_i = 0;
-        int temp_j = 0;
-        for (int i = 1; i < n; i++)
-        {
-            for (int j = 0; j < n; j++)
-            {
-                if (j == f)
-                    continue;
-                temp[temp_i][temp_j] = mat[i][j];
-                temp_j++;
-            }
-            temp_i++;
-            temp_j = 0;
-        }
-
-        // Recursively find the determinant of the cofactor matrix
-        D += sign * mat[0][f] * determinant(temp, n - 1);
-
-        // Alternate the sign
-        sign = -sign;
+  
+  int resultado = 0;    // variable local para resultados
+  int mat_cof[mat_size][mat_size];    // matriz de cofactores
+  int cambio_signo = 1; // indicar cambio de signo
+  
+  //std::cout << "la llamada viende de: " << call_txt << std::endl;
+  
+  // Caso Base: si la matriz es lo suficiente chica para calcularla
+  if (n == 1){
+    //std::cout << "caso base 1 \n";
+    return mat[0][0];
+  }else if (n == 2){
+    //std::cout << "caso base 2 \n";
+    return ((mat[0][0] * mat[1][1]) - (mat[1][0] * mat[0][1]));
+  }
+  
+  // recorrer los elementos de la primera fila
+  for (int f = 0; f < n; f++){
+    
+    // elementos de la matrix de cofactores
+    int aux_i = 0;
+    int aux_j = 0;
+    
+    for (int i = 1; i < n; i++){
+      for (int j = 0; j < n; j++){
+	if (j == f)
+	  continue;
+	mat_cof[aux_i][aux_j] = mat[i][j];
+	aux_j++;
+      }
+      aux_i++;
+      aux_j = 0;
     }
 
-    return D;
+    // encontrar el determinando reduciendo el problema hasta llegar al caso base
+    resultado += cambio_signo * mat[0][f] * determinante_recursion(mat_cof, n - 1, "funcion");
+    
+    // cambiar signo
+    cambio_signo = -cambio_signo;
+  }
+
+  return resultado;
 }
 
-int main()
-{
-    double mat[N][N] = {{1, 1, 2},
-                        {1, 4, 6},
-                        {1, 3, 1}};
-    
-    std::cout << "Determinant of the matrix is: " << determinant(mat, N) << std::endl;
+//funcion principal
+int main(){
+  
+  /*
+  int mat[mat_size][mat_size]= {
+    { 1, 0, 2, -1 },
+    { 3, 0, 0,  5 },
+    { 2, 1, 4, -3 },
+    { 1, 0, 5,  0 }
+  };
+  */
+  
+  int mat[mat_size][mat_size];
 
-    return 0;
+  //poblar la matriz
+  for(int i(0); i != mat_size; ++i)
+    for(int j(0); j != mat_size; ++j)
+        mat[i][j] = rand() % 10;
+  
+  auto start = high_resolution_clock::now();
+  
+  //Imprimir resultado
+  int resultado = determinante_recursion(mat,mat_size,"main");
+  
+  auto stop = high_resolution_clock::now();
+  std::cout << "el resultado es: " << resultado << std::endl;
+
+  auto duration = duration_cast<microseconds>(stop - start);
+  
+  std::cout << "Tiempo corrida: "
+	    << duration.count() << " microseconds" << std::endl;
+  
+  return 0;
 }

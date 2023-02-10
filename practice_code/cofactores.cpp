@@ -1,6 +1,7 @@
 #include <iostream>
-using namespace std;
+
 const int N = 3;
+
 void cofactor(int mat[N][N], int temp[N][N], int p,int q, int n){
    int i = 0, j = 0;
    for (int row = 0; row < n; row++){
@@ -15,6 +16,7 @@ void cofactor(int mat[N][N], int temp[N][N], int p,int q, int n){
       }
    }
 }
+
 int determinantOfMatrix(int mat[N][N], int dimension){
    int Det = 0;
    if (dimension == 1)
@@ -28,21 +30,23 @@ int determinantOfMatrix(int mat[N][N], int dimension){
    }
    return Det;
 }
+
 void display(int mat[N][N], int row, int col){
    for (int i = 0; i < row; i++){
       for (int j = 0; j < col; j++)
-         cout<<mat[i][j]<<" ";
-         cout<<endl;
+	std::cout<<mat[i][j]<<" ";
+      std::cout<<std::endl;
    }
-   cout<<endl;
+   std::cout<<std::endl;
 }
+
 int main(){
    int mat[3][3] = {
       { 1, 0, 2},
       { 3, 0, 0},
       { 2, 1, 4}};
-   cout<<"The matrix is "<<endl;
+   std::cout<<"The matrix is "<<std::endl;
    display(mat,3,3);
-   cout<<"Determinant of the matrix is "<<determinantOfMatrix(mat, N);
+   std::cout<<"Determinant of the matrix is "<<determinantOfMatrix(mat, N);
    return 0;
 }
