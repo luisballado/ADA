@@ -1,0 +1,19 @@
+6
+Numpy Matrix is:
+[[ 3 43  3 43  3 43]
+ [ 3 43  3 43  3 43]
+ [ 3 43  3 43  3 43]
+ [ 3 43  3 43  3 43]
+ [ 3 43  3 43  3 43]
+ [ 3 43  3 43  3 43]]
+
+ Determinante con numpy:
+0
+
+ Determinante con iterativo:
+0
+--- 1.8596649169921875e-05 seconds ---
+
+ Determinante con recursivo:
+0.0
+--- 0.0007236003875732422 seconds ---

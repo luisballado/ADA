@@ -1,0 +1,122 @@
+import argparse
+import sys
+import random
+
+import numpy as np
+
+import time
+
+
+
+"""
+Leer el parametro de entrada para crear la matriz
+
+"""
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-size", "--size", help="pasar el rango de la matriz")
+args = parser.parse_args()
+
+if args.size:
+    matrix_size = args.size
+else:
+    parser.print_help(sys.stderr)
+    sys.exit()
+
+    
+def recursivo(matrix):
+    
+    n = len(matrix)
+
+    if n == 1:
+        return matrix[0][0]
+    if n == 2:
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
+    det = 0
+    for i in range(n):
+        sub_matrix = [row[:i] + row[i+1:] for row in matrix[1:]] 
+        det += ((-1) ** i) * matrix[0][i] * recursivo(sub_matrix)
+
+    return det
+    
+def iterativo(matrix):
+    determinant = 1
+    n = len(matrix)
+    for i in range(n):
+        # Find the maximum value in the column
+        maxRow = i
+        for j in range(i + 1, n):
+            if abs(matrix[j][i]) > abs(matrix[maxRow][i]):
+                maxRow = j
+        # Swap the maximum value row with the current row
+        if maxRow != i:
+            matrix[i], matrix[maxRow] = matrix[maxRow], matrix[i]
+            determinant *= -1
+        # Multiply the determinant by the diagonal element
+        determinant *= matrix[i][i]
+        # Exit if the diagonal element is zero
+        if matrix[i][i] == 0:
+            return 0
+        # Eliminate the elements below the diagonal
+        for j in range(i + 1, n):
+            if matrix[i][i] == 0:
+                scale = 0
+            else:
+                scale = matrix[j][i] / matrix[i][i]
+            for k in range(i, n):
+                matrix[j][k] -= scale * matrix[i][k]
+    return determinant
+
+
+print(matrix_size)
+
+#Declaring an empty 1D array.
+matriz = []
+
+#Declaring an empty 1D array.
+aux = []
+
+
+#Initialize the column.
+for j in range(0, int(matrix_size)):
+
+    if j%2 == 0:
+        random.seed(100)
+        num = random.randint(1,10)
+    else:
+        random.seed(101)
+        num = random.randint(25, 50)
+    
+    aux.append(num)
+
+#Append the column to each row.
+for i in range(0, int(matrix_size)):
+    matriz.append(aux)
+
+n_array = np.array(matriz)
+  
+# Displaying the Matrix
+print("Numpy Matrix is:")
+print(n_array)
+  
+# calculating the determinant of matrix
+det = np.linalg.det(n_array)
+  
+print("\nDeterminant of given 3X3 square matrix:")
+print(int(det))
+
+
+print("\niterativo:")
+start_time = time.time()
+print(iterativo(matriz))
+print("--- %s seconds ---" % (time.time() - start_time))
+
+print("\nrecursivo:")
+start_time = time.time()
+print(recursivo(matriz))
+print("--- %s seconds ---" % (time.time() - start_time))
+
+
+

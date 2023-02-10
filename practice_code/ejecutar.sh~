@@ -1,0 +1,4 @@
+#!/bin/sh
+python3.10 determinante.py -size 3 > 3.txt;
+python3.10 determinante.py -size 4 > 4.txt;
+python3.10 determinante.py -size 5 > 5.txt;
