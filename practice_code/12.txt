@@ -18,8 +18,4 @@ Numpy Matrix is:
 
  Determinante con iterativo:
 0
---- 3.695487976074219e-05 seconds ---
-
- Determinante con recursivo:
-0.0
---- 654.2616431713104 seconds ---
+--- 4.1961669921875e-05 seconds ---
