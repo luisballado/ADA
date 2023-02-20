@@ -134,75 +134,77 @@
 \end{question}
 
 \subsection{Implementación}
-% File contents
-\begin{file}[tarea1.cpp]
-\begin{lstlisting}[language=C++]
-#include <iostream>
-#include <vector>
 
-//Complejidad funcion principal O(n^2)
-//por el doble for que recorre los arreglos
-int main(){
-  
-  std::vector<int> a;
-  a.push_back(2);
-  a.push_back(5);
-  a.push_back(5);
-  a.push_back(5);
+Código completo \url{https://github.com/luisballado/ADA/}
 
-  std::vector<int> b;
-  b.push_back(2);
-  b.push_back(2);
-  b.push_back(3);
-  b.push_back(5);
-  b.push_back(5);
-  b.push_back(7);
-  
-  //vector de resultados
-  std::vector<int>arr;
+Por la facilidad de leer argumentos de entrada y guardar a texto los resultados de las corridas de los códigos, cambie la implementación
 
-  int last_index = 0;
-
-  //Usando fuerza bruta                    // O(n^2)
-  for (int i = 0; i < a.size(); i++){      // O(n)
-    for (int j = i; j < b.size(); j++){    // O(n)
-      
-      //std::cout << a[i] << "<-a comparacion b->"<< b[last_index] << "\n";
-      
-      if (a[i] == b[last_index]){
-        arr.push_back(a[i]);
-        break; // romper ciclo cuando sean iguales
-      }
-      
-      last_index = i+1; //indice auxiliar para avanzar 
-      
-    }
-  }
-  
-  //--------------------
-  // Imprimir resultado
-  //--------------------
-  
-  std::cout << "El resultado es: \n";       // 1
-  for(int i = 0; i<arr.size(); i++){        // n
-    std::cout << arr[i] << "\n";
-  }
-  
-}
-
-\end{lstlisting}
-\end{file}
-\href{https://github.com/luisballado/ADA/blob/main/practice_code/tarea1.cpp}{ver código en github}\\
-
-Ejecutar desde una terminal
+Ejecutar desde una terminal, depende de la versión de python instalada desde el ordenador. Ya que se incluye una solución de la libreria de numpy para la verificación de resultados, es probable la instalación de la biblioteca con el uso de pip \textbf{\$ pip install numpy}
 
 % Command-line "screenshot"
 \begin{commandline}
 	\begin{verbatim}
-		$ g++ -o ./tarea1 ./tarea1.cpp
-		$ ./tarea1
+		$ python3.10 determinante.py -size 12 > 12.txt
 	\end{verbatim}
 \end{commandline}
+
+% File contents
+\begin{file}[determinante.py]
+\begin{lstlisting}[language=Python]
+#version recursiva    
+def recursivo(matrix):
+    
+    n = len(matrix)
+
+    #caso base
+    if n == 1:
+        return matrix[0][0]
+    if n == 2:
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
+    det = 0
+    for i in range(n):
+        sub_matrix = [row[:i] + row[i+1:] for row in matrix[1:]] 
+        det += ((-1) ** i) * matrix[0][i] * recursivo(sub_matrix)
+
+    return det
+
+#version iterativa
+def iterativo(matrix):
+    determinant = 1
+    n = len(matrix)
+    for i in range(n):
+        # Encontrar el valor maximo en la columna
+        maxRow = i
+        for j in range(i + 1, n):
+            if abs(matrix[j][i]) > abs(matrix[maxRow][i]):
+                maxRow = j
+        # intercambiar el maximo valor con el valor actual
+        if maxRow != i:
+            matrix[i], matrix[maxRow] = matrix[maxRow], matrix[i]
+            determinant *= -1
+
+        # Multiplicar el determinante por la diagonal
+        determinant *= matrix[i][i]
+        
+        # terminar si los elementos de la diagonal son ceros
+        if matrix[i][i] == 0:
+            return 0
+
+        # Eliminar los elementos abajo de la diagonal
+        for j in range(i + 1, n):
+            if matrix[i][i] == 0:
+                scale = 0
+            else:
+                scale = matrix[j][i] / matrix[i][i]
+                
+            for k in range(i, n):
+                matrix[j][k] -= scale * matrix[i][k]
+                
+    return determinant
+
+\end{lstlisting}
+\end{file}
 
 \begin{question}
   \textbf{Analice matemáticamente cada versión el algoritmo por separado usando las metodologías vistas en clase.}
@@ -229,33 +231,142 @@ Ejecutar desde una terminal
 \begin{question}
   \textbf{Para cada uno de los dos algoritmos desarrollados aplique el método descrito en el apartado "Doubling ratio experiments" del libro Algorithms de Sedgewick y Wayne, generando instancias de tamaños 1000,2000,etc; hasta lograr un radio de $2^{b}$, ejecutando 20 pruebas con cada tamaño y con cada algoritmo. Registre sus resultados.}
     %se responde aquí
-  \textit{Respuesta aqui}
+  \textit{Al ejecutar los algoritmos dentro del mismo programa y guardar los resultados en un archivo de texto con la salidad resultante de cada experimento, el orden de crecimiento factorial del algoritmo recursivo disparo la ejecución del análisis de una matriz de tamaño 24x24 llegando a no ser rentable para esperar el resultado}
 \end{question}
 
 \begin{question}
   \textbf{Para cada algoritmo comparado realice una tabla con 5 predicciones, posteriores al tamaño con que se logró obtener el radio $2^{b}$}
     %se responde aquí
-  \textit{Respuesta aqui}
+  \begin{center}
+    \begin{tabular}{||c c c||} 
+      \hline
+      TAMAÑO & Iterativa & Recursiva \\ [0.5ex] 
+      \hline
+      14x14 & 0.0391 ms & - \\
+      \hline
+      28x28 & 0.1227 ms & +7 días \\
+      \hline
+      56x56 & 0.4293 ms & 13 años \\
+      \hline
+      112x112 & 0.0052 s & $\infty$ \\
+      \hline
+      224x224 & 0.0208 s & $\infty$ \\
+      \hline
+    \end{tabular}
+  \end{center}
 \end{question}
 
 \begin{question}
   \textbf{Para cada algoritmo comparado grafique los siguientes resultados de sus ejecuciones}
     %se responde aquí
-  \textit{Respuesta aqui}
+  \textit{Los resultados obtenidos de las corridas de los algoritmos son las siguientes:}\\
+
+  \begin{multicols}{2}
+  \begin{tikzpicture}[scale=0.80]
+    \begin{semilogyaxis}[
+        %title={Comparativa},
+        xlabel={Tamaño},
+        ylabel={Operaciones},
+        xmin=0, xmax=10,
+        ymin=0, ymax=3828800,
+        xtick={0,2,4,6,8,10},
+        ytick={0,2,24,720,40320,3628800},
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+      ]
+      \addplot[
+        color=blue,
+        only marks,
+        mark=square,
+      ]
+      coordinates {
+        (0,0)(2,2)(4,24)(6,720)(8,40320)(10,3628800)
+      };
+      \legend{O(n!)}
+    \end{semilogyaxis}
+  \end{tikzpicture}
+
+  \begin{tikzpicture}[scale=0.80]
+    \begin{semilogyaxis}[
+        %title={Comparativa},
+        xlabel={Tamaño},
+        ylabel={Operaciones},
+        xmin=0, xmax=10,
+        ymin=0, ymax=1000,
+        xtick={0,2,4,6,8,10},
+        ytick={0,8,64,216,521,1000},
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+      ]
+      \addplot[
+        color=red,
+        only marks,
+        mark=square,
+      ]
+      coordinates {
+        (0,0)(2,8)(4,64)(6,216)(8,521)(10,1000)
+      };
+      \legend{$O(n^{3})$}
+    \end{semilogyaxis}
+  \end{tikzpicture}
+  \end{multicols}
+  
+  \includegraphics[scale=0.5]{grafico.png}
+  
+  \begin{center}
+    \begin{tabular}{||c c c||} 
+      \hline
+      TAMAÑO & Iterativa & Recursiva \\ [0.5ex] 
+      \hline\hline
+      2x2 & 0.01120 ms & 0.00262 ms \\ 
+      \hline
+      4x4 & 0.01502 ms & 0.03290 ms \\
+      \hline
+      6x6 & 0.01859 ms & 0.00072 ms \\
+      \hline
+      8x8 & 0.02670 ms & 0.05136 ms \\
+      \hline
+      12x12 & 0.03695 ms & 654000 ms \\
+      \hline
+      14x14 & - & - \\
+      \hline
+      16x16 & - & - \\
+      \hline
+      24x24 & - & - \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  para la corrida de tamaño 24x24 a pesar de que el tiempo de ejecución fue de aproximadamente 5 horas, paré el proceso debido a que no tenia fin
 \end{question}
 
 \begin{question}
   \textbf{Con base en los experimentos realizados y considerando un tiempo máximo de ejecución sobre su computadora de 7 días, ¿Cuál es el tamaño máximo de entrada que puede resolver cada algoritmo analizado?}
     %se responde aquí
-  \textit{Respuesta aqui}
+  \textbf{Iterativo} \textit{En su versión iterativa el algoritmo tiene una complejidad $O(n^{3})$. Y asumiendo que de entrada es una matriz de más de mil elementos, para cada iteración el algoritmo requerá $1000^{3}$ operaciones y considerando que las ejecuciones por segundo dependen del poder de procesamiendo de la máquina a usar, digamos que puede ejecutar $10^{9}$ operaciones por segundo. Calculariamos el numero de operaciones en un periodo de 7 dias como 7dias * 24horas * 60minutos * 60segundos = 604800 segundos; si los multiplicamos por el número de ejecuciones por segundo aproximadamente $6.048 * 10^{4}$ iteraciones en 7 días}\\
+  \textbf{Recursivo} \textit{En su versión recursiva el algoritmo tiene una complejidad $O(n!)$ lo que nos dice es que el numero de operaciones que ejecuta el algoritmo crece en un rango proporcional al factorial de la entrada de la matriz. Para largas entradas las operaciones son extremadamente largas y no practicas de realizar. Para una entrada de n = 10, el número de operaciones rondaria en 3,628,800, pero si doblamos la entrada las operaciones se disparán a 2,432,902,000,000,000,000 lo cual es muy lejos del rango que pueda realizar en 7 días}
 \end{question}
 
 \begin{question}
   \textbf{Conclusiones respecto al orden de crecimiento de cada algoritmo observado empíricamente y constrástelas contra los resultados de sus análisis matemático}
     %se responde aquí
-  \textit{Debido a los tiempos de ejecución altos para los calculos de matrices con grandes tamaños los experimientos fueron reducidos a tamaños pequeños, pero de igual forma se pudo apreciar el mejor comportamiento para la versión iterativa del calculo de una determinante}
+  \textit{Debido a los tiempos de ejecución altos para los cálculos de matrices con grandes tamaños los experimientos fueron reducidos a tamaños pequeños, pero de igual forma se pudo apreciar el mejor comportamiento para la versión iterativa del calculo de una determinante. En la práctica la ejecución de algoritmos de orden factorial es una mala idea por el crecimiento rápido y sólo es apreciable con entradas pequeñas.}
 \end{question}
 
+\section{Referencias}
+
+\begin{itemize}
+\item LATEX Documentación - \url{https://www.overleaf.com/learn}
+\item RELACIONES DE RECURRENCIA - \url{https://medium.com/@matematicasdiscretaslibro/cap%C3%ADtulo-10-relaciones-de-recurrencia-7fe23208184}
+\item Cálculo de determinantes - \url{https://www.uv.mx/personal/aherrera/files/2014/08/08d.-MENORES-COFACTORES-Y-DETERMINANTES.pdf}
+\item Sedgewick And Wayne - Algorithms 4th Edición
+\item Manejo de Listas python - \url{https://uniwebsidad.com/libros/algoritmos-python/capitulo-7/listas}
+\item Determiante de una Matriz - \url{https://www.geeksforgeeks.org/determinant-of-a-matrix/}
+\item What is the best algorithm to find a determinant of a matrix? - \url{https://stackoverflow.com/questions/2435133/what-is-the-best-algorithm-to-find-a-determinant-of-a-matrix}
+
+\end{itemize}
 
 \end{document}
 
