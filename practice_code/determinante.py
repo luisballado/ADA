@@ -111,11 +111,11 @@ print("\n Determinante con iterativo:")
 start_time = time.time()
 print(iterativo(matriz))
 print("--- %s seconds ---" % (time.time() - start_time))
-
+"""
 print("\n Determinante con recursivo:")
 start_time = time.time()
 print(recursivo(matriz))
 print("--- %s seconds ---" % (time.time() - start_time))
-
+"""
 
 
