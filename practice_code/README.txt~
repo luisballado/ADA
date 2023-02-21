@@ -1,0 +1,7 @@
+Para correr el programa para saber si un grafo es bipartita o no
+
+se le pasará un archivo txt donde está representado el grafo
+
+g++ tarea4_bipartito.cpp -o bip
+./bip < grafo.txt
+El grafo de entrada no es bipartito.

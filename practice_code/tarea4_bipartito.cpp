@@ -1,19 +1,6 @@
 #include <iostream>
 #include <vector>
 
-//Referencias
-/* 
-   https://speakerdeck.com/gustavoatt/bipartite-graph-matching-and-vertex-cover?slide=6
-   diapo 3,4,5,6,7
-   https://www.geeksforgeeks.org/bipartite-graph/
-   https://www.fing.edu.uy/tecnoinf/mvd/cursos/eda/material/teo/EDA-teorico14.pdf
-   https://stackoverflow.com/questions/25985639/passing-text-file-to-standard-input
-   https://www.geeksforgeeks.org/graph-implementation-using-stl-for-competitive-programming-set-1-dfs-of-unweighted-and-undirected/
-   
-   https://www.geeksforgeeks.org/array-of-vectors-in-c-stl/
-   https://www.programiz.com/cpp-programming/vectors
-*/
-
 //funcion que indica si el grafo es o no bipartito
 // -1 - no lo es; 0 - es bipartita
 int esBipartita(int u, std::vector<int> adj[], std::vector<int>& visitado);
@@ -59,7 +46,8 @@ int main() {
       }
     }
   }
-  
+
+  // Verificar si la variable cambio para imprimir resultado
   if (es_bipartita) {
     std::cout << "El grafo de entrada es bipartito." << std::endl;
   } else {

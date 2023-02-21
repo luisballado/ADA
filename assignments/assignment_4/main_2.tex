@@ -90,7 +90,7 @@
 
 Recordando que un grafo es bipartita sí y sólo sí, éste puede ser dividido en dos conjuntos U \& V tales que no existe una arista entre ambos.\\
 
-Para saber si hablamos de un grafo bipartita podemos comenzar en cualquier nodo, marcarlo como visitado.\\
+Para saber si hablamos de un grafo bipartita podemos comenzar en cualquier nodo, marcarlo como visitado.\\ Se dice que si podemos colorear los vertices de un grafo usando dos colores, entonces el grafo es bipartita.\\
 
 Basandonos en ello buscaremos tomar la idea de exploración DFS para un grafo dado en texto.txt encontrar si éste es bipartito o no, proponemos el siguiente pseudo-código:
 
@@ -150,7 +150,7 @@ Ejecutar desde una terminal
 % Command-line "screenshot"
 \begin{commandline}
 \begin{verbatim}
-  $ g++ tarea4_bipartito.cpp -o bip
+  $ g++ -std=c++11 tarea4_bipartito.cpp -o bip
   $ ./bip < grafo.txt
   El grafo de entrada no es bipartito.
 \end{verbatim}
@@ -160,12 +160,13 @@ Ejecutar desde una terminal
 \begin{question}
   \textbf{Analice matemáticamente la complejidad temporal de su algoritmo. Presente ejemplos de sus corridas.}
 \end{question}
+La relación de recurrencia para una implementación DFS recursiva puede ser expresada de la forma: $T(n)=T(n-1)+O(E)$ \\
+Dónde $T(n)$ es el tiempo requerido para buscar en un grafo de tamaño n, $T(n-1)$ es el tiempo requerido para un subgrafo de tamaño n-1 y O(E) representa el tiempo requerido para explorar E aristas adyacentes al vertice visitado.\\
 
-La complejidad temporal del algoritmo DFS que usa recursividad es O(|V| + |E|), donde |V| es el número de vértices en el gráfico, y |E| es el número de aristas.\\
+En general, la complejidad temporal del algoritmo DFS que usa recursividad es O(|V| + |E|), donde |V| es el número de vértices en el gráfico, y |E| es el número de aristas.\\
 
 En el peor de los casos, el algoritmo visita cada vértice y borde del gráfico exactamente una vez. Específicamente, cada vértice se agrega al conjunto visitado exactamente una vez y cada borde se explora exactamente una vez. El ciclo for que itera a través de los vecinos de cada vértice toma un tiempo O(grado(v)), donde grado(v) es el grado (es decir, el número de aristas que inciden en) el vértice v. Por lo tanto, la complejidad temporal total es O (|V| + |E|).\\
 
-Tenga en cuenta que esta complejidad de tiempo supone que el gráfico se representa como una lista de adyacencia. Si el gráfico se representa como una matriz de adyacencia, la complejidad temporal de comprobar si existe una arista entre dos vértices requiere un tiempo O(1), por lo que la complejidad temporal total se convierte en $O(|V|^2)$.\\
 
 \textbf{Ejemplos:}\\
 
@@ -223,7 +224,34 @@ vertice origen - vertice destino\\
 \section{Diseñe e implemente un algoritmo basado en DFS que permita resolver eficientemente el problema 3.8 de la pág 102 del libro de Dasgupta. Analice matemáticamente la complejidad temporal de su algoritmo}
 
 3.8. Vaciando agua. Tenemos tres recipientes cuyos tamaños son de 10 lts, 7 lts y 4 lts, respectivamente.\\
-Los recipientes de 7 lts y 4 lts comienzan llenos de agua, pero el recipiente de 10 lts está inicialmente vacío. Tenemos permitido un tipo de operación: verter el contenido de un recipiente en otro, deteniéndose sólo cuando el contenedor de origen está vacío o el contenedor de destino está lleno. Queremos saber si hay una secuencia de vertidos que deja exactamente 2 lts en el recipiente de 7 o 4 lts.
+Los recipientes de 7 lts y 4 lts comienzan llenos de agua, pero el recipiente de 10 lts está inicialmente vacío. Tenemos permitido un tipo de operación: verter el contenido de un recipiente en otro, deteniéndose sólo cuando el contenedor de origen está vacío o el contenedor de destino está lleno. Queremos saber si hay una secuencia de vertidos que deja exactamente 2 lts en el recipiente de 7 o 4 lts.\\
+
+Al estar basado en un algoritmo DFS dado a que cada visita de Nodo involucra visitar a sus vecinos adyacentes podemos decir:\\
+
+$V1+AristasAdyacentes_{V1}+V2+AristasAdyacentes_{V2} + ... + VN+AristasAdyacentes_{VN}$\\
+
+también lo podemos representar como:\\
+
+$(V1+V2+V3+...+VN)+(AristasAdyacentes_{V1}+AristasAdyacentes_{V2}+AristasAdyacentes_{V3}+...AristasAdyacentes_{VN})$\\
+
+
+\begin{center}
+  \begin{minipage}{0.7\linewidth} % Adjust the minipage width to accomodate for the length of algorithm lines
+    \begin{algorithm}[H] 
+      \SetKwInOut{Input}{entrada}\SetKwInOut{Output}{salida}
+      \SetKwFunction{KwFn}{Fn}
+      \SetAlgoLined
+      \SetKwProg{Function}{Function}{}{end}
+      \For{v $\in$ Vertices de G}{
+        $O(1)$
+        +
+        $O(E)$
+      }
+    \end{algorithm}
+  \end{minipage}
+\end{center}
+
+$O(|V|+|E|)$
 
 \begin{question}
   \textbf{Modele esto como un problema de grafos: proporcione una definición precisa del gráfico involucrado y plantee la pregunta específica sobre este grafo que necesita ser respondida.}\\
@@ -265,7 +293,7 @@ Ejecutar desde una terminal
 % Command-line "screenshot"
 \begin{commandline}
 \begin{verbatim}
-  $ g++ tarea4_contenedores.cpp -o contenedores
+  $ g++ -std=c++11 tarea4_contenedores.cpp -o contenedores
   $ ./contenedores
   Si existe un camino donde quedan 2 litros en los contenedores
 \end{verbatim}
@@ -285,10 +313,18 @@ Podemos comenzar desde el estado inicial (nodo) y explorar recursivamente todos 
 \textit{Si existe un camino donde quedan 2 litros en los contenedores}
 
 \section{Referencias}
-
-%https://www.baeldung.com/cs/depth-first-search-intro
-%https://www.geeksforgeeks.org/bipartite-graph/
-
+Introduction to Algorithms - 4th Edition Cormen Leiserson - Pág 563-565\\\\
+Introduction to the Design \& Analysis of Algorithms - 3rd Edition - Levitin - Pág 29\\\\
+Cápitulo 3 - Decomposición de grafos - Algorithms - S. Dasgupta\\\\
+Intro DFS - \url{https://www.baeldung.com/cs/depth-first-search-intro}\\\\
+The Vertex coloring problem and bipartite graphs \\ \url{https://tylermoore.ens.utulsa.edu/courses/cse3353/slides/l08-handout.pdf}\\\\
+Bipartite Graphs - \url{https://www.geeksforgeeks.org/bipartite-graph/}\\\\
+Learn DFS from scratch \\ \url{https://www.simplilearn.com/tutorials/data-structure-tutorial/dfs-algorithm#pseudocode_of_depthfirst_search_algorithm}\\\\
+Bipartite graph Pág 3-7 \\ \url{https://speakerdeck.com/gustavoatt/bipartite-graph-matching-and-vertex-cover?slide=6}\\\\
+Temas de C++ - \url{https://www.fing.edu.uy/tecnoinf/mvd/cursos/eda/material/teo/EDA-teorico14.pdf}\\\\
+Array de vectores en C++ - \url{https://www.geeksforgeeks.org/array-of-vectors-in-c-stl/}\\\\
+Vectores C++ - \url{https://www.programiz.com/cpp-programming/vectors}\\\\
+Implementacion de un grafo para programacion competitiva \\ \url{https://www.geeksforgeeks.org/graph-implementation-using-stl-for-competitive-programming-set-1-dfs-of-unweighted-and-undirected/}
 
 \end{document}
 
