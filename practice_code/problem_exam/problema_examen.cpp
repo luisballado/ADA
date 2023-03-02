@@ -30,12 +30,14 @@ int busquedaBinaria(int array[], int x, int low, int high) {
 
 }
 
-std::vector<std::string> imprimirBasura(std::string str){
+// Obtener los datos que me importan
+// regresa un vector<string>
+std::vector<std::string> get_info(std::string str){
 
   std::vector<std::string> datos;
 
   //del dato de entrada poder obtener IP1, IP2, peso
-
+  std::string host;
   std::string dato = "";
   std::regex ip_regex("((?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{2,4})");
   std::regex peso_regex("[0-9]{2,3}");
@@ -48,9 +50,13 @@ std::vector<std::string> imprimirBasura(std::string str){
       bool IP = regex_match(dato,ip_regex); //revisar si es de tipo IP
       bool PESO = regex_match(dato,peso_regex); //revisar si es un numero
       bool P_X = regex_match(prev_x,ip_regex); //revisar si el dato anterior es de tipo IP
-
-      if(IP)
-	datos.push_back(dato);
+      
+      //QUITAMOS EL NUMERO DE PUERTO
+      if(IP){
+	size_t full_ip = dato.find_first_of(":");
+	host = dato.substr(0,full_ip);
+	datos.push_back(host);
+      }
       //de acuerdo a la estructura si es un numero y anterior hay una IP entonces es el peso
       if(PESO && P_X)
 	datos.push_back(dato);
@@ -60,7 +66,6 @@ std::vector<std::string> imprimirBasura(std::string str){
       dato = "";       //resetearlo
     }else {
       dato = dato + x; //concatenarlo
-
     }
   }
   
@@ -68,6 +73,44 @@ std::vector<std::string> imprimirBasura(std::string str){
   
 }
 
+class IP {
+public:
+  std::string ip;
+  unsigned int ipDec;
+  int index;
+};
+
+
+//funcion para calcular los grados se salida
+//recibe una lista de adyacencia
+/**
+void calcular_grados(int n,std::vector<int> adj[]){
+
+  for(int u = 1; u<=n; u++){
+    grado_salida[u] = adj[u].size();
+  }
+  
+}
+**/
+
+/**
+void ip_dec(std::string ip){
+  //hara un split de una direccion
+  //imprimira su resultado
+  std::string part1,part2,part3,part4;
+  
+  size_t full_ip = ip.find_first_of(".");
+  part1 = ip.substr(0,full_ip);
+  part2 = ip.substr(1,full_ip);
+  part3 = ip.substr(2,full_ip);
+  part4 = ip.substr(3,full_ip);
+  std::cout << part1 << std::endl;
+  std::cout << part2 << std::endl;
+  std::cout << part3 << std::endl;
+  std::cout << part4 << std::endl;
+  
+}
+*/
 int main() {
 
   //TODO: LEER ARCHIVO
@@ -79,12 +122,14 @@ int main() {
   //¿En qu ́e direccio ́n IP presumiblemente se encuentra el boot master? Imprima en pantalla su respuesta.
   //Si el camino m ́as corto entre el boot master y cualquier otra IP del grafo representa el esfuerzo requerido para infectar dicha IP, ¿Cu ́al es la direccio ́n IP que presumiblemente requiere ma ́s esfuerzo para que el boot master la ataque? Imprima en pantalla su respuesta.
 
+  std::cout << "INICIO" << std::endl;
+  
   int n;  //n
   int m;  //m
-
+  
   //guardar valores a n - m
   std::cin >> n >> m;
-
+  
   //se crea un array de vectores con la cardinalidad de vertices(nodos)
   std::vector<int> adj[n];
 
@@ -93,57 +138,32 @@ int main() {
     std::string ip;  //auxiliares que representan las ip
     std::cin >> ip;
     std::cout << ip << std::endl;
+
+    //adj[i].push_back(ip);
+    
   }
 
-  //TODO EL TEXTO
+  std::cout << "FOR1" << std::endl;
+  
+  // ITERAR TODO EL TEXTO
   for (int i = 0; i <= m; i++) {
     std::string _ip_;  //auxiliares que representan las ip
     std::vector<std::string> _data_;
     std::getline(std::cin,_ip_);
-    
-    //limpiar para obtener solo las ip
-    _data_ = imprimirBasura(_ip_);
 
+    // PASAR LA LINEA LEIDA Y OBTENER IP1, IP2, PESO
+    _data_ = get_info(_ip_);
+    
     for(int i=0; i < _data_.size();i++){
+      if(i == 0)
+	std::cout << "IP1: " << _data_.at(i) << std::endl;
+      if(i == 1)
+	std::cout << "IP2: " << _data_.at(i) << std::endl;
+      if(i == 2)
+	std::cout <<  "PESO: " << _data_.at(i) << std::endl;
       
-      std::cout <<  _data_.at(i) << std::endl;
     }
-    
-    //std::cout << _data_ << std::endl;
-
-    //regresar ip:puerto
-    
-    
   }
-  
-  
-  /*******************
-  // Create a text string, which is used to output the text file
-  std::string myText;
-
-  std::regex regexp_ip("((?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{2,4})");
-  
-  // Read from the text file
-  std::ifstream MyReadFile("datos_examen.txt");
-
-  std::smatch m;
-  
-  // Use a while loop together with the getline() function to read the file line by line
-  while (getline (MyReadFile, myText)) {
-
-    // Output the text from the file
-    //std::cout << myText << std::endl;
-
-    regex_search(myText,m,regexp_ip);
-
-    for (auto x:m)
-      std::cout << x << std::endl;
-    
-    
-  }
-  
-  // Close the file
-  MyReadFile.close(); 
-  *********/
   return 0;
+
 }
