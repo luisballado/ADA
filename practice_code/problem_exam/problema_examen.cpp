@@ -57,15 +57,14 @@ public:
 
 //funcion para calcular los grados se salida
 //recibe una lista de adyacencia
-/**
-   void calcular_grados(int n,std::vector<int> adj[]){
-   
-   for(int u = 1; u<=n; u++){
-   grado_salida[u] = adj[u].size();
-   }
-   
-   }
-**/
+
+void calcular_grados(int n, std::vector<int> adj[]){
+  for(int i = 1; i <= n; i++){
+    std::cout << adj[i].size();
+    
+  }
+  
+}
 
 
 unsigned int ip_dec(std::string ip){
@@ -105,6 +104,20 @@ unsigned int ip_dec(std::string ip){
   return num_ip_dec;
 }
 
+void agregar_nodo(std::vector<int> adj[], int index1, int index2){
+  adj[index1].push_back(index2);
+}
+
+// Print the graph
+void imprimirGrafo(std::vector<int> adj[], int V) {
+  for (int d = 0; d < V; ++d) {
+    std::cout << "\n Vertex "
+       << d << ":";
+    for (auto x : adj[d])
+      std::cout << "-> " << x;
+    printf("\n");
+  }
+}
 
 int main() {
   
@@ -117,8 +130,6 @@ int main() {
   //¿En qu ́e direccio ́n IP presumiblemente se encuentra el boot master? Imprima en pantalla su respuesta.
   //Si el camino m ́as corto entre el boot master y cualquier otra IP del grafo representa el esfuerzo requerido para infectar dicha IP, ¿Cu ́al es la direccio ́n IP que presumiblemente requiere ma ́s esfuerzo para que el boot master la ataque? Imprima en pantalla su respuesta.
   
-  std::cout << "INICIO" << std::endl;
-  
   int n;  //n
   int m;  //m
   
@@ -127,15 +138,21 @@ int main() {
   
   //se crea un array de vectores con la cardinalidad de vertices(nodos)
   std::vector<int> adj[n];
-  
+
   //SOLO LAS IP
   for (int i = 0; i < n; i++) {
+    IP myIP; //Crear un objeto de tipo IP
     std::string ip;  //auxiliares que representan las ip
     std::cin >> ip;
     std::cout << ip << std::endl;
-    
-    //adj[i].push_back(ip);
-    
+
+    /**
+    myIP.ip = ip;
+    myIP.ipDec = ip_dec(ip);
+    myIP.index = i;
+    //se crea la lista
+    adj[i].push_back(myIP);
+    **/
   }
   
   // ITERAR TODO EL TEXTO
@@ -149,22 +166,30 @@ int main() {
     
     for(int i=0; i < _data_.size();i++){
 
+      int num1,num2;
       if(i == 0){
 	std::cout << "IP1: " << _data_.at(i) << std::endl;
 	std::cout << "num raro " << ip_dec(_data_.at(i)) << std::endl;
+	num1 = ip_dec(_data_.at(i));
       }
 
       if(i == 1){
 	std::cout << "IP2: " << _data_.at(i) << std::endl;
 	std::cout << "num raro " << ip_dec(_data_.at(i)) << std::endl;
+	num2 = ip_dec(_data_.at(i));
       }
       
       if(i == 2)
 	std::cout <<  "PESO: " << _data_.at(i) << std::endl;
+
+      //agregar_nodo(adj,i,2);
+
+      
       
     }
   }
 
+  //imprimirGrafo(adj,n);
   return 0;
   
 }

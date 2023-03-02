@@ -2,6 +2,7 @@
 *.log
 *.aux
 *.cpp~
+Makefile~
 .DS_Store
 CMakeLists.txt.user
 CMakeCache.txt
