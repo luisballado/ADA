@@ -2,15 +2,14 @@
 #include <vector>
 #include <string>
 #include <regex>
-#include <cmath>
-#include <utility>
 #include <unordered_map>
-
-#include<map>
+#include <map>
+#include <fstream>
 
 typedef std::pair<unsigned int,int> arista;
 typedef std::unordered_map<std::string, unsigned int> ip_map;
 
+//Clase GRAFO
 class Grafo{
 
 private:
@@ -42,6 +41,7 @@ public:
     
 };
 
+//CLASE IP
 class IP {
 public:
 
@@ -61,6 +61,35 @@ private:
   int ip_rank_;
 };
 
+
+//QUICKSORT
+//ORDENAR DE MAYOR A MENOR
+void quick_sort(std::vector<std::pair<std::string,int>>& arr, int izq, int der){
+
+  int i = izq;
+  int j = der;
+
+  int pivote = arr[(izq + der) / 2].second;
+
+  while(i<=j){
+    while(arr[i].second > pivote)
+      i++;
+    while(pivote > arr[j].second)
+      j--;
+    if(i<=j){
+      std::swap(arr[i],arr[j]);
+      i++;
+      j--;
+    }
+  }
+
+  if(izq < j)
+    quick_sort(arr, izq, j);
+  if(i < der)
+    quick_sort(arr, i, der);
+
+  
+}
 
 // Obtener los datos que me importan
 // regresa un vector<string>
@@ -105,63 +134,6 @@ std::vector<std::string> get_data(std::string str){
   return datos;
   
 }
-
-//funcion para calcular los grados se salida
-//recibe una lista de adyacencia
-//TODO crear file con nodo - grado
-void calcular_grados(int n, std::vector<int> adj[]){
-  for(int i = 1; i <= n; i++){
-    std::cout << adj[i].size();
-    
-  }
-  
-}
-
-//YA NO SE USA
-unsigned int ip_dec(std::string ip){
-  //hara un split de una direccion
-  //imprimira su resultado
-  
-  std::string delimiter = ".";
-
-  size_t pos = 0;
-  std::string token;
-
-  int num_ip_dec = 0;
-  unsigned int i = 0;
-
-  while ((pos = ip.find(delimiter)) != std::string::npos) {
-    token = ip.substr(0, pos);
-    //std::cout << token << std::endl;
-    ip.erase(0, pos + delimiter.length());
-
-    if(i==0){
-      num_ip_dec = (num_ip_dec + (stoi(token) * pow(256,3)));
-    }
-
-    if(i==1){
-      num_ip_dec = (num_ip_dec + (stoi(token) * pow(256,2)));
-    }
-
-    if(i==2){
-      num_ip_dec = (num_ip_dec + (stoi(token) * 256));
-    }
-        
-    i = i + 1;
-  }
-
-  num_ip_dec = (num_ip_dec + stoi(token));
-  
-  return num_ip_dec;
-}
-
-//CREAR Listas de adyacencia (IP, Grado de salida)
-  
-  //IMPRIMIR en que direccion se encuentra el boot master
-  //Lee el archivo de entrada “bitacoraGrafos.txt” y almacena los datos en una lista de adyacencia organizada por la direccio ́n IP de origen. El archivo de entrada y una explicacio ́n de su formato pueden ser descargados desde el Google Drive del curso.
-  //Determina el grado de salida de cada nodo del grafo (nu ́mero de IPs adyacentes a cada IP de origen) y almacena en un archivo llamado “gradosIPs.txt” una lista con los pares (IP, grado de salida) en orden decreciente del grado de salida.
-  //¿En qu ́e direccio ́n IP presumiblemente se encuentra el boot master? Imprima en pantalla su respuesta.
-  //Si el camino m ́as corto entre el boot master y cualquier otra IP del grafo representa el esfuerzo requerido para infectar dicha IP, ¿Cu ́al es la direccio ́n IP que presumiblemente requiere ma ́s esfuerzo para que el boot master la ataque? Imprima en pantalla su respuesta.
 
 int main() {
     
@@ -239,7 +211,9 @@ int main() {
   }
       
   //grafo.imprimir();
-
+  
+  std::vector<std::pair<std::string,int>> lista;
+  
   //ITERAR PARA GUARDAR EL GRADO DE SALIDA EN EL OBJETO
   for(int i = 0; i < n; i++){
     
@@ -247,11 +221,35 @@ int main() {
     
     int rank = grafo.grado(i);
     la_ip->second.setIPRank(rank);
-
+    
     std::cout << "IP: " << la_ip->second.getIP() <<
       " GRADO: " << la_ip->second.getIPRank() << std::endl;
+    
+    lista.push_back(std::make_pair(la_ip->second.getIP(),la_ip->second.getIPRank()));
+    
   }
 
+  //std::cerr << "ANTES QUICK" << std::endl;
+  quick_sort(lista,0,lista.size() - 1);
+  //std::cerr << "DESPUES QUICK" << std::endl;
+
+  std::ofstream output_file("gradosIPs.txt");
+
+  if(output_file.is_open()){
+    for(const auto& pair: lista){
+      output_file << pair.first << "," << pair.second << std::endl;
+    }
+    output_file.close();
+  }else{
+    std::cerr << "Errores" << std::endl;
+  }
+
+  system("clear");
+
+  //imprimir el primero de la lista
+  std::cout << "boot master: " << lista.front().first
+	    << "  Grados: " << lista.front().second << std::endl;
+    
   return 0;
   
 }
