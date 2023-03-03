@@ -34,6 +34,13 @@ public:
   }
 };
 
+class IP {
+public:
+  std::string ip;
+  unsigned int ipDec;
+  int index;
+};
+
 // Obtener los datos que me importan
 // regresa un vector<string>
 std::vector<std::string> get_data(std::string str){
@@ -77,14 +84,6 @@ std::vector<std::string> get_data(std::string str){
   return datos;
   
 }
-
-class IP {
-public:
-  std::string ip;
-  unsigned int ipDec;
-  int index;
-};
-
 
 //funcion para calcular los grados se salida
 //recibe una lista de adyacencia
@@ -208,15 +207,13 @@ int main() {
     std::cout << ip << std::endl;
 
     ipToVertex[ip] = i;
+
+    //crear muchos objetos
+    IP _ip_;
+    _ip_.ip = ip;
+    _ip_.ipDec = ip_dec(ip);
+    _ip_.index = i;
     
-    
-    /**
-    myIP.ip = ip;
-    myIP.ipDec = ip_dec(ip);
-    myIP.index = i;
-    //se crea la lista
-    adj[i].push_back(myIP);
-    **/
   }
   
   // ITERAR TODO EL TEXTO
