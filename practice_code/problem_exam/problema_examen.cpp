@@ -6,6 +6,8 @@
 #include <utility>
 #include <unordered_map>
 
+#include<map>
+
 typedef std::pair<unsigned int,int> arista;
 typedef std::unordered_map<std::string, unsigned int> ip_map;
 
@@ -32,14 +34,33 @@ public:
       std::cout << std::endl;
     }
   }
+
+  int grado(int x){
+    return adjList[x].size();
+  }
+
+    
 };
 
 class IP {
 public:
-  std::string ip;
-  unsigned int ipDec;
-  int index;
+
+  IP(int index,std::string ip,int ip_rank): id_(index), ip_(ip), ip_rank_(ip_rank) {}
+  
+  //Obtener data
+  int getId() const{ return id_;}
+  std::string getIP() const{ return ip_;}
+  int getIPRank() const{ return ip_rank_;}
+  
+  //Poner informacion
+  void setIPRank(int rank){ip_rank_ = rank;}
+  
+private:
+  int id_;
+  std::string ip_;
+  int ip_rank_;
 };
+
 
 // Obtener los datos que me importan
 // regresa un vector<string>
@@ -96,7 +117,7 @@ void calcular_grados(int n, std::vector<int> adj[]){
   
 }
 
-
+//YA NO SE USA
 unsigned int ip_dec(std::string ip){
   //hara un split de una direccion
   //imprimira su resultado
@@ -134,48 +155,6 @@ unsigned int ip_dec(std::string ip){
   return num_ip_dec;
 }
 
-// To add an edge
-/**
-void addEdge(std::vector<std::pair<int, int> > adj[], int u,
-                                     int v, int wt)
-{
-  adj[u].push_back(std::make_pair(v, wt));
-}
- 
-// Print adjacency list representation of graph
-void printGraph(std::vector<std::pair<int,int> > adj[], int V)
-{
-    int v, w;
-    for (int u = 0; u < V; u++)
-    {
-      std::cout << "Node " << u << " makes an edge with \n";
-        for (auto it = adj[u].begin(); it!=adj[u].end(); it++)
-        {
-            v = it->first;
-            w = it->second;
-	    std::cout << "\tNode " << v << " with edge weight ="
-                 << w << "\n";
-        }
-	std::cout << "\n";
-    }
-}
-**/
-/**
-void agregar_nodo(std::vector<int> adj[], int origen, int destino){
-  adj[origen].push_back(destino);
-}
-
-// Print the graph
-void imprimirGrafo(std::vector<unsigned int> adj[], int V) {
-  for (int d = 0; d < V; ++d) {
-    std::cout << "\n Vertex "
-       << d << ":";
-    for (auto x : adj[d])
-      std::cout << "-> " << x;
-    printf("\n");
-  }
-}
-**/
 //CREAR Listas de adyacencia (IP, Grado de salida)
   
   //IMPRIMIR en que direccion se encuentra el boot master
@@ -192,68 +171,66 @@ int main() {
   //guardar valores a n - m
   std::cin >> n >> m;
   
-  //se crea un array de vectores con la cardinalidad de vertices(nodos)
-  //std::vector<unsigned int> adj[n];
-  //std::vector<std::pair<int,int> > adj[n];
-
-  ip_map ipToVertex;
-  Grafo grafo(n);
+  ip_map mapa_ips; //crear un unordered map para guardar las ip
   
-  //SOLO LAS IP
+  Grafo grafo(n); //pasamos el num de vertices para hacer un resize
+
+  std::map<int, IP> ipes; //crear un map para almacenar objetos
+  
+  //ITERAR SOLO LAS IPs
   for (int i = 0; i < n; i++) {
-    IP myIP; //Crear un objeto de tipo IP
-    std::string ip;  //auxiliares que representan las ip
+
+    std::string ip;  //ip
     std::cin >> ip;
     std::cout << ip << std::endl;
 
-    ipToVertex[ip] = i;
-
-    //crear muchos objetos
-    IP _ip_;
-    _ip_.ip = ip;
-    _ip_.ipDec = ip_dec(ip);
-    _ip_.index = i;
+    //cargar ip a unordered map
+    mapa_ips[ip] = i;
+        
+    //Crear un objeto de tipo IP y cargarlo al map
+    ipes.emplace(i,IP(i,ip,0));
     
   }
   
-  // ITERAR TODO EL TEXTO
+  // ITERAR TODO EL TEXTO PARA ARMAR GRAFO
   for (int i = 0; i <= m; i++) {
     
-    std::string _ip_;  //auxiliares que representan las ip
-    std::vector<std::string> _data_;
-    std::getline(std::cin,_ip_);
+    std::string texto_ip;  //ip
+    std::vector<std::string> data; //vector para almacenar info importante
+
+    std::getline(std::cin,texto_ip);
     
-    _data_ = get_data(_ip_); // PASAR LA LINEA LEIDA Y OBTENER IP1, IP2, PESO
+    data = get_data(texto_ip); // PASAR LA LINEA LEIDA Y OBTENER IP1, IP2, PESO
 
     std::string ip1,ip2;
     unsigned int ip_dec1,ip_dec2;
     
-    for(int j=0; j < _data_.size();j++){
+    for(int j=0; j < data.size();j++){
 
       int peso;
 
       if(j == 0){
-	ip1 = _data_.at(j);
-	ip_dec1 = ip_dec(_data_.at(j));
+	ip1 = data.at(j);
+	//ip_dec1 = ip_dec(data.at(j));
       }
       
       if(j == 1){
-	ip2 = _data_.at(j);
-	ip_dec2 = ip_dec(_data_.at(j));
+	ip2 = data.at(j);
+	//ip_dec2 = ip_dec(data.at(j));
       }
       
       if(j == 2){
 
-	peso = stoi(_data_.at(j));
+	peso = stoi(data.at(j));
 
 	std::cout << "IP1: " << ip1 << std::endl;
-	std::cout << "num raro " << ip_dec1 << std::endl;
+	//std::cout << "num raro " << ip_dec1 << std::endl;
 	std::cout << "IP2: " << ip2 << std::endl;
-	std::cout << "num raro " << ip_dec2 << std::endl;
+	//std::cout << "num raro " << ip_dec2 << std::endl;
 	std::cout <<  "PESO: " << peso << std::endl;
 
-	unsigned int u = ipToVertex[ip1];
-	unsigned int v = ipToVertex[ip2];
+	unsigned int u = mapa_ips[ip1];
+	unsigned int v = mapa_ips[ip2];
 	
 	grafo.agregar(u,v,peso);
 	
@@ -261,8 +238,20 @@ int main() {
     }
   }
       
-  grafo.imprimir();
+  //grafo.imprimir();
+
+  //ITERAR PARA GUARDAR EL GRADO DE SALIDA EN EL OBJETO
+  for(int i = 0; i < n; i++){
     
+    auto la_ip = ipes.find(i);
+    
+    int rank = grafo.grado(i);
+    la_ip->second.setIPRank(rank);
+
+    std::cout << "IP: " << la_ip->second.getIP() <<
+      " GRADO: " << la_ip->second.getIPRank() << std::endl;
+  }
+
   return 0;
   
 }
