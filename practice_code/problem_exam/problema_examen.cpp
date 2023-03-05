@@ -1,45 +1,19 @@
 #include <iostream>
 #include <vector>
-//#include <fstream>
 #include <string>
 #include <regex>
-
-// ---------------------------------
-// Binary Search Complexity
-// ---------------------------------
-// Best case complexity: O(1)
-// Average case complexity: O(log n)
-// Worst case complexity: O(log n)
-// ---------------------------------
-int busquedaBinaria(int array[], int x, int low, int high) {
-  // Repeat until the pointers low and high meet each other
-  while (low <= high) {
-    int mid = low + (high - low) / 2;
-    
-    if (array[mid] == x)
-      return mid;
-    
-    if (array[mid] < x)
-      low = mid + 1;
-    
-    else
-      high = mid - 1;
-  }
-  
-  return -1;
-
-}
+#include <cmath>
 
 // Obtener los datos que me importan
 // regresa un vector<string>
-std::vector<std::string> get_info(std::string str){
+std::vector<std::string> get_data(std::string str){
 
   std::vector<std::string> datos;
 
   //del dato de entrada poder obtener IP1, IP2, peso
   std::string host;
   std::string dato = "";
-  std::regex ip_regex("((?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{2,4})");
+  std::regex ip_regex("((?:[0-9]{1,3}.){3}[0-9]{1,3}:[0-9]{2,4})");
   std::regex peso_regex("[0-9]{2,3}");
   std::string prev_x;
   for (auto x : str){
@@ -53,8 +27,8 @@ std::vector<std::string> get_info(std::string str){
       
       //QUITAMOS EL NUMERO DE PUERTO
       if(IP){
-	size_t full_ip = dato.find_first_of(":");
-	host = dato.substr(0,full_ip);
+	size_t found = dato.find_first_of(":");
+	host = dato.substr(0,found);
 	datos.push_back(host);
       }
       //de acuerdo a la estructura si es un numero y anterior hay una IP entonces es el peso
@@ -83,46 +57,78 @@ public:
 
 //funcion para calcular los grados se salida
 //recibe una lista de adyacencia
-/**
-void calcular_grados(int n,std::vector<int> adj[]){
 
-  for(int u = 1; u<=n; u++){
-    grado_salida[u] = adj[u].size();
+void calcular_grados(int n, std::vector<int> adj[]){
+  for(int i = 1; i <= n; i++){
+    std::cout << adj[i].size();
+    
   }
   
 }
-**/
 
-/**
-void ip_dec(std::string ip){
+
+unsigned int ip_dec(std::string ip){
   //hara un split de una direccion
   //imprimira su resultado
-  std::string part1,part2,part3,part4;
   
-  size_t full_ip = ip.find_first_of(".");
-  part1 = ip.substr(0,full_ip);
-  part2 = ip.substr(1,full_ip);
-  part3 = ip.substr(2,full_ip);
-  part4 = ip.substr(3,full_ip);
-  std::cout << part1 << std::endl;
-  std::cout << part2 << std::endl;
-  std::cout << part3 << std::endl;
-  std::cout << part4 << std::endl;
-  
-}
-*/
-int main() {
+  std::string delimiter = ".";
 
+  size_t pos = 0;
+  std::string token;
+
+  int num_ip_dec = 0;
+  unsigned int i = 0;
+
+  while ((pos = ip.find(delimiter)) != std::string::npos) {
+    token = ip.substr(0, pos);
+    //std::cout << token << std::endl;
+    ip.erase(0, pos + delimiter.length());
+
+    if(i==0){
+      num_ip_dec = (num_ip_dec + (stoi(token) * pow(256,3)));
+    }
+
+    if(i==1){
+      num_ip_dec = (num_ip_dec + (stoi(token) * pow(256,2)));
+    }
+
+    if(i==2){
+      num_ip_dec = (num_ip_dec + (stoi(token) * 256));
+    }
+        
+    i = i + 1;
+  }
+
+  num_ip_dec = (num_ip_dec + stoi(token));
+  
+  return num_ip_dec;
+}
+
+void agregar_nodo(std::vector<int> adj[], int index1, int index2){
+  adj[index1].push_back(index2);
+}
+
+// Print the graph
+void imprimirGrafo(std::vector<int> adj[], int V) {
+  for (int d = 0; d < V; ++d) {
+    std::cout << "\n Vertex "
+       << d << ":";
+    for (auto x : adj[d])
+      std::cout << "-> " << x;
+    printf("\n");
+  }
+}
+
+int main() {
+  
   //TODO: LEER ARCHIVO
   //CREAR Listas de adyacencia (IP, Grado de salida)
-
+  
   //IMPRIMIR en que direccion se encuentra el boot master
   //Lee el archivo de entrada “bitacoraGrafos.txt” y almacena los datos en una lista de adyacencia organizada por la direccio ́n IP de origen. El archivo de entrada y una explicacio ́n de su formato pueden ser descargados desde el Google Drive del curso.
   //Determina el grado de salida de cada nodo del grafo (nu ́mero de IPs adyacentes a cada IP de origen) y almacena en un archivo llamado “gradosIPs.txt” una lista con los pares (IP, grado de salida) en orden decreciente del grado de salida.
   //¿En qu ́e direccio ́n IP presumiblemente se encuentra el boot master? Imprima en pantalla su respuesta.
   //Si el camino m ́as corto entre el boot master y cualquier otra IP del grafo representa el esfuerzo requerido para infectar dicha IP, ¿Cu ́al es la direccio ́n IP que presumiblemente requiere ma ́s esfuerzo para que el boot master la ataque? Imprima en pantalla su respuesta.
-
-  std::cout << "INICIO" << std::endl;
   
   int n;  //n
   int m;  //m
@@ -135,35 +141,55 @@ int main() {
 
   //SOLO LAS IP
   for (int i = 0; i < n; i++) {
+    IP myIP; //Crear un objeto de tipo IP
     std::string ip;  //auxiliares que representan las ip
     std::cin >> ip;
     std::cout << ip << std::endl;
 
-    //adj[i].push_back(ip);
-    
+    /**
+    myIP.ip = ip;
+    myIP.ipDec = ip_dec(ip);
+    myIP.index = i;
+    //se crea la lista
+    adj[i].push_back(myIP);
+    **/
   }
-
-  std::cout << "FOR1" << std::endl;
   
   // ITERAR TODO EL TEXTO
   for (int i = 0; i <= m; i++) {
     std::string _ip_;  //auxiliares que representan las ip
     std::vector<std::string> _data_;
     std::getline(std::cin,_ip_);
-
+    
     // PASAR LA LINEA LEIDA Y OBTENER IP1, IP2, PESO
-    _data_ = get_info(_ip_);
+    _data_ = get_data(_ip_);
     
     for(int i=0; i < _data_.size();i++){
-      if(i == 0)
+
+      int num1,num2;
+      if(i == 0){
 	std::cout << "IP1: " << _data_.at(i) << std::endl;
-      if(i == 1)
+	std::cout << "num raro " << ip_dec(_data_.at(i)) << std::endl;
+	num1 = ip_dec(_data_.at(i));
+      }
+
+      if(i == 1){
 	std::cout << "IP2: " << _data_.at(i) << std::endl;
+	std::cout << "num raro " << ip_dec(_data_.at(i)) << std::endl;
+	num2 = ip_dec(_data_.at(i));
+      }
+      
       if(i == 2)
 	std::cout <<  "PESO: " << _data_.at(i) << std::endl;
+
+      //agregar_nodo(adj,i,2);
+
+      
       
     }
   }
-  return 0;
 
+  //imprimirGrafo(adj,n);
+  return 0;
+  
 }
