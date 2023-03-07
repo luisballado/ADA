@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <map>
 #include <fstream>
+#include <queue>
+#include <limits>
 
 typedef std::pair<unsigned int,int> arista;
 typedef std::unordered_map<std::string, unsigned int> ip_map;
@@ -36,9 +38,7 @@ public:
 
   int grado(int x){
     return adjList[x].size();
-  }
-
-    
+  }    
 };
 
 //CLASE IP
@@ -90,6 +90,47 @@ void quick_sort(std::vector<std::pair<std::string,int>>& arr, int izq, int der){
 
   
 }
+
+/***
+std::vector<int> dijkstra(const Grafo& grafo, int inicio, int tam){
+  
+  const int INF = std::numeric_limits<int>::max();
+  
+  std::vector<int> dist(tam,-INF);
+  dist[inicio] = 0;
+
+  std::priority_queue<std::pair<int,int>> pq;
+  pq.push({0,inicio});
+
+  while(!pq.empty()){
+
+    int u = pq.top().second;
+    int d = pq.top().first;
+    pq.pop();
+
+    if(d != dist[u]){
+
+      continue;
+      
+    }
+
+    for(const auto& edge: grafo[u]){
+      int v = edge.to;
+      int w = edge.weight;
+
+      if(dist[v] < dist[u]+w){
+	dist[v] = dist[u]+w;
+	pq.push({dist[v],v});
+	
+      }
+      
+    }
+
+  }
+  return dist;
+  
+}
+*/
 
 // Obtener los datos que me importan
 // regresa un vector<string>
@@ -234,7 +275,7 @@ int main() {
   //std::cerr << "DESPUES QUICK" << std::endl;
 
   std::ofstream output_file("gradosIPs.txt");
-
+  
   if(output_file.is_open()){
     for(const auto& pair: lista){
       output_file << pair.first << "," << pair.second << std::endl;
