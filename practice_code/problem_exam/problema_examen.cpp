@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <map>
 #include <fstream>
+#include <queue>
 
 typedef std::pair<unsigned int,int> arista;
 typedef std::unordered_map<std::string, unsigned int> ip_map;
@@ -38,13 +39,122 @@ public:
     return adjList[x].size();
   }
 
+  //Ver como agregar BFS
+  /***
+  void BFS(int s){
+    int V = adjList.size();
+    bool *visitado = new bool[V];
+
+    //inicializar en no visitados
+    for (int i=0;i<V;i++)
+      visitado[i] = false;
     
+    std::queue<int> q;
+    visitado[s] = true;
+    q.push(s);
+    
+    while(!q.empty()){
+      int u = q.front();
+      std::cout << u << " ";
+      q.pop();
+      
+      for(auto v = adjList[u].begin(); v != adjList[u].end(); ++v){
+	
+	if(!visitado[v]){
+	  visitado[v] = true;
+	  q.push(v);
+	}
+      }
+    }
+  }
+  **/
+  
+  //dijkstra
+  //regresar en vector o lista
+  void dijkstra(int src){
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> pq;
+    std::vector<int> dist(adjList.size(), std::numeric_limits<int>::max());
+
+    pq.push(std::make_pair(0, src));
+    dist[src] = 0;
+
+    while(!pq.empty()){
+      int u = pq.top().second;
+      pq.pop();
+
+      for (auto it = adjList[u].begin(); it != adjList[u].end(); ++it){
+	int v = it->first;
+	int weight = it->second;
+
+	if(dist[v] > dist[u] + weight){
+	  dist[v] = dist[u] + weight;
+	  pq.push(std::make_pair(dist[v],v));
+	}
+      }
+    }
+
+    std::cout << "Distancia Vertice\tdesde el origen\n";
+
+    for(int i = 0; i < adjList.size(); i++)
+      std::cout << i << "\t" << dist[i] << "\n";
+    
+    
+  }
+
+  const int INF = std::numeric_limits<int>::max(); //algo grande
+  
+  //PRIM ALGO
+  //regresar en vector o lista
+  void primMST(int src){
+
+    int V = adjList.size();
+    std::vector<int> key(V, INF);
+    std::vector<bool> mstSet(V,false);
+    std::vector<int> parent(V,-1);
+
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> pq;
+
+    pq.push(std::make_pair(0,src));
+    key[src] = 0;
+
+    while(!pq.empty()){
+
+      int u = pq.top().second;
+      pq.pop();
+
+      mstSet[u] = true;
+
+      for(auto i = adjList[u].begin(); i != adjList[u].end(); ++i){
+
+	int v = i->first;
+	int w = i->second;
+	if(!mstSet[v]&&w<key[v]){
+
+	  key[v] = w;
+	  parent[v] = u;
+	  pq.push(std::make_pair(key[v],v));
+	  
+	}
+	
+      }
+      
+    }
+
+    //print the minimum spanning tree
+    for (int i=1; i<V;++i){
+      std::cout << parent[i] << " - " << i << " : " << key[i] << std::endl;
+    }
+    
+  }
+  
+  
 };
 
 //CLASE IP
 class IP {
 public:
-
+  
+  //constructor
   IP(int index,std::string ip,int ip_rank): id_(index), ip_(ip), ip_rank_(ip_rank) {}
   
   //Obtener data
@@ -100,31 +210,33 @@ std::vector<std::string> get_data(std::string str){
   //del dato de entrada poder obtener IP1, IP2, peso
   std::string host;
   std::string dato = "";
-  std::regex ip_regex("((?:[0-9]{1,3}.){3}[0-9]{1,3}:[0-9]{2,4})");
-  std::regex peso_regex("[0-9]{2,3}");
+  std::regex ip_regex("((?:[0-9]{1,3}.){3}[0-9]{1,3}:[0-9]{2,4})"); //expresion regular para identificar ips
+  std::regex peso_regex("[0-9]{2,3}"); //expresion regular para identificar el peso
   std::string prev_x;
 
+  //se le pasa la linea leida
   for (auto x : str){
-    
+
     if (x == ' '){
-      // si el dato es una ip meterlo
-      // si el dato es un numero meterlo
       bool IP = regex_match(dato,ip_regex); //revisar si es de tipo IP
       bool PESO = regex_match(dato,peso_regex); //revisar si es un numero
       bool P_X = regex_match(prev_x,ip_regex); //revisar si el dato anterior es de tipo IP
       
-      //QUITAMOS EL NUMERO DE PUERTO
+      //QUITAMOS EL NUMERO DE PUERTO -- si el dato es una ip meterlo
       if(IP){
-	size_t found = dato.find_first_of(":");
-	host = dato.substr(0,found);
+	size_t direccion_ip = dato.find_first_of(":");
+	host = dato.substr(0,direccion_ip);
 	datos.push_back(host);
       }
+
       //de acuerdo a la estructura si es un numero y anterior hay una IP entonces es el peso
-      if(PESO && P_X)
+      if(PESO && P_X) //si el dato es un numero meterlo
 	datos.push_back(dato);
       
       prev_x = dato;   //aux para ver si el dato previo es una IP
+      
       //std::cout << "El dato previo es:" << prev_x << std::endl;
+
       dato = "";       //resetearlo
     }else {
       dato = dato + x; //concatenar letra
@@ -140,42 +252,41 @@ int main() {
   int n;  //n
   int m;  //m
   
-  //guardar valores a n - m
-  std::cin >> n >> m;
+  std::cin >> n >> m; // guardar valores n - m
   
-  ip_map mapa_ips; //crear un unordered map para guardar las ip
+  ip_map mapa_ips; // crear un unordered map para guardar las ip
   
-  Grafo grafo(n); //pasamos el num de vertices para hacer un resize
+  Grafo grafo(n); //pasamos el num de vertices para hacer un resize a la lista de adjacencia
 
   std::map<int, IP> ipes; //crear un map para almacenar objetos
   
-  //ITERAR SOLO LAS IPs
+  //ITERAR SOLO LAS IPs respecto a n
   for (int i = 0; i < n; i++) {
 
     std::string ip;  //ip
     std::cin >> ip;
     std::cout << ip << std::endl;
 
-    //cargar ip a unordered map
+    //cargar ip a unordered map "ip" - "index"
     mapa_ips[ip] = i;
-        
+    
     //Crear un objeto de tipo IP y cargarlo al map
     ipes.emplace(i,IP(i,ip,0));
     
   }
   
-  // ITERAR TODO EL TEXTO PARA ARMAR GRAFO
+  // ITERAR TODO EL TEXTO PARA ARMAR GRAFO respecto IP-PESOS
   for (int i = 0; i <= m; i++) {
     
     std::string texto_ip;  //ip
-    std::vector<std::string> data; //vector para almacenar info importante
+    std::vector<std::string> data; //vector para almacenar info importante que viene del texto
 
     std::getline(std::cin,texto_ip);
     
     data = get_data(texto_ip); // PASAR LA LINEA LEIDA Y OBTENER IP1, IP2, PESO
 
     std::string ip1,ip2;
-    unsigned int ip_dec1,ip_dec2;
+    //unsigned int ip_dec1,ip_dec2;
     
     for(int j=0; j < data.size();j++){
 
@@ -193,7 +304,7 @@ int main() {
       
       if(j == 2){
 
-	peso = stoi(data.at(j));
+	peso = stoi(data.at(j)); //string a intero
 
 	std::cout << "IP1: " << ip1 << std::endl;
 	//std::cout << "num raro " << ip_dec1 << std::endl;
@@ -201,8 +312,8 @@ int main() {
 	//std::cout << "num raro " << ip_dec2 << std::endl;
 	std::cout <<  "PESO: " << peso << std::endl;
 
-	unsigned int u = mapa_ips[ip1];
-	unsigned int v = mapa_ips[ip2];
+	unsigned int u = mapa_ips[ip1]; //obtener el index de ip1
+	unsigned int v = mapa_ips[ip2]; //obtener el index de ip2
 	
 	grafo.agregar(u,v,peso);
 	
@@ -212,7 +323,7 @@ int main() {
       
   //grafo.imprimir();
   
-  std::vector<std::pair<std::string,int>> lista;
+  std::vector<std::pair<std::string,int>> lista; //una lista para aplicar quicksort
   
   //ITERAR PARA GUARDAR EL GRADO DE SALIDA EN EL OBJETO
   for(int i = 0; i < n; i++){
@@ -233,6 +344,7 @@ int main() {
   quick_sort(lista,0,lista.size() - 1);
   //std::cerr << "DESPUES QUICK" << std::endl;
 
+  //hacer archivo de salida
   std::ofstream output_file("gradosIPs.txt");
 
   if(output_file.is_open()){
@@ -245,11 +357,54 @@ int main() {
   }
 
   system("clear");
+  
+  std::cout << "Posibles boot master" << std::endl;
 
-  //imprimir el primero de la lista
-  std::cout << "boot master: " << lista.front().first
-	    << "  Grados: " << lista.front().second << std::endl;
+  std::vector<int> boot_ids;
+  
+  //imprimir el primero de la lista, es el de mas grados
+  for(int i = 0; i < 2; i++){
+    boot_ids.push_back(i);
+    std::cout << "boot master: " << lista[i].first
+	      << "  Grados: " << lista[i].second << std::endl;
+  }
+
+  //pasar el id de los boot master
+  std::cout << "#################" << std::endl;
+  std::cout << "Camino mas corto: " << std::endl;
+  std::cout << "#################" << std::endl;
+
+  //regresa id y el peso -- buscar el maximo
+  grafo.dijkstra(boot_ids[0]);
+  
+  std::vector<std::pair<std::string,int>> lista; //una lista para aplicar quicksort
+  
+  //ITERAR PARA GUARDAR EL GRADO DE SALIDA EN EL OBJETO
+  for(int i = 0; i < n; i++){
     
+    auto la_ip = ipes.find(i);
+    
+    int rank = grafo.grado(i);
+    la_ip->second.setIPRank(rank);
+    
+    std::cout << "IP: " << la_ip->second.getIP() <<
+      " GRADO: " << la_ip->second.getIPRank() << std::endl;
+    
+    lista.push_back(std::make_pair(la_ip->second.getIP(),la_ip->second.getIPRank()));
+    
+  }
+
+  //std::cerr << "ANTES QUICK" << std::endl;
+  quick_sort(lista,0,lista.size() - 1);
+  
+  exit(1);
+  
+  std::cout << "#################" << std::endl;
+  std::cout << "Arista mas larga: " << std::endl;
+  std::cout << "#################" << std::endl;
+
+  grafo.primMST(boot_ids[0]);
+
   return 0;
   
 }
