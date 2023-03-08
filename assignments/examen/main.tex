@@ -60,12 +60,25 @@
 \begin{commandline}
   \begin{verbatim}
     $ make
-    $ ./problema_examen < bitacoraGrafos.txt
+    $ time ./problema_examen < bitacoraGrafos.txt
+    #######################################################
+    boot master: 73.89.221.25  Grados: 18
+    Camino mas largo: 
+    IP - 244.223.133.50 -- 998
+    Arista mas larga: 
+    IP1 - 5.103.188.166 -##-  IP2 - 131.166.58.201 -- 2524
+    #######################################################
+    boot master: 185.109.34.183  Grados: 18
+    Camino mas largo: 
+    IP - 244.223.133.50 -- 1136
+    Arista mas larga: 
+    IP1 - 5.103.188.166 -##-  IP2 - 154.1.79.55 -- 6646
+    26.27s user 0.07s system 99% cpu 26.521 total
   \end{verbatim}
 \end{commandline}
 
 %----------------------------------------------------------------------------------------
-
+\newpage
 \begin{question}
   \textbf{Determina el grado de salida de cada nodo del grafo y almacena en un archivo llamado "gradosIPs.txt" una lista con los pares (IP,grado de lista) en orden decreciente}
 \end{question}
@@ -74,7 +87,6 @@
   \href{https://github.com/luisballado/ADA/blob/main/practice_code/problem_exam/gradosIPs.txt}{ver archivo gradosIPs.txt}\\   
 \end{warn}
 
-\newpage
 \begin{question}
   \textbf{¿En qué dirección IP presumiblemente se encuentra el boot master?}
 \end{question}
@@ -160,8 +172,19 @@
 
   Muchas veces dejamos de lado la eficiencia por \textbf{programar más rápido}, pero a la larga y mientras más usuarios ó más datos se tengan que trabajar, hasta ese momento nos preguntamos el ¿por qué es lento? y comenzamos a tomar atención a las complejidades de nuestros programas y tener ese control para no fragelarnos como programadores y hacer parches interminables que se llegan a convertir no mantenibles e ineficientes.
 
+  \section{Referencias}
 
-
+  \begin{enumerate}
+  \item Thomas H. Cormen, Introduction to Algorithms 4th Ed - Chapter 7 - Quicksort Pág 183
+  \item Thomas H. Cormen, Introduction to Algorithms 4th Ed - Chapter 21 - Minimum Spanning Trees Pág 594 
+  \item Thomas H. Cormen, Introduction to Algorithms 4th Ed - Chapter 22 - Dijkstra Algorithm Pág 620
+  \item C++ Queue \url{https://www.programiz.com/cpp-programming/queue}
+  \item queue push() and pop() in C++ STL \\ \url{https://www.geeksforgeeks.org/queue-push-and-queue-pop-in-cpp-stl/}
+  \item How to store Data Triplet in a Vector in C++? \\ \url{https://www.geeksforgeeks.org/store-data-triplet-vector-c/}
+  \item Dijkstra’s Shortest Path Algorithm using priority\_queue of STL \\ \url{https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-priority_queue-stl/}
+  \item map vs unordered\_map in C++ \\ \url{https://www.geeksforgeeks.org/map-vs-unordered_map-c/}
+  \item Prim’s Algorithm for Minimum Spanning Tree (MST) \\ \url{https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/}
+  \end{enumerate}
 
 \end{document}
 
