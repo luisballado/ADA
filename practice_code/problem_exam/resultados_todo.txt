@@ -1,0 +1,11 @@
+[H[2J[3JPosibles boot master
+boot master: 73.89.221.25  Grados: 18
+boot master: 185.109.34.183  Grados: 18
+#################
+Camino mas largo: 
+#################
+IP - 244.223.133.50 -- 998
+#################
+Arista mas larga: 
+#################
+IP1 - 5.103.188.166## IP2 - 131.166.58.201 -- 2524
