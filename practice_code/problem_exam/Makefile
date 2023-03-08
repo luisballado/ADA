@@ -1,7 +1,3 @@
-# Makefile for building applications.
-
-# Edit this file to compile extra C files into their own programs.
-
 TARGETS = problema_examen
 
 CROSS_TOOL =

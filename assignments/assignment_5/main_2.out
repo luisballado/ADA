@@ -1,0 +1,5 @@
+\BOOKMARK [1][-]{section.1}{Un grafo es bipartita si todos sus v\351rtices pueden ser divididos en dos subconjuntos disjuntos X y Y de forma tal que cada arco conecte un v\351rtice en X con uno en Y.}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Implementaci\363n y corridas}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Dise\361e e implemente un algoritmo basado en DFS que permita resolver eficientemente el problema 3.8 de la p\341g 102 del libro de Dasgupta. Analice matem\341ticamente la complejidad temporal de su algoritmo}{}% 3
+\BOOKMARK [2][-]{subsection.2.1}{Implementaci\363n}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{Referencias}{}% 5

@@ -8,6 +8,31 @@
 #include <queue>
 #include <limits>
 
+/********************************************************************
+ Ejecutar el programa, se incluye un archivo make que ejecuta lo siguiente:
+ - Eliminar el ejecutable anterior
+ - Compilar usando g++
+
+ Pasos para compilar:
+ make
+ ./problema_examen < bitacoraGrafos.txt
+
+ RESULTADO:
+ #######################################################
+ boot master: 73.89.221.25  Grados: 18
+ Camino mas largo: 
+ IP - 244.223.133.50 -- 998
+ Arista mas larga: 
+ IP1 - 5.103.188.166 -##-  IP2 - 131.166.58.201 -- 2524
+ #######################################################
+ boot master: 185.109.34.183  Grados: 18
+ Camino mas largo: 
+ IP - 244.223.133.50 -- 1136
+ Arista mas larga: 
+ IP1 - 5.103.188.166 -##-  IP2 - 154.1.79.55 -- 6646
+
+*******************************************************************/
+
 typedef std::pair<unsigned int,int> arista;
 typedef std::unordered_map<std::string, unsigned int> ip_map;
 
@@ -41,7 +66,7 @@ public:
     return adjList[x].size();
   }
 
-  //Ver como agregar BFS
+  //TODO: Arreglar
   void BFS(int s){
     
     int V = adjList.size();
@@ -74,12 +99,14 @@ public:
       }
     }
   }
-    
-  //dijkstra
-  //regresar en vector o lista
-  //IP1 - IP2 - PESO
-  //void dijkstra(int s){
+  
+  /*******************************************************************************************
+   https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-priority_queue-stl/
+   dijkstra O(E*logV)
+   Regresa un vector con los pares IP, PESO con el vertice más lejano
+  ********************************************************************************************/
   std::vector<std::pair<int,int>> dijkstra(int s){
+
     std::vector<std::pair<int,int>> respuesta;
 
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> pq;
@@ -116,47 +143,53 @@ public:
       }
       
     }
-    
+
     respuesta.push_back(std::make_pair(id_ip,max));
 
-    /**
-    std::cout << "Distancia Vertice\tdesde el origen\n";
-    for(int i = 0; i < adjList.size(); i++){
-      std::cout << i << "\t" << dist[i] << "\n";
-      
-    }
-    **/
-    
     return respuesta;
-
+    
   }
 
-  const int INF = std::numeric_limits<int>::max(); //algo grande
-  
-  //PRIM ALGO
-  //regresar arista mas larga
-  //void primMST(int s){
+  /***************************************************************************************
+  PRIM ALGO (adaptado de: https://www.geeksforgeeks.org/prims-algorithm-using-priority_queue-stl/)
+  Dado un grafo conexo, encuentra el MST
+  regresando el PESO y el par de Vertices de la arista más grande
+  Complejidad: MEJOR CASO O(E*logV)
+  ****************************************************************************************/
   std::vector<std::pair<int, std::pair<int,int>>> primMST(int s){
     
-    int maxx = 0;
-    int ip1,ip2;
-    
+    int maxx = 0; //aux para regresar respuesta
+    int ip1,ip2;  //aux para regresar respuesta
+
+    int INF = std::numeric_limits<int>::max(); //algo grande
+
+    //Respuesta a regresar con los valores de PESO y el par de Vertices IP1-IP2
     std::vector<std::pair<int, std::pair<int,int>>> respuesta;
     
-    
+    //Cardinalidad del total de IP's
     int V = adjList.size();
-    
+
+    //Crear un vector para los pesos y se inicializa con valores infinitos
     std::vector<int> key(V, INF);
+
+    //Almacenar todos los vertices incluidos en el MST 
     std::vector<bool> mstSet(V,false);
+
+    //Almacenar el MST
     std::vector<int> parent(V,-1);
 
+    //Crear una cola de prioridad para almacenar los vertices que son parte del MST
+    //https://www.geeksforgeeks.org/implement-min-heap-using-stl/
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> pq;
 
+    //Ingresar el origen con peso 0
     pq.push(std::make_pair(0,s));
     key[s] = 0;
 
+    //iterar hasta tener la cola vacia
     while(!pq.empty()){
 
+      //El primer vertice es el minimo, quitarlo de la cola
       int u = pq.top().second;
       pq.pop();
 
@@ -181,16 +214,11 @@ public:
 	}
       }
     }
-    
+
     respuesta.push_back(std::make_pair(maxx,std::make_pair(ip1,ip2)));
     
     return respuesta;
-    //obtener la arista mas larga
-    /*
-    for (int i=1; i<V;++i){
-      std::cout << parent[i] << " - " << i << " : " << key[i] << std::endl;
-    }
-    */
+    
   }
 };
 
@@ -201,12 +229,16 @@ public:
   //constructor
   IP(int index,std::string ip,int ip_rank): id_(index), ip_(ip), ip_rank_(ip_rank) {}
   
-  //Obtener data
+  //Obtener id
   int getId() const{ return id_;}
+
+  //Obtener la ip
   std::string getIP() const{ return ip_;}
+
+  //Obtener rango del vertice
   int getIPRank() const{ return ip_rank_;}
   
-  //Poner informacion
+  //(SET) Poner información
   void setIPRank(int rank){ip_rank_ = rank;}
   
 private:
@@ -216,8 +248,12 @@ private:
 };
 
 
-//QUICKSORT
-//ORDENAR DE MAYOR A MENOR
+/*********************************************
+ QUICKSORT ORDENAR DE MAYOR A MENOR
+ Complejidad: PEOR CASO N^2 | MEJOR CASO nlog(n)
+ Recibe un vector con los pares IPID, PESO
+ Ordena el vector
+*************************************************/
 void quick_sort(std::vector<std::pair<std::string,int>>& arr, int izq, int der){
 
   int i = izq;
@@ -244,8 +280,14 @@ void quick_sort(std::vector<std::pair<std::string,int>>& arr, int izq, int der){
 
 }
 
-// Obtener los datos que me importan
-// regresa un vector<string>
+/*******************************************
+ Obtener los datos que me importan
+ Recibe la linea de texto a ser analizada
+ regresa un vector<string>
+ IP1
+ IP2
+ PESO
+*******************************************/
 std::vector<std::string> get_data(std::string str){
 
   std::vector<std::string> datos;
@@ -253,8 +295,13 @@ std::vector<std::string> get_data(std::string str){
   //del dato de entrada poder obtener IP1, IP2, peso
   std::string host;
   std::string dato = "";
-  std::regex ip_regex("((?:[0-9]{1,3}.){3}[0-9]{1,3}:[0-9]{2,4})"); //expresion regular para identificar ips
-  std::regex peso_regex("[0-9]{2,3}"); //expresion regular para identificar el peso
+  
+  //expresion regular para identificar ips
+  std::regex ip_regex("((?:[0-9]{1,3}.){3}[0-9]{1,3}:[0-9]{2,4})");
+
+  //expresion regular para identificar el peso
+  std::regex peso_regex("[0-9]{2,3}"); 
+
   std::string prev_x;
 
   //se le pasa la linea leida
@@ -442,8 +489,6 @@ int main() {
 	      << std::endl;
   }
 
-  grafo.BFS(0);
-  
   return 0;
   
 }
