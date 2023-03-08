@@ -6,6 +6,7 @@
 #include <map>
 #include <fstream>
 #include <queue>
+#include <limits>
 
 typedef std::pair<unsigned int,int> arista;
 typedef std::unordered_map<std::string, unsigned int> ip_map;
@@ -17,7 +18,7 @@ private:
   std::vector<std::vector<arista>> adjList;
 
 public:
-  
+
   Grafo(int n){
     adjList.resize(n);
   }
@@ -25,7 +26,7 @@ public:
   void agregar(unsigned int u, unsigned int v, int w){
     adjList[u].push_back(std::make_pair(v,w));
   }
-
+  
   void imprimir(){
     for(unsigned int i = 0;i<adjList.size();i++){
       std::cout << "Lista " << i << std::endl;
@@ -41,26 +42,31 @@ public:
   }
 
   //Ver como agregar BFS
-  /***
   void BFS(int s){
+    
     int V = adjList.size();
-    bool *visitado = new bool[V];
-
+    
+    //bool *visitado = new bool[V];
+    std::vector<bool> visitado;
+    //visitado.resize(V,false);
+    
     //inicializar en no visitados
     for (int i=0;i<V;i++)
       visitado[i] = false;
     
+    //https://www.programiz.com/cpp-programming/queue
     std::queue<int> q;
     visitado[s] = true;
     q.push(s);
     
     while(!q.empty()){
       int u = q.front();
-      std::cout << u << " ";
+      //std::cout << u << " ";
       q.pop();
-      
-      for(auto v = adjList[u].begin(); v != adjList[u].end(); ++v){
-	
+
+      for (auto i = adjList[u].begin(); i != adjList[u].end(); ++i){
+      	int v = i->first;
+		
 	if(!visitado[v]){
 	  visitado[v] = true;
 	  q.push(v);
@@ -68,16 +74,21 @@ public:
       }
     }
   }
-  **/
-  
+    
   //dijkstra
   //regresar en vector o lista
-  void dijkstra(int s){
-    
+  //IP1 - IP2 - PESO
+  //void dijkstra(int s){
+  std::vector<std::pair<int,int>> dijkstra(int s){
+    std::vector<std::pair<int,int>> respuesta;
+
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> pq;
     
     std::vector<int> dist(adjList.size(), std::numeric_limits<int>::max());
-    
+
+    int max = 0;
+    int id_ip = 0;
+
     pq.push(std::make_pair(0, s));
     dist[s] = 0;
 
@@ -88,27 +99,53 @@ public:
       for (auto it = adjList[u].begin(); it != adjList[u].end(); ++it){
 	int v = it->first;
 	int weight = it->second;
-
+	
 	if(dist[v] > dist[u] + weight){
 	  dist[v] = dist[u] + weight;
 	  pq.push(std::make_pair(dist[v],v));
+
+	  //guardar el de mayor peso
+	  if(max > dist[v]){
+	    //nada
+	  }else{
+	    id_ip = v;
+	    max = dist[v];
+	    
+	  }
 	}
       }
+      
     }
-
-    std::cout << "Distancia Vertice\tdesde el origen\n";
     
-    for(int i = 0; i < adjList.size(); i++)
-      std::cout << i << "\t" << dist[i] << "\n";    
+    respuesta.push_back(std::make_pair(id_ip,max));
+
+    /**
+    std::cout << "Distancia Vertice\tdesde el origen\n";
+    for(int i = 0; i < adjList.size(); i++){
+      std::cout << i << "\t" << dist[i] << "\n";
+      
+    }
+    **/
+    
+    return respuesta;
+
   }
 
   const int INF = std::numeric_limits<int>::max(); //algo grande
   
   //PRIM ALGO
-  //regresar en vector o lista
-  void primMST(int s){
-
+  //regresar arista mas larga
+  //void primMST(int s){
+  std::vector<std::pair<int, std::pair<int,int>>> primMST(int s){
+    
+    int maxx = 0;
+    int ip1,ip2;
+    
+    std::vector<std::pair<int, std::pair<int,int>>> respuesta;
+    
+    
     int V = adjList.size();
+    
     std::vector<int> key(V, INF);
     std::vector<bool> mstSet(V,false);
     std::vector<int> parent(V,-1);
@@ -129,26 +166,32 @@ public:
 
 	int v = i->first;
 	int w = i->second;
+	
 	if(!mstSet[v]&&w<key[v]){
-
 	  key[v] = w;
 	  parent[v] = u;
 	  pq.push(std::make_pair(key[v],v));
-	  
-	}
-	
-      }
-      
-    }
 
-    //print the minimum spanning tree
+	  //quedarse con el de la distancia mas grande
+	  if(maxx < key[v]){
+	    ip1 = parent[v];
+	    ip2 = v;
+	    maxx = key[v];
+	  }
+	}
+      }
+    }
+    
+    respuesta.push_back(std::make_pair(maxx,std::make_pair(ip1,ip2)));
+    
+    return respuesta;
+    //obtener la arista mas larga
+    /*
     for (int i=1; i<V;++i){
       std::cout << parent[i] << " - " << i << " : " << key[i] << std::endl;
     }
-    
+    */
   }
-  
-  
 };
 
 //CLASE IP
@@ -197,9 +240,8 @@ void quick_sort(std::vector<std::pair<std::string,int>>& arr, int izq, int der){
   if(izq < j)
     quick_sort(arr, izq, j);
   if(i < der)
-    quick_sort(arr, i, der);
+    quick_sort(arr, i, der);  
 
-  
 }
 
 // Obtener los datos que me importan
@@ -249,7 +291,9 @@ std::vector<std::string> get_data(std::string str){
 }
 
 int main() {
-    
+
+  std::cout << "Cargando la información" << std::endl;
+  
   int n;  //n
   int m;  //m
   
@@ -266,7 +310,7 @@ int main() {
 
     std::string ip;  //ip
     std::cin >> ip;
-    std::cout << ip << std::endl;
+    //std::cout << ip << std::endl;
 
     //cargar ip a unordered map "ip" - "index"
     mapa_ips[ip] = i;
@@ -306,13 +350,13 @@ int main() {
       if(j == 2){
 
 	peso = stoi(data.at(j)); //string a intero
-
+	/**
 	std::cout << "IP1: " << ip1 << std::endl;
 	//std::cout << "num raro " << ip_dec1 << std::endl;
 	std::cout << "IP2: " << ip2 << std::endl;
 	//std::cout << "num raro " << ip_dec2 << std::endl;
 	std::cout <<  "PESO: " << peso << std::endl;
-
+	**/
 	unsigned int u = mapa_ips[ip1]; //obtener el index de ip1
 	unsigned int v = mapa_ips[ip2]; //obtener el index de ip2
 	
@@ -323,7 +367,6 @@ int main() {
   }
       
   //grafo.imprimir();
-  
   std::vector<std::pair<std::string,int>> lista; //una lista para aplicar quicksort
   
   //ITERAR PARA GUARDAR EL GRADO DE SALIDA EN EL OBJETO
@@ -333,10 +376,11 @@ int main() {
     
     int rank = grafo.grado(i);
     la_ip->second.setIPRank(rank);
-    
+
+    /**
     std::cout << "IP: " << la_ip->second.getIP() <<
       " GRADO: " << la_ip->second.getIPRank() << std::endl;
-    
+    */
     lista.push_back(std::make_pair(la_ip->second.getIP(),la_ip->second.getIPRank()));
     
   }
@@ -347,7 +391,7 @@ int main() {
 
   //hacer archivo de salida
   std::ofstream output_file("gradosIPs.txt");
-
+  
   if(output_file.is_open()){
     for(const auto& pair: lista){
       output_file << pair.first << "," << pair.second << std::endl;
@@ -359,54 +403,47 @@ int main() {
 
   system("clear");
   
-  std::cout << "Posibles boot master" << std::endl;
-
-  std::vector<int> boot_ids;
-  
+  //std::vector<int> boot_ids;
   //imprimir el primero de la lista, es el de mas grados
   for(int i = 0; i < 2; i++){
-    boot_ids.push_back(i);
+
+    std::cout << "#######################################################" << std::endl;
+    //boot_ids.push_back(i);
     std::cout << "boot master: " << lista[i].first
 	      << "  Grados: " << lista[i].second << std::endl;
+    //pasar el id de los boot master
+    //std::cout << "#################" << std::endl;
+    std::cout << "Camino mas largo: " << std::endl;
+    //std::cout << lista[i].first << std::endl;
+    //std::cout << "#################" << std::endl;
+    
+    auto la_ip = ipes.find(grafo.dijkstra(i)[0].first);
+    
+    //regresa id y el peso -- buscar el maximo
+    std::cout << "IP - " << la_ip->second.getIP()
+	      << " -- "
+	      << grafo.dijkstra(i)[0].second << std::endl;
+    
+    //std::cout << "#################" << std::endl;
+    std::cout << "Arista mas larga: " << std::endl;
+    //std::cout << lista[i].first << std::endl;
+    //std::cout << "#################" << std::endl;
+    
+    //regresa id y el peso -- buscar el maximo
+    //grafo.primMST(boot_ids[0]);
+    
+    auto la_ip1 = ipes.find(grafo.primMST(i)[0].first);
+    auto la_ip2 = ipes.find(grafo.primMST(i)[0].second.first);
+    
+    std::cout << "IP1 - " << la_ip1->second.getIP()
+	      << " -##- "
+	      << " IP2 - " << la_ip2->second.getIP()
+	      << " -- " << grafo.primMST(i)[0].second.second
+	      << std::endl;
   }
 
-  //pasar el id de los boot master
-  std::cout << "#################" << std::endl;
-  std::cout << "Camino mas corto: " << std::endl;
-  std::cout << "#################" << std::endl;
-
-  //regresa id y el peso -- buscar el maximo
-  grafo.dijkstra(boot_ids[0]);
-
-  /**
-  std::vector<std::pair<std::string,int>> lista; //una lista para aplicar quicksort
+  grafo.BFS(0);
   
-  //ITERAR PARA GUARDAR EL GRADO DE SALIDA EN EL OBJETO
-  for(int i = 0; i < n; i++){
-    
-    auto la_ip = ipes.find(i);
-    
-    int rank = grafo.grado(i);
-    la_ip->second.setIPRank(rank);
-    
-    std::cout << "IP: " << la_ip->second.getIP() <<
-      " GRADO: " << la_ip->second.getIPRank() << std::endl;
-    
-    lista.push_back(std::make_pair(la_ip->second.getIP(),la_ip->second.getIPRank()));
-    
-  }
-  */
-  //std::cerr << "ANTES QUICK" << std::endl;
-  quick_sort(lista,0,lista.size() - 1);
-  
-  //exit(1);
-  
-  std::cout << "#################" << std::endl;
-  std::cout << "Arista mas larga: " << std::endl;
-  std::cout << "#################" << std::endl;
-
-  grafo.primMST(boot_ids[0]);
-
   return 0;
   
 }
