@@ -18,6 +18,7 @@ private:
   std::vector<std::vector<arista>> adjList;
 
 public:
+
   Grafo(int n){
     adjList.resize(n);
   }
@@ -25,7 +26,7 @@ public:
   void agregar(unsigned int u, unsigned int v, int w){
     adjList[u].push_back(std::make_pair(v,w));
   }
-
+  
   void imprimir(){
     for(unsigned int i = 0;i<adjList.size();i++){
       std::cout << "Lista " << i << std::endl;
@@ -41,26 +42,31 @@ public:
   }
 
   //Ver como agregar BFS
-  /***
   void BFS(int s){
-    int V = adjList.size();
-    bool *visitado = new bool[V];
 
+    int V = adjList.size();
+
+    //bool *visitado = new bool[V];
+    std::vector<bool> visitado;
+    //visitado.resize(V,false);
+    
     //inicializar en no visitados
     for (int i=0;i<V;i++)
       visitado[i] = false;
     
+    //https://www.programiz.com/cpp-programming/queue
     std::queue<int> q;
     visitado[s] = true;
     q.push(s);
     
     while(!q.empty()){
       int u = q.front();
-      std::cout << u << " ";
+      //std::cout << u << " ";
       q.pop();
-      
-      for(auto v = adjList[u].begin(); v != adjList[u].end(); ++v){
-	
+
+      for (auto i = adjList[u].begin(); i != adjList[u].end(); ++i){
+      	int v = i->first;
+		
 	if(!visitado[v]){
 	  visitado[v] = true;
 	  q.push(v);
@@ -68,8 +74,7 @@ public:
       }
     }
   }
-  **/
-  
+    
   //dijkstra
   //regresar en vector o lista
   //IP1 - IP2 - PESO
@@ -81,6 +86,7 @@ public:
 
     int max = 0;
     int id_ip = 0;
+
     pq.push(std::make_pair(0, s));
     dist[s] = 0;
 
@@ -432,6 +438,8 @@ int main() {
 	      << " -- " << grafo.primMST(i)[0].second.second
 	      << std::endl;
   }
+
+  grafo.BFS(0);
   
   return 0;
   
