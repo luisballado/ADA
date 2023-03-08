@@ -17,6 +17,7 @@ private:
   std::vector<std::vector<arista>> adjList;
 
 public:
+  
   Grafo(int n){
     adjList.resize(n);
   }
@@ -71,17 +72,19 @@ public:
   
   //dijkstra
   //regresar en vector o lista
-  void dijkstra(int src){
+  void dijkstra(int s){
+    
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> pq;
+    
     std::vector<int> dist(adjList.size(), std::numeric_limits<int>::max());
-
-    pq.push(std::make_pair(0, src));
-    dist[src] = 0;
+    
+    pq.push(std::make_pair(0, s));
+    dist[s] = 0;
 
     while(!pq.empty()){
       int u = pq.top().second;
       pq.pop();
-
+      
       for (auto it = adjList[u].begin(); it != adjList[u].end(); ++it){
 	int v = it->first;
 	int weight = it->second;
@@ -94,18 +97,16 @@ public:
     }
 
     std::cout << "Distancia Vertice\tdesde el origen\n";
-
+    
     for(int i = 0; i < adjList.size(); i++)
-      std::cout << i << "\t" << dist[i] << "\n";
-    
-    
+      std::cout << i << "\t" << dist[i] << "\n";    
   }
 
   const int INF = std::numeric_limits<int>::max(); //algo grande
   
   //PRIM ALGO
   //regresar en vector o lista
-  void primMST(int src){
+  void primMST(int s){
 
     int V = adjList.size();
     std::vector<int> key(V, INF);
@@ -114,8 +115,8 @@ public:
 
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> pq;
 
-    pq.push(std::make_pair(0,src));
-    key[src] = 0;
+    pq.push(std::make_pair(0,s));
+    key[s] = 0;
 
     while(!pq.empty()){
 
@@ -376,7 +377,8 @@ int main() {
 
   //regresa id y el peso -- buscar el maximo
   grafo.dijkstra(boot_ids[0]);
-  
+
+  /**
   std::vector<std::pair<std::string,int>> lista; //una lista para aplicar quicksort
   
   //ITERAR PARA GUARDAR EL GRADO DE SALIDA EN EL OBJETO
@@ -393,11 +395,11 @@ int main() {
     lista.push_back(std::make_pair(la_ip->second.getIP(),la_ip->second.getIPRank()));
     
   }
-
+  */
   //std::cerr << "ANTES QUICK" << std::endl;
   quick_sort(lista,0,lista.size() - 1);
   
-  exit(1);
+  //exit(1);
   
   std::cout << "#################" << std::endl;
   std::cout << "Arista mas larga: " << std::endl;
