@@ -31,11 +31,10 @@ int busquedaBinaria(int array[], int x, int low, int high) {
 }
 
 std::vector<std::string> imprimirBasura(std::string str){
-
+  
+  //vector con valores de IP1,IP2 y peso
   std::vector<std::string> datos;
-
-  //del dato de entrada poder obtener IP1, IP2, peso
-
+  
   std::string dato = "";
   
   for (auto x : str){
