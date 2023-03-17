@@ -61,14 +61,37 @@
 \end{question}
   
 %se responde aquí
-\textit{a) Para determinar si existe un camino de s $\implies$ t con las limitantes del tanque de gasolina del carro, podemos hacer uso del algoritmo de BFS; manteniendo un rastro de las ciudades visitadas y revisando cuando el costo de cada arista es menor o igual que la capacidad del tanque.\\\\ Si la corrida del algoritmo BFS logra alcanzar la ciudad destino, podemos decir que existe una ruta con la capacidad del tanque.\\\\ Comenzamos en la ciudad s y visitamos todas las ciudades adjacentes a ella que se puedan llegar con L millas, marcamos la ciudad como visitada y la agregamos a la cola, continuaremos este proceso hasta llegar a la ciudad destino o hasta que se acabe la gasolina. \\\\ La complejidad del algoritmo es \textbf{O($|$V$|$+$|$E$|$)} ya que visitamos todos los vertices y aristas una vez}\\\\
+\textit{a) Para determinar si existe un camino de s $\implies$ t con las limitantes del tanque de gasolina del carro, podemos hacer uso del algoritmo de BFS; manteniendo un rastro de las ciudades visitadas y revisando cuando el costo de cada arista es menor o igual que la capacidad del tanque.\\\\ Si la corrida del algoritmo BFS logra alcanzar la ciudad destino, podemos decir que existe una ruta con la capacidad del tanque.\\\\ Comenzamos en la ciudad s y visitamos todas las ciudades adjacentes a ella que se puedan llegar con L millas, marcamos la ciudad como visitada y la agregamos a la cola, continuaremos este proceso hasta llegar a la ciudad destino.\\\\ La complejidad del algoritmo es \textbf{O($|$V$|$+$|$E$|$)} ya que visitamos todos los vertices y aristas una vez}\\\\
 
-\textit{b) Para determinar la capacidad mínima, que necesitamos para viajar entre las ciudades de interés, podemos hacer uso de una búsqueda binaria comenzando con una mínimo de cero y una máxima distancia entre las dos ciudades en el grafo. Para así, haciendo uso de la búsqueda con las capacidades del tanque, se busca una ruta entre ciudades.\\\\ Para conocer si existe una ruta dada la capacidad del tanque, se hace uso nuevamente del algoritmo BFS, para buscar el camino más corto. \\Si existe, repetiremos la búsqueda binaria hasta encontrar la capacidad mínima que nos permita llegar de la ciudad s $implies$ t. \\\\ Dado que la búsqueda binaria corre en \textbf{O(log(v))} para cada iteración y cada iteración necesita correr el algoritmo BFS en el grafo cuyo costo es \textbf{O($|$V$|$+$|$E$|$)}, teniendo una complejidad total de \textbf{O($|$V$|$+$|$E$|$)log$|$V$|$)} }
+\textit{b) Para determinar la capacidad mínima, que necesitamos para viajar entre las ciudades de interés, podemos hacer uso de una búsqueda binaria comenzando con un mínimo de cero y una máxima distancia entre las dos ciudades en el grafo. Para así, haciendo uso de la búsqueda con las capacidades del tanque, se busca una ruta entre ciudades.\\\\ Para conocer si existe una ruta dada la capacidad del tanque, se hace uso nuevamente del algoritmo BFS. \\Si existe, repetiremos la búsqueda binaria hasta encontrar la capacidad mínima que nos permita llegar de la ciudad s $implies$ t. \\\\ Dado que la búsqueda binaria corre en \textbf{O(log(v))} para cada iteración y cada iteración necesita correr el algoritmo BFS en el grafo cuyo costo es \textbf{O($|$V$|$+$|$E$|$)}, teniendo una complejidad total de \textbf{O($|$V$|$+$|$E$|$)log$|$V$|$)} }
 
+\subsection{Análisis Matemático}
+
+Análisis de entrada para cada iteración de la búsqueda binaria:\\
+Primera iteración : $n$\\
+Segunda iteración : $\frac{n}{2}$\\
+Tercera iteración : $\frac{\frac{n}{2}}{2} = \frac{n}{2^{2}}$
+Iteración n : $\frac{n}{2^{k}}$, \\
+sabemos que después de n iteraciones no se necesita hacer alguna comparación $\frac{n}{2^{k}} = 1 \implies n = 2^{k}$ Aplicando log en ambos lados: \\
+$log_{2}(n) = log_{2}(2^{k})$\\
+$log_{2}(n) = k*log_{2}(2) \implies k = log_{2}(n)$ \\\\
+
+Análisis de BFS:\\
+
+Cada vértice vecino se inserta a la cola si no ha sido visitado. Esto se hace con las aristas adjacentes al vértice. Cada vértice visitado se marca como visitado, por lo tanto, cada vértice se visita una sola vez y se verifican todas las aristas adjacentes al vértice. Haciendo que su complejidad sea: $O(|V|+|E|)$
 
 \subsection{Implementación y corridas}
 
 \href{https://github.com/luisballado/ADA/tree/main/practice_code/tarea5/car_highways}{ver código en github}\\
+
+\begin{figure}[h]
+  \includegraphics[scale=0.5]{grafo.png}
+  \centering
+\end{figure}
+
+Partiendo del siguiente grafo propuesto, dónde nuestra ciudad de origen es Tampico (soy de Tampico) y nuestra ciudad destino es Monclova. Cada arista representa aproximadamente la distancia en kilometros de ciudad a ciudad.\\
+Nuestro grafo cuenta con 13 vértices, y 20 aristas y queremos saber si existe una ruta de Tampico (Vértice 0) a Monclova (Vértice 1).\\\\
+La representación del grafo se presenta en el archivo \href{https://github.com/luisballado/ADA/blob/main/practice_code/tarea5/currency_trading/data.txt}{data.txt}\\
 
 Ejecutar desde una terminal\\\\
 
@@ -84,10 +107,22 @@ El archivo data.txt contiene los datos de
 \begin{verbatim}
   $ g++ -std=c++11 cars_highways.cpp -o cars_highways
   $ ./cars_highways < data.txt
-  Existe una ruta de la ciudad 0 a la ciudad 4
-  La capacidad minima del tanque para viajar de la ciudad 0 a la ciudad 4 es 8
+  Existe una ruta de la ciudad 0 a la ciudad 1
+  Considerar un tanque que cubra 208 km para viajar de la ciudad 0 a la ciudad 1
 \end{verbatim}
 \end{commandline}
+
+Si forzamos los datos desconectando a Cd. Victoria del grafo en la arista Tampico-Cd.Victoria, forzaremos que la ruta sea vía Matamoros convirtiendose ese tramo en el mas costoso que debe ser considerado para la adquisición del nuevo auto. \href{https://github.com/luisballado/ADA/blob/main/practice_code/tarea5/currency_trading/data.txt}{data2.txt}\\
+
+\begin{commandline}
+\begin{verbatim}
+  $ g++ -std=c++11 cars_highways.cpp -o cars_highways
+  $ ./cars_highways < data2.txt
+  Existe una ruta de la ciudad 0 a la ciudad 1
+  Considerar un tanque que cubra 407 km para viajar de la ciudad 0 a la ciudad 1
+\end{verbatim}
+\end{commandline}
+
 
 \newpage
 \section{Diseñe e implemente un algoritmo que permita resolver eficientemente el inciso (a) del problema 4.21 de la página 130 del libro de Dasgupta, Papadimitriou y Vazirani. Analice matemáticamente la complejidad temporal de su algoritmo.}
@@ -101,6 +136,18 @@ El archivo data.txt contiene los datos de
 
 \textit{Podemos resolver el problema haciendo uso del algoritmo de Dijkstra, encontrando el camino más corto en un grafo con pesos. Representando las divisas como los nodos del grafo y las tasas de cambio como aristas con pesos. Especificamente para cada par de divisas $c_{i}$ y $c_{j}$, podemos crear una arista de $c_{i}$ a $c_{j}$ con un peso de $-log(r_{i},j)$, se hace uso del algoritmo negativo ya que la tasa de intercambio satisface la condición de $r_{i,j}*r_{j,i} < 1$\\\\ La idea es transformar las tasas de intercambio en retornos logarítmicos. Esta propiedad es de ayuda, ya que nos permite hacer uso de algoritmos para encontrar el camino más corto (Dijkstra) y así encontrar el camino con mejores ganancias. \\ Con los pesos de las aristas representados como logaritmos negativos convirtiendo el problema con pesos no negativos, de esta forma es posible hacer uso del algoritmo de Dijkstra, de otra forma se usaria el algoritmo de Bellman Ford para aristas negativas.\\\\ La complejidad es \textbf{O($|$E$|$+$|$V$|$log$|$V$|$)}, hay que señalar que a raíz de que hacemos uso de logaritmos, necesitamos tener cuidado con aristas que sean cercanas a cero.}
 
+\subsection{Análisis matemático}
+
+Dado el grafo representado como una lista de adjacencia y una cola de prioridad, se calcula su complejidad:
+
+\begin{enumerate}
+\item Tomará $O(|V|)$ inicializar la cola de prioridad dados $|V|$ vértices.
+\item Con la representación del grafo como lista de adjacencia, todos los vértices del grafo se pueden recorrer usando BFS. Ya que se itera sobre todos los vértices vecinos, actualizando su distancia. Esto toma $O(|E|)$
+\item El tiempo para cada iteración es $O(|V|)$, ya que los vértices son removidos de la cola en cada ciclo.
+\item La cola de prioridad nos permite extraer el nodo con minima distancia. Esto toma $O(log(|V|))$
+\item Su complejidad está dada por $O(|V|)+O(|E|*log|V|)+O(|V|*log|V|) \implies O((|E|+|V|)*log|V|) = O(|E|*log|V|)$, dado que $|E|>= |V| - 1$.
+\end{enumerate}
+\newpage
 \subsection{Implementación}
 \href{https://github.com/luisballado/ADA/tree/main/practice_code/tarea5/currency_trading}{ver código en github}\\
 
@@ -124,9 +171,14 @@ El archivo data.txt contiene los datos de
 
 \newpage
 \section{Referencias}
+Dijkstra Complexity - \url{https://www.baeldung.com/cs/dijkstra-time-complexity}\\\\
+Bellman-Ford to Find Arbitrage Condition in Forex Trading - \url{https://informatika.stei.itb.ac.id/~rinaldi.munir/Matdis/2019-2020/Makalah2019/13518058.pdf}\\\\
+C++ Currency Arbitrage Bellman-Ford- \url{https://cppsecrets.com/users/166319711511599105105995564103109971051084699111109/C00-Currency-Arbitrage.php}\\\\
+Búsqueda Binaria - \url{https://www.tutorialspoint.com/data_structures_algorithms/binary_search_algorithm.htm}\\\\
+Búsqueda Binaria - \url{https://medium.com/@Emmitta/b%C3%BAsqueda-binaria-c6187323cd72}\\\\
 Rate of return - \url{https://en.wikipedia.org/wiki/Rate_of_return}\\\\
 Returns and Log Returns - \url{https://gregorygundersen.com/blog/2022/02/06/log-returns}\\\\
-The Breadth-first search algorithm - \url{https://wwww.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/the-breadth-first-search-algorithm}\\\\
+Analysis of breadth-first search algorithm - \url{https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/analysis-of-breadth-first-search}\\\\
 COMPSCI 311: Introduction to Algorithms - \\\url{https://people.cs.umass.edu/~marius/class/cs311-fa18/lec15-nup.pdf}\\\\
 Arbitrage as a Shortest-Path Problem - \\\url{https://hackernoon.com/arbitrage-as-a-shortest-path-problem-u2l34ow}\\\\
 Currency Arbitrage using Bellman Ford Algorithm - \\\url{https://anilpai.medium.com/currency-arbitrage-using-bellman-ford-algorithm-8938dcea56ea}\\\\

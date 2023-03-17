@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 
-const double INF = std::numeric_limits<double>::infinity();
+double INF = std::numeric_limits<double>::infinity();
 
 //Dijkstra para encontrar el camino más corto
 void dijkstra(const std::vector<std::vector<double> >& graph, int start, std::vector<double>& costo){
@@ -14,6 +14,7 @@ void dijkstra(const std::vector<std::vector<double> >& graph, int start, std::ve
 
   costo[start] = 0.0;
 
+  //cola de prioridad
   std::priority_queue<std::pair<double,int>,std::vector<std::pair<double,int> >, std::greater<std::pair<double, int> > > pq;
 
   pq.push(std::make_pair(costo[start], start));
@@ -61,7 +62,9 @@ int main(){
   std::cin >> s >> t;
   
   std::vector<double> costo(n, INF);
+  
   dijkstra(graph,s,costo);
+
   double result = exp(-costo[t]);
 
   std::cout << "El intercambio de " << s << " a " << t << " es " << result << std::endl;

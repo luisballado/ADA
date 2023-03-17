@@ -5,10 +5,9 @@
 #include <vector>
 #include <limits>
 
-const int INF = std::numeric_limits<int>::max();
-
 typedef std::pair<int, int> arista;
 
+// globales
 std::vector<std::vector<arista> > adj_lista;
 std::vector<int> visitado; //ciudades visitadas
 
@@ -41,6 +40,7 @@ bool bfs(int s, int t, int L){
 }
 
 //Busqueda binaria para encontrar el tanque minimo para viajar de s a t
+//https://www.tutorialspoint.com/data_structures_algorithms/binary_search_algorithm.htm
 int busqueda_binaria(int c_inicio, int c_destino, int max_distancia){
   int min = 0;
   int max = max_distancia;
@@ -48,6 +48,7 @@ int busqueda_binaria(int c_inicio, int c_destino, int max_distancia){
   while (min < max){
 
     int mid = min + (max - min) / 2;
+    
     visitado.assign(adj_lista.size(),false); //remplazamos la lista a todos false
     
     if (bfs(c_inicio,c_destino,mid)){
@@ -91,10 +92,13 @@ int main(){
   std::cin >> ciudad_inicio >> ciudad_destino;
   
   //(a) Given the limitation on your car’s fuel tank capacity, show how to determine in linear time whether there is a feasible route from s to t.
-  visitado.assign(num_ciudades,false); //vector de visitados - falso
+  visitado.assign(num_ciudades,false); //vector de visitados - setear en falso con la cardinalidad de ciudades
 
-  //usar bfs solo para conocer si existe un camino que conecte
+  //usar bfs para conocer si existe un camino que conecte las ciudades
   //ciudad inicio a ciudad destino
+  
+  int INF = std::numeric_limits<int>::max(); //mandaremos un num muy grande
+  
   if(bfs(ciudad_inicio,ciudad_destino,INF)){
     std::cout << "Existe una ruta de la ciudad " << ciudad_inicio
 	      << " a la ciudad " << ciudad_destino << std::endl;
@@ -106,10 +110,10 @@ int main(){
   //(b) You are now planning to buy a new car, and you want to know the minimum fuel tank capacity that is needed to travel from s to t. Give an O((|V | + |E|) log |V |) algorithm to determine this.
   int tanque_gas = busqueda_binaria(ciudad_inicio, ciudad_destino, max_distancia);
 
-  std::cout << "La capacidad minima del tanque para viajar de la ciudad "
+  std::cout << "Considerar un tanque que cubra " << tanque_gas << " km para viajar de la ciudad "
 	    << ciudad_inicio
 	    << " a la ciudad " << ciudad_destino
-	    << " es de: " << tanque_gas << std::endl;
+	    << std::endl;
   
   return 0;
   
