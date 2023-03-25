@@ -12,7 +12,7 @@ nx.draw(G, pos, with_labels=True)
 plt.show()
 """
 
-G = nx.grid_2d_graph(1000,1000)
+G = nx.grid_2d_graph(100,100)
 pos = {(i,j): np.array([i,j]) for i in range(1000) for j in range(1000)}
 nx.draw(G, pos, with_labels=True)
 
