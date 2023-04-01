@@ -5,10 +5,12 @@ import sys
 import networkx as nx
 
 fileName = sys.argv[1]
+
 n = int(sys.argv[2])
 m = int(sys.argv[3])
 
 G = nx.grid_2d_graph(n,m)
+
 W = nx.convert_node_labels_to_integers(G)
 
 #open file
