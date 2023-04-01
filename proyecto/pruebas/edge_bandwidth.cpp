@@ -1,7 +1,13 @@
 /****
-This implementation first reads in the input and builds the adjacency list and edge list of the graph. It then sorts the edges in ascending order of their degrees, and assigns labels to each edge in the sorted order. Finally, it computes the maximum label difference between adjacent edges to obtain the edge bandwidth of the graph.
+This implementation first reads in the input and builds the adjacency list and edge list of the graph. 
+It then sorts the edges in ascending order of their degrees, 
+and assigns labels to each edge in the sorted order. 
 
-Note that the greedy algorithm may not always produce an optimal solution, but it is often faster than other algorithms that guarantee optimality 
+Finally, it computes the maximum label difference between adjacent edges to obtain 
+the edge bandwidth of the graph.
+
+Note that the greedy algorithm may not always produce an optimal solution, 
+but it is often faster than other algorithms that guarantee optimality 
 ****/
 
 #include <iostream>
