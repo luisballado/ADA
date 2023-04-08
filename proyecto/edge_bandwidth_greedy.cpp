@@ -22,7 +22,13 @@ int main() {
   std::cin >> n >> m;
   
   std::vector<std::vector<int>> grafo(n);
+
+  //cada arista tendra su etiqueta
+  //vector solucion
   std::vector<int> bandwidth(m, 0);
+
+  //lista de aristas
+  std::vector<std::pair<int, int>> lista_aristas;
   
   //Crear grafo
   for (int i = 0; i < m; i++) {
@@ -41,11 +47,22 @@ int main() {
     }
     std::cout << std::endl;
   }
+
+  //crear lista de aristas
+  for(int i = 0; i < grafo.size(); i++){
+    for(int j = 0; j < grafo[i].size(); j++){
+      if(i<grafo[i][j]){
+	lista_aristas.push_back(std::make_pair(i, grafo[i][j])); //agregar
+	
+      }
+    }
+  }
   
   // Ordenar vertices por grado en orden descendente (el de mayor grado primero)
   // https://www.digitalocean.com/community/tutorials/sort-in-c-plus-plus
+  //size, nodo
   std::vector<std::pair<int, int>> grados;
-
+  
   for (int i = 0; i < n; i++) {
     grados.push_back(std::make_pair(grafo[i].size(), i));
   }
@@ -54,16 +71,21 @@ int main() {
   // https://www.geeksforgeeks.org/vector-rbegin-and-rend-function-in-c-stl/
   sort(grados.rbegin(), grados.rend());
 
+  //imprimir nodo-grado
   for (int i = 0; i < grados.size(); i++){
     std::cout << "NODO: " << grados[i].second
 	      << " GRADO:" << grados[i].first << std::endl;
-  }
+  };
 
-  exit(1);
+  //imprimir lista_aristas
+  for (int i = 0; i < lista_aristas.size(); i++){
+    std::cout << "NODO: " << i << "ARISTA" << lista_aristas[i].first
+	      << "," << lista_aristas[i].second << std::endl;
+  };
   
-  // Asignar bandwidth a aristas en orden de aparicion
   int max_bandwidth = 0;
   
+  // Asignar bandwidth a aristas en orden de aparicion
   // para cada vertice
   for (int i = 0; i < n; i++) {
     int u = grados[i].second; // tomo el vertice 2
@@ -72,7 +94,7 @@ int main() {
     for (int j = 0; j < grafo[u].size(); j++) {
       
       int v = grafo[u][j];
-      std::cout << v << std::endl;
+      //std::cout << v << std::endl;
       if (bandwidth[v] == 0) {
 	bandwidth[v] = ++max_bandwidth;
 	// Calcular bandwidth de arista (u,v)
@@ -80,6 +102,14 @@ int main() {
 	max_bandwidth = std::max(max_bandwidth, edge_bandwidth);
       }
       
+    }
+  }
+
+  //print bandwidths of each edge
+  for(int u=1; u<n; u++){
+    for(int j=0;j<grafo[u].size();j++){
+      int v = grafo[u][j];
+      std::cout << u << " " << v << abs(bandwidth[u] - bandwidth[v]) << std::endl;
     }
   }
   
