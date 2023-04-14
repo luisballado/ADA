@@ -178,27 +178,21 @@ int main(int argc, char* argv[]) {
   }
   */
 
-  std::vector<std::pair<int,int>> pares;
   std::pair<int, int> pivote;
 
-  int pp1 = -1;
-  int pp2 = -1;
+  std::cout << "PIVOTE__START" << std::endl;
   
   for(int i=0; i<n; i++){
     for(int j=0; j<grafo[i].size(); j++){
-
+      
       //el primer par es pivote
       pivote = std::make_pair(i, grafo[i][j]);
 
-      
-      
       //iterar dentro del vector y formar nuevos pares
       for(int k=j+1;k<grafo[i].size();k++){
-	std::cout << pivote.first << "," << pivote.second << " - ";
+	std::cout << "(" <<  pivote.first << "," << pivote.second << ") - (";
 	//nuevo par
-	std::cout << i << "," << grafo[i][k] << std::endl;
-	//exit(-1);
-	
+	std::cout << i << "," << grafo[i][k] << ")" << std::endl;
       }
     }
   }
