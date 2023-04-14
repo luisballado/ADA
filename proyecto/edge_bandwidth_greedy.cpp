@@ -77,11 +77,15 @@ int main(int argc, char* argv[]) {
     grafo[v].push_back(u);
 
     if(u<v){
-      //lista_aristas.insert(std::make_pair(std::make_pair(u,v),i+1));
+      //lista_aristas.insert(std::make_pair(std::make_pair(u,v),0));
       lista_aristas.push_back(std::make_pair(u,v)); //agregar
-      bandwidth[i] = i+1;
+      
     }
     
+  }
+
+  for(int i=0;i<lista_aristas.size();i++){
+    bandwidth[i] = i+1;
   }
   
   //imprimir lista de adj
@@ -137,23 +141,37 @@ int main(int argc, char* argv[]) {
 	      << "," << lista_aristas[i].second << std::endl;
   };
 
-  for (int i = 0; i < bandwidth.size(); i++){
-    std::cout << lista_aristas[i].first << "," << lista_aristas[i].second
-	      << " PESO:" << bandwidth[i] << std::endl;
+  std::cout << "############################" << std::endl;
+  std::cout << "LISTA-ARISTA CON PESOS" << std::endl;
+  
+  for (int i = 0; i < lista_aristas.size(); i++){
+    std::cout << lista_aristas[i].first << "," << lista_aristas[i].second << " "
+	      << "PESO: " << bandwidth[i] << std::endl;
   };
   
+  
   //lista de aristas map
-  /***
+  /**
   for (auto const& arista : lista_aristas) {
     std::cout << "arista: (" << arista.first.first << ", " << arista.first.second << ")";
     std::cout << " peso: " << arista.second << std::endl;
   }
   **/
-  
-  int max_bandwidth = 0;
+
+  //vector max bandwidth
+  std::vector<int> max_bandwidth;
+
+  for(int i = 0; i < grafo.size(); i++){
+    std::cout << "NODO " << i << " --> [";
+    for(int j = 0; j < grafo[i].size(); j++){
+      std::cout << grafo[i][j] << " ";
+    }
+    std::cout << "]" << std::endl;
+  }
   
   // Asignar bandwidth a aristas en orden de aparicion
   // para cada vertice
+  /*****
   for (int i = 0; i < n; i++) {
     int u = grados[i].second; // tomo el vertice 2
     
@@ -169,18 +187,20 @@ int main(int argc, char* argv[]) {
       }
     }
   }
-  
+  ***/
 
   //print bandwidths of each edge
+  /***
   for(int u=1; u<n; u++){
     for(int j=0;j<grafo[u].size();j++){
       int v = grafo[u][j];
       std::cout << u << " " << v << abs(bandwidth[u] - bandwidth[v]) << std::endl;
     }
   }
+  **/
   
   // Imprimir resultado
-  std::cout << max_bandwidth << std::endl;
+  //std::cout << max_bandwidth << std::endl;
     
   return 0;
 }
