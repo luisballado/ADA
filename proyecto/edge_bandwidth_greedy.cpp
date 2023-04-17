@@ -45,8 +45,12 @@ int main(int argc, char* argv[]) {
   
     // recorrer entrada para leer banderas
     for(int i = 1; i < argc; i++){
-      if(std::string(argv[i]) == " -solucion" && i + 1 < argc)
+      if(std::string(argv[i]) == " -solucion" && i + 1 < argc){
 	solucion = argv[i+1];
+
+	//TODO SWITH entre soluciones
+	
+      }
     }
   }
   
@@ -179,7 +183,7 @@ int main(int argc, char* argv[]) {
   */
 
   std::pair<int, int> pivote;
-
+  std::pair<int, int> pivote2;
   std::cout << "PIVOTE__START" << std::endl;
   
   for(int i=0; i<n; i++){
@@ -187,10 +191,15 @@ int main(int argc, char* argv[]) {
       
       //el primer par es pivote
       pivote = std::make_pair(i, grafo[i][j]);
-
+      pivote2 = std::make_pair(grafo[i][j],i);
       //iterar dentro del vector y formar nuevos pares
       for(int k=j+1;k<grafo[i].size();k++){
-	std::cout << "(" <<  pivote.first << "," << pivote.second << ") - (";
+	if(map_lista_aristas[pivote] == 0){
+	  std::cout << "(" <<  pivote.first << "," << pivote.second << ":" << map_lista_aristas[pivote2] << ") - (";
+	}else{
+	  std::cout << "(" <<  pivote.first << "," << pivote.second << ":" << map_lista_aristas[pivote] << ") - (";
+	}
+	
 	//nuevo par
 	std::cout << i << "," << grafo[i][k] << ")" << std::endl;
       }
