@@ -74,6 +74,7 @@ int main(int argc, char* argv[]) {
     int u, v;
     std::cin >> u >> v;
     u--, v--; // vertices 0-index
+    //lista adyacencia
     grafo[u].push_back(v);
     grafo[v].push_back(u);
 
@@ -85,6 +86,13 @@ int main(int argc, char* argv[]) {
     }
   }
 
+  //TODO: EL VECTOR NUNCA CAMBIA SOLO EL ETIQUETADO
+  //VECTOR DE PARES DE ARISTAS VECINAS
+  //(U,V) , (U,W)
+  //PARA ASI NADAMAS BARRER LA LISTA DE LOS PARES POSIBLES
+  //OBJETO QUE TENGA ARISTA A, ARISTA B  ... NUMEROS ENFUNCION DE LISTA DE ARISTAS
+  
+  //etiquetado 1,2,3,4... canonico
   for(int i=0;i<lista_aristas.size();i++){
     bandwidth[i] = i+1;
   }
@@ -160,14 +168,26 @@ int main(int argc, char* argv[]) {
     for(int j=0; j<grafo[i].size(); j++){
       
       //el primer par es pivote
-      aux_pivote = std::make_pair(i, grafo[i][j]);
-      aux_pivote2 = std::make_pair(grafo[i][j],i);
+      //****REVISAR
+      if(grafo[i][j]>i){
+	aux_pivote2 = std::make_pair(i,grafo[i][j]);
+      }else{
+	aux_pivote2 = std::make_pair(grafo[i][j],i);
+      }
+      
+      //aux_pivote = std::make_pair(i, grafo[i][j]);
+      //aux_pivote2 = std::make_pair(grafo[i][j],i);
       int val1,val2;
       int max_bw;
       //iterar dentro del vector y formar nuevos pares
       for(int k=j+1;k<grafo[i].size();k++){
+	//evitarlo
+	
 	if(map_lista_aristas[aux_pivote] == 0){
 	  std::cout << "(" <<  aux_pivote.first << "," << aux_pivote.second << ">>" << bandwidth[map_lista_aristas[aux_pivote2]] << ") - (";
+	  //cambiar nombre a nabla
+	  //recibir como parametro
+	  //cambiar funcion, para hacer general de manera de cambiar el etiquetado para que regrese el costo
 	  val1 = bandwidth[map_lista_aristas[aux_pivote2]];
 	}else{
 	  std::cout << "(" <<  aux_pivote.first << "," << aux_pivote.second << ">>" << bandwidth[map_lista_aristas[aux_pivote]] << ") - (";
