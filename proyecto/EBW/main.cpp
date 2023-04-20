@@ -15,9 +15,10 @@ int main(){
   g.loadGraph(inputInfo); //cargar elementos a grafo
   g.print_graph(); //imprimir grafo
   g.print_edges(); //imprimir etiquetas ¿?
-  g.random_label(); //imprimir grafo
+  //g.random_label(); //imprimir grafo
   g.sequential_label(); //imprimir grafo
-  g.greedy_label(); //imprimir grafo
+
+  //g.greedy_label(); //imprimir grafo
 
   g.evaluate(); //imprimir grafo
   

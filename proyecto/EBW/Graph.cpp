@@ -142,11 +142,27 @@ void Graph::print_graph(){
 }
 
 void Graph::random_label(){
+  std::cout << "-------------------------" << std::endl;
   std::cout << "RANDOM LABEL" << std::endl;
+  std::cout << "-------------------------" << std::endl;
+
+  for(int i=0;i<lista_aristas.size();i++){
+    bandwidth[i] = rand() % lista_aristas.size() + 1;
+  }
+  
+  for (int i = 0; i < lista_aristas.size(); i++){
+    std::cout << "ARISTA: "
+	      << lista_aristas[i].first << "," << lista_aristas[i].second
+	      << " PESO: " << bandwidth[i] << std::endl;
+  };
+  std::cout << "-------------------------" << std::endl;
+  
 }
 
 void Graph::sequential_label(){
+  std::cout << "-------------------------" << std::endl;
   std::cout << "SEQUENTIAL LABEL" << std::endl;
+  std::cout << "-------------------------" << std::endl;
 
   for(int i=0;i<lista_aristas.size();i++){
     bandwidth[i] = i+1;
@@ -157,12 +173,74 @@ void Graph::sequential_label(){
 	      << lista_aristas[i].first << "," << lista_aristas[i].second
 	      << " PESO: " << bandwidth[i] << std::endl;
   };
+  std::cout << "-------------------------" << std::endl;
 }
 
 void Graph::greedy_label(){
+  std::cout << "-------------------------" << std::endl;
   std::cout << "GREEDy LABEL" << std::endl;
+  std::cout << "-------------------------" << std::endl;
+  for(int nodeU = 1; nodeU <= numNodes; nodeU++){
+    //for (int i = 0; i < numNodes; i++) {
+    grados.push_back(std::make_pair(adjList[nodeU].size(), nodeU));
+  }
+  
+  // reverse vector nlog(n)
+  // https://www.geeksforgeeks.org/vector-rbegin-and-rend-function-in-c-stl/
+  sort(grados.rbegin(), grados.rend());
+
+  std::cout << "NODO-GRADO" << std::endl;
+  std::cout << "-------------------------" << std::endl;
+  //imprimir nodo-grado
+  for (int i = 0; i < grados.size(); i++){
+    std::cout << "NODO: " << grados[i].second
+	      << " GRADO:" << grados[i].first << std::endl;
+  }
+  
 }
 
 void Graph::evaluate(){
   std::cout << "EVALuATE" << std::endl;
+  
+  for(int i=0; i<numNodes; i++){
+    for(int j=0; j<adjList[i].size(); j++){
+      
+      //el primer par es pivote
+      aux_pivote = std::make_pair(i, adjList[i][j]);
+      aux_pivote2 = std::make_pair(adjList[i][j],i);
+      int val1,val2;
+      int max_bw;
+      //iterar dentro del vector y formar nuevos pares
+      for(int k=j+1;k<adjList[i].size();k++){
+	if(map_lista_aristas[aux_pivote] == 0){
+	  std::cout << "(" <<  aux_pivote.first << "," << aux_pivote.second << ">>" << bandwidth[map_lista_aristas[aux_pivote2]] << ") - (";
+	  val1 = bandwidth[map_lista_aristas[aux_pivote2]];
+	}else{
+	  std::cout << "(" <<  aux_pivote.first << "," << aux_pivote.second << ">>" << bandwidth[map_lista_aristas[aux_pivote]] << ") - (";
+	  val1 = bandwidth[map_lista_aristas[aux_pivote]];
+	}
+	
+	//nuevo par
+	aux2_pivote = std::make_pair(i, adjList[i][k]);
+	aux2_pivote2 = std::make_pair(adjList[i][k],i);
+	if(map_lista_aristas[aux2_pivote] == 0){
+	  std::cout << i << "," << adjList[i][k] << ">>" << bandwidth[map_lista_aristas[aux2_pivote2]]  << ")";
+	  val2 = bandwidth[map_lista_aristas[aux2_pivote2]];
+	}else{
+	  std::cout << i << "," << adjList[i][k] << ">>" << bandwidth[map_lista_aristas[aux2_pivote]] << ")";
+	  val2 = bandwidth[map_lista_aristas[aux2_pivote]];
+	}
+	max_bw = abs(val1-val2);
+	max_bandwidth.push_back(max_bw);
+	std::cout << "=" << max_bw << std::endl;
+      }
+    }
+  }
+  
+  //https://www.geeksforgeeks.org/how-to-find-the-maximum-element-of-a-vector-using-stl-in-c/
+  std::cout << "\nMAX BANDWIDTH:"
+	    << *std::max_element(max_bandwidth.begin(), max_bandwidth.end())
+	    << std::endl;
+
+  
 }
