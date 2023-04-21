@@ -65,6 +65,7 @@ void Graph::loadGraph(std::istream &input){
 		<< std::endl;
       ***/
 
+      //resize respecto al size de numNodes
       adjList.resize(numNodes+1);
       bandwidth.resize(numEdges);
       
@@ -73,6 +74,7 @@ void Graph::loadGraph(std::istream &input){
     }
 
     std::vector<int> result;
+    
     try{
       split(line,result);
     }catch(const std::invalid_argument& ia){
@@ -88,17 +90,20 @@ void Graph::loadGraph(std::istream &input){
     
     int nodoU = result[0];
     int nodoV = result[1];
-
-    /**
-    std::cout << "nodoU: " << nodoU << "nodoV: " << nodoV<< std::endl;
-    **/
     
+    std::cout << "nodoU: " << nodoU << "nodoV: " << nodoV<< std::endl;
+        
     adjList[nodoU].push_back(nodoV);
     adjList[nodoV].push_back(nodoU);
 
+    //nodos unicos
     if(nodoU<nodoV){
       map_lista_aristas.insert(std::make_pair(std::make_pair(nodoU,nodoV),i));
+      //lista de aristas unicas
       lista_aristas.push_back(std::make_pair(nodoU,nodoV));
+      //crear lista de pares de aristas
+      //vector de pares (int-int)
+      
     }
     
     //Crear aqui tambien lista de aristas
@@ -112,12 +117,18 @@ void Graph::print_edges(){
   std::cout << "-------------------------" << std::endl;
   std::cout << "EDGES" << std::endl;
   std::cout << "-------------------------" << std::endl;
-  
+  /**
   for (int i = 0; i < lista_aristas.size(); i++){
     std::cout << i+1 << " :" << lista_aristas[i].first
 	      << "," << lista_aristas[i].second << std::endl;
   };
-
+  **/
+  for (int i = 0; i < lista_aristas.size(); i++){
+    std::cout << "ARISTA: "
+	      << lista_aristas[i].first << "," << lista_aristas[i].second
+	      << " PESO: " << bandwidth[i] << std::endl;
+  };
+  
   std::cout << "-------------------------" << std::endl;
 }
 
@@ -164,6 +175,9 @@ void Graph::sequential_label(){
   std::cout << "SEQUENTIAL LABEL" << std::endl;
   std::cout << "-------------------------" << std::endl;
 
+  //TODO
+  //este es el etiquetado
+  //dejar dentro de la clase
   for(int i=0;i<lista_aristas.size();i++){
     bandwidth[i] = i+1;
   }
@@ -196,11 +210,11 @@ void Graph::greedy_label(){
     std::cout << "NODO: " << grados[i].second
 	      << " GRADO:" << grados[i].first << std::endl;
   }
-  
 }
 
 void Graph::evaluate(){
-  std::cout << "EVALuATE" << std::endl;
+  
+  std::cout << "EVALUATE" << std::endl;
   
   for(int i=0; i<numNodes; i++){
     for(int j=0; j<adjList[i].size(); j++){

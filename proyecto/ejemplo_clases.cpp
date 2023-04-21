@@ -32,18 +32,16 @@ public:
 int main(){
 
   BankAccount account1("Luis",10000000);
-  //account1.movimientos.push_back(1);
-  //account1.movimientos.push_back(7);
-
-  /**
-  for(int mov : account1.movimientos){
-    cout << mov << endl;
-  }
-  **/
+  account1.movimientos.push_back(1);
+  account1.movimientos.push_back(7);
   
   account1.print();
   account1.withdraw(10);
   account1.print();
+
+  for(int mov : account1.movimientos){
+    cout << mov << endl;
+  }
   
   return 0;
 }
