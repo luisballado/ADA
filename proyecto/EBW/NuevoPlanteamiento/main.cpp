@@ -15,9 +15,9 @@ int main(){
   g.print_graph(); //imprimir
   g.print_edges();
   g.sequential_label(); //etiquetar de forma sequencial
-  g.evaluate();
+  //g.evaluate();
   g.random_label(); //etiquetar de forma random
-  g.evaluate();
+  //g.evaluate();
 
   return 0;
   

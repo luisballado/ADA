@@ -9,9 +9,9 @@ Graph::Graph(){
   numNodes = 0;
   numEdges = 0;
   adjList.clear();
-  map_lista_aristas.clear();
+  map_aristas.clear();
   lista_aristas.clear();
-  bandwidth.clear();
+  peso_arista.clear();
 }
 
 //tipo garbage collector
@@ -19,9 +19,9 @@ Graph::~Graph(){
   numNodes = 0;
   numEdges = 0;
   adjList.clear();
-  map_lista_aristas.clear();
+  map_aristas.clear();
   lista_aristas.clear();
-  bandwidth.clear();
+  peso_arista.clear();
 }
 
 void Graph::split(std::string line, std::vector<int> & res){
@@ -64,9 +64,9 @@ void Graph::loadGraph(std::istream &input){
       numEdges = result[1];
 
       //resize respecto al size de numNodes
-      //por ser 0 based se agrega uno
       adjList.resize(numNodes+1);
       bandwidth.resize(numEdges);
+      peso_arista.resize(numEdges);
       
       i++;
       continue;
@@ -98,45 +98,56 @@ void Graph::loadGraph(std::istream &input){
     int nodoU = result[0];
     int nodoV = result[1];
     
-    std::cout << "nodoU: " << nodoU << "nodoV: " << nodoV<< std::endl;
+    //std::cout << "nodoU: " << nodoU << "nodoV: " << nodoV<< std::endl;
         
     adjList[nodoU].push_back(nodoV);
     adjList[nodoV].push_back(nodoU);
 
     //nodos unicos
     if(nodoU<nodoV){
-      map_lista_aristas.insert(std::make_pair(std::make_pair(nodoU,nodoV),i));
-      //lista de aristas unicas
-      lista_aristas.push_back(std::make_pair(nodoU,nodoV));
+      //map aristas nodoU,nodoV,index
+      map_aristas.insert(std::make_pair(std::make_pair(nodoU,nodoV),i-2));
+      
       //crear lista de pares de aristas
       //vector de pares (int-int)
       
     }
     
     //Crear aqui tambien lista de aristas
-    
-    
+
     i++;
+    
   }
-
-  std::vector<std::pair<int, int>> edges; // list of edges
-
-  std::pair<int,int> par1;
-  std::pair<int,int> par2;
-
-  std::vector<std::pair<std::pair<int,int>,std::pair<int,int>>> edge_pairs;
   
+  
+  
+  //std::cout << lista_aristas[0].first << "," << lista_aristas[0].second << std::endl;
+  //std::cout << lista_aristas[1].first << "," << lista_aristas[1].second << std::endl;
+  
+  //std::cout << adjList.size()  << std::endl;
+   
   // loop over each vertex and its neighbors
   for (int i = 0; i < adjList.size(); i++) {
     for (int j = 0; j < adjList[i].size(); j++) {
-      // add edge (v, u) to the list of edges
-      int u = i;
+      
       int v = adjList[i][j];
-      if(u<v)
-	edge_pairs.push_back(std::make_pair(std::make_pair(u,v),std::make_pair(v,u)));
+            
+      for(int k=0; k< adjList[v].size();k++){
+	int w = adjList[v][k];
+	if(w<i){
+	  //if(i<w){
+	  edge_pairs.push_back(std::make_pair(std::make_pair(v,w),std::make_pair(v,i)));
+	  std::cout << "i - " << i << std::endl;
+	  std::cout << "v - " << v << std::endl;
+	  std::cout << "w - " << w << std::endl;
+	  //edge_pairs.push_back(std::make_pair(std::make_pair(v,w),std::make_pair(v,i)));
+	}
+      }
     }
   }
-  std::cout << "forme arriva cosas" << std::endl;
+  
+  std::cout << "forme arriba cosas" << std::endl;
+  
   // loop over each edge and print its vertices
   for (const auto& edge_pair : edge_pairs) {
     std::cout << "(" << edge_pair.first.first << ", " << edge_pair.first.second << ") - ";
@@ -144,26 +155,20 @@ void Graph::loadGraph(std::istream &input){
 	      << std::endl;
   }
   
-  exit(-1);
+  //exit(-1);
   
 }
 
 void Graph::print_edges(){
   std::cout << "-------------------------" << std::endl;
-  std::cout << "EDGES" << std::endl;
+  std::cout << "ARISTAS" << std::endl;
   std::cout << "-------------------------" << std::endl;
-  /**
-  for (int i = 0; i < lista_aristas.size(); i++){
-    std::cout << i+1 << " :" << lista_aristas[i].first
-	      << "," << lista_aristas[i].second << std::endl;
-  };
-  **/
-  for (int i = 0; i < lista_aristas.size(); i++){
-    std::cout << "ARISTA: "
-	      << lista_aristas[i].first << "," << lista_aristas[i].second
-	      << " PESO: " << bandwidth[i] << std::endl;
-  };
-  
+
+  int indx = 0;
+  for(auto it = map_aristas.begin(); it != map_aristas.end();it++){
+    std::cout << "(" << it->first.first << "," << it->first.second << ")" << std::endl;
+  }
+    
   std::cout << "-------------------------" << std::endl;
 }
 
@@ -193,13 +198,13 @@ void Graph::random_label(){
   std::cout << "-------------------------" << std::endl;
 
   for(int i=0;i<lista_aristas.size();i++){
-    bandwidth[i] = rand() % lista_aristas.size() + 1;
+    peso_arista[i] = rand() % lista_aristas.size() + 1;
   }
   
   for (int i = 0; i < lista_aristas.size(); i++){
     std::cout << "ARISTA: "
 	      << lista_aristas[i].first << "," << lista_aristas[i].second
-	      << " PESO: " << bandwidth[i] << std::endl;
+	      << " PESO: " << peso_arista[i] << std::endl;
   };
   std::cout << "-------------------------" << std::endl;
   
@@ -210,18 +215,14 @@ void Graph::sequential_label(){
   std::cout << "SEQUENTIAL LABEL" << std::endl;
   std::cout << "-------------------------" << std::endl;
 
-  //TODO
-  //este es el etiquetado
-  //dejar dentro de la clase
-  for(int i=0;i<lista_aristas.size();i++){
-    bandwidth[i] = i+1;
-  }
+  
   
   for (int i = 0; i < lista_aristas.size(); i++){
     std::cout << "ARISTA: "
 	      << lista_aristas[i].first << "," << lista_aristas[i].second
-	      << " PESO: " << bandwidth[i] << std::endl;
+	      << " PESO: " << peso_arista[i] << std::endl;
   };
+    
   std::cout << "-------------------------" << std::endl;
 }
 
@@ -250,7 +251,8 @@ void Graph::greedy_label(){
 void Graph::evaluate(){
   
   std::cout << "EVALUATE" << std::endl;
-  
+
+  /**********************************
   for(int i=0; i<numNodes; i++){
     for(int j=0; j<adjList[i].size(); j++){
       
@@ -286,10 +288,11 @@ void Graph::evaluate(){
     }
   }
   
+
   //https://www.geeksforgeeks.org/how-to-find-the-maximum-element-of-a-vector-using-stl-in-c/
   std::cout << "\nMAX BANDWIDTH:"
 	    << *std::max_element(max_bandwidth.begin(), max_bandwidth.end())
 	    << std::endl;
-
+  ****/
   
 }

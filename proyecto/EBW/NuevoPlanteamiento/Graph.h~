@@ -24,17 +24,14 @@ class Graph {
     //std::vector<LinkedList<std::pair<int, int>>> adjList;
     std::vector<std::vector<int>> adjList;
     std::vector<std::pair<int, int>> lista_aristas;
-    std::map<std::pair<int, int>,int> map_aristas; //(nodo1,nodo2),index
+    std::map<std::pair<int, int>,int> map_lista_aristas; //(nodo1,nodo2),peso
     std::vector<int> bandwidth;
-    std::vector<int> peso_arista;
     std::vector<std::pair<int, int>> grados;
     std::vector<int> max_bandwidth;
     std::pair<int, int> aux_pivote;
     std::pair<int, int> aux_pivote2;
     std::pair<int, int> aux2_pivote;
     std::pair<int, int> aux2_pivote2;
-    std::vector<std::pair<std::pair<int,int>,std::pair<int,int>>> edge_pairs;
-
     void split(std::string line, std::vector<int> &res);
     
   public:
