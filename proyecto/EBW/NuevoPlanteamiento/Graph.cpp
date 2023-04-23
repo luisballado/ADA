@@ -64,6 +64,7 @@ void Graph::loadGraph(std::istream &input){
       numEdges = result[1];
 
       //resize respecto al size de numNodes
+      //por ser 0 based se agrega uno
       adjList.resize(numNodes+1);
       bandwidth.resize(numEdges);
       
@@ -76,22 +77,24 @@ void Graph::loadGraph(std::istream &input){
     /***********************************************************************
      * VALIDACION QUE LA ENTRADA SEAN SOLOS NUMEROS
      **********************************************************************/
-    
+
     try{
       split(line,result);
     }catch(const std::invalid_argument& ia){
       system("clear");
+      std::cout << "***************************************************" << std::endl;
       std::cout << "\n Argumento Invalido encontrado en la línea: "
-		<< i+1 << " \n sólo se aceptan números:: "
-		<< line << std::endl;
-      exit(-1);
+		<< i+1 << " \n sólo se aceptan números:: " << line << std::endl;
+      std::cout << "***************************************************" << std::endl;
+      exit(-1); //terminar programa
     }catch(...){
-      std::cout << "ERROR AQUI" << std::endl;
+      std::cout << "SE DETECTO UN ERROR" << std::endl;
       exit(-1);
     }
 
     //**********************************************************************
 
+    //ir leyendo u,v
     int nodoU = result[0];
     int nodoV = result[1];
     
@@ -115,6 +118,33 @@ void Graph::loadGraph(std::istream &input){
     
     i++;
   }
+
+  std::vector<std::pair<int, int>> edges; // list of edges
+
+  std::pair<int,int> par1;
+  std::pair<int,int> par2;
+
+  std::vector<std::pair<std::pair<int,int>,std::pair<int,int>>> edge_pairs;
+  
+  // loop over each vertex and its neighbors
+  for (int i = 0; i < adjList.size(); i++) {
+    for (int j = 0; j < adjList[i].size(); j++) {
+      // add edge (v, u) to the list of edges
+      int u = i;
+      int v = adjList[i][j];
+      if(u<v)
+	edge_pairs.push_back(std::make_pair(std::make_pair(u,v),std::make_pair(v,u)));
+    }
+  }
+  std::cout << "forme arriva cosas" << std::endl;
+  // loop over each edge and print its vertices
+  for (const auto& edge_pair : edge_pairs) {
+    std::cout << "(" << edge_pair.first.first << ", " << edge_pair.first.second << ") - ";
+    std::cout << "(" << edge_pair.second.first << ", " << edge_pair.second.second << ")"
+	      << std::endl;
+  }
+  
+  exit(-1);
   
 }
 
