@@ -1,5 +1,10 @@
 #include "Graph.h"
 
+//https://www.geeksforgeeks.org/how-to-find-the-maximum-element-of-a-vector-using-stl-in-c/
+//https://www.udacity.com/blog/2020/03/c-maps-explained.html
+//https://stackoverflow.com/questions/1939953/how-to-find-if-a-given-key-exists-in-a-c-stdmap
+//https://www.tutorialspoint.com/how-can-i-clear-console-using-cplusplus
+
 /*****************************************
  * AQUI DEFINO LOS METODOS
  * AQUI SE PROGRAMA LO QUE HACEN C/U
@@ -10,7 +15,6 @@ Graph::Graph(){
   numEdges = 0;
   adjList.clear();
   map_aristas.clear();
-  lista_aristas.clear();
   peso_arista.clear();
 }
 
@@ -20,7 +24,6 @@ Graph::~Graph(){
   numEdges = 0;
   adjList.clear();
   map_aristas.clear();
-  lista_aristas.clear();
   peso_arista.clear();
 }
 
@@ -45,7 +48,7 @@ void Graph::loadGraph(std::istream &input){
   
   std::string line;
   int i = 0;
-
+  int index = 0;
   while(std::getline(input, line)){
     
     // se omite la primera linea por ser un comentario
@@ -65,7 +68,6 @@ void Graph::loadGraph(std::istream &input){
 
       //resize respecto al size de numNodes
       adjList.resize(numNodes+1);
-      bandwidth.resize(numEdges);
       peso_arista.resize(numEdges);
       
       i++;
@@ -106,25 +108,45 @@ void Graph::loadGraph(std::istream &input){
     //nodos unicos
     if(nodoU<nodoV){
       //map aristas nodoU,nodoV,index
-      map_aristas.insert(std::make_pair(std::make_pair(nodoU,nodoV),i-2));
-      
-      //crear lista de pares de aristas
-      //vector de pares (int-int)
-      
+      map_aristas.insert(std::make_pair(std::make_pair(nodoU,nodoV),index));
     }
     
-    //Crear aqui tambien lista de aristas
-
     i++;
-    
+    index++;
   }
+
+  std::pair<int,int> pareja1;
+  std::pair<int,int> pareja2;
   
-  // loop over each vertex and its neighbors
+  //Crear lista de pares aristas
   for (int i = 0; i < adjList.size(); i++) {
     for (int j = 0; j < adjList[i].size(); j++) {
-      std::pair<int,int> pivote = std::make_pair(i,adjList[i][j]);
+
+      //cuidar el u<v para poder encontrarlo
+      if(i<adjList[i][j]){
+	pareja1 = std::make_pair(i,adjList[i][j]);
+      }else{
+	pareja1 = std::make_pair(adjList[i][j],i);
+      }
+      
       for(int k=j+1; k< adjList[i].size();k++){
-	edge_pairs.push_back(std::make_pair(pivote,std::make_pair(i,adjList[i][k])));
+	
+	//cuidar el u<v para poder encontrarlo
+	if(i<adjList[i][k]){
+	  pareja2 = std::make_pair(i,adjList[i][k]);
+	}else{
+	  pareja2 = std::make_pair(adjList[i][k],i);
+	}
+
+	//lista de pares normal
+	edge_pairs.push_back(std::make_pair(pareja1,pareja2));
+
+	auto id0 = map_aristas.find(pareja1);
+	auto id1 = map_aristas.find(pareja2);
+
+	//lista de pares con indices
+	edge_pairs_simple.push_back(std::make_pair(id0->second,id1->second));
+
       }
     }
   }
@@ -142,6 +164,17 @@ void Graph::print_list_pair_edges(){
     std::cout << "(" << edge_pair.second.first << ", " << edge_pair.second.second << ")"
 	      << std::endl;
   }
+
+  std::cout << "-----------------------------" << std::endl;
+  std::cout << "LISTA PARES ARISTAS INDICES" << std::endl;
+  std::cout << "-----------------------------" << std::endl;
+
+  for (const auto& edge_pair : edge_pairs_simple) {
+    std::cout << "(" << edge_pair.first << " - " << edge_pair.second << ")" << std::endl;
+  }
+  
+  
+  
   std::cout << "-------------------------" << std::endl;
 }
 
@@ -152,7 +185,7 @@ void Graph::print_edges(){
 
   int indx = 0;
   for(auto it = map_aristas.begin(); it != map_aristas.end();it++){
-    std::cout << "(" << it->first.first << "," << it->first.second << ")" << std::endl;
+    std::cout << "index: " << it->second << " - (" << it->first.first << "," << it->first.second << ")" << std::endl;
   }
     
   std::cout << "-------------------------" << std::endl;
@@ -169,7 +202,7 @@ void Graph::print_graph(){
   std::cout << "LISTA ADJ" << std::endl;
   std::cout << "-------------------------" << std::endl;
   for(int nodeU = 1; nodeU <= numNodes; nodeU++){
-    std::cout << "vertex " << nodeU << " --> [";
+    std::cout << nodeU << " --> [";
     for(int j = 0; j < adjList[nodeU].size(); j++){
       std::cout << adjList[nodeU][j] << " ";
     }
@@ -183,15 +216,16 @@ void Graph::random_label(){
   std::cout << "RANDOM LABEL" << std::endl;
   std::cout << "-------------------------" << std::endl;
 
-  for(int i=0;i<lista_aristas.size();i++){
-    peso_arista[i] = rand() % lista_aristas.size() + 1;
+  for(int i=0;i<map_aristas.size();i++){
+    peso_arista[i] = rand() % map_aristas.size() + 1;
   }
-  
-  for (int i = 0; i < lista_aristas.size(); i++){
-    std::cout << "ARISTA: "
-	      << lista_aristas[i].first << "," << lista_aristas[i].second
-	      << " PESO: " << peso_arista[i] << std::endl;
-  };
+
+  for(auto it = map_aristas.begin(); it != map_aristas.end();it++){
+    std::cout << "(" << it->first.first << "," << it->first.second << ") - "
+	      << peso_arista[it->second] 
+	      << std::endl;
+  }
+
   std::cout << "-------------------------" << std::endl;
   
 }
@@ -201,84 +235,55 @@ void Graph::sequential_label(){
   std::cout << "SEQUENTIAL LABEL" << std::endl;
   std::cout << "-------------------------" << std::endl;
 
+  for(int i=0;i<map_aristas.size();i++){
+    peso_arista[i] = i+1;
+  }
+
+  int indx = 0;
+  for(auto it = map_aristas.begin(); it != map_aristas.end();it++){
+    std::cout << "(" << it->first.first << "," << it->first.second << ") - "
+	      << peso_arista[it->second] 
+	      << std::endl;
+    indx++;
+  }
   
-  
-  for (int i = 0; i < lista_aristas.size(); i++){
-    std::cout << "ARISTA: "
-	      << lista_aristas[i].first << "," << lista_aristas[i].second
-	      << " PESO: " << peso_arista[i] << std::endl;
-  };
     
   std::cout << "-------------------------" << std::endl;
 }
 
-void Graph::greedy_label(){
+//O(P)
+void Graph::classic_evaluation(){
+
   std::cout << "-------------------------" << std::endl;
-  std::cout << "GREEDy LABEL" << std::endl;
+  std::cout << "EVALUACION CLASICA" << std::endl;
   std::cout << "-------------------------" << std::endl;
-  for(int nodeU = 1; nodeU <= numNodes; nodeU++){
-    //for (int i = 0; i < numNodes; i++) {
-    grados.push_back(std::make_pair(adjList[nodeU].size(), nodeU));
-  }
   
-  // reverse vector nlog(n)
-  // https://www.geeksforgeeks.org/vector-rbegin-and-rend-function-in-c-stl/
-  sort(grados.rbegin(), grados.rend());
-
-  std::cout << "NODO-GRADO" << std::endl;
-  std::cout << "-------------------------" << std::endl;
-  //imprimir nodo-grado
-  for (int i = 0; i < grados.size(); i++){
-    std::cout << "NODO: " << grados[i].second
-	      << " GRADO:" << grados[i].first << std::endl;
-  }
-}
-
-void Graph::evaluate(){
+  int max_bw;
   
-  std::cout << "EVALUATE" << std::endl;
+  for (const auto& edge_pair : edge_pairs_simple) {
+    max_bw = abs(peso_arista[edge_pair.first] - peso_arista[edge_pair.second]);
+    max_bandwidth.push_back(max_bw);
+    
+    std::cout << "(" << peso_arista[edge_pair.first]
+	      << " - "
+	      << peso_arista[edge_pair.second]
+	      << ") = " << max_bw
+	      << std::endl;
+  };
 
-  /**********************************
-  for(int i=0; i<numNodes; i++){
-    for(int j=0; j<adjList[i].size(); j++){
-      
-      //el primer par es pivote
-      aux_pivote = std::make_pair(i, adjList[i][j]);
-      aux_pivote2 = std::make_pair(adjList[i][j],i);
-      int val1,val2;
-      int max_bw;
-      //iterar dentro del vector y formar nuevos pares
-      for(int k=j+1;k<adjList[i].size();k++){
-	if(map_lista_aristas[aux_pivote] == 0){
-	  std::cout << "(" <<  aux_pivote.first << "," << aux_pivote.second << ">>" << bandwidth[map_lista_aristas[aux_pivote2]] << ") - (";
-	  val1 = bandwidth[map_lista_aristas[aux_pivote2]];
-	}else{
-	  std::cout << "(" <<  aux_pivote.first << "," << aux_pivote.second << ">>" << bandwidth[map_lista_aristas[aux_pivote]] << ") - (";
-	  val1 = bandwidth[map_lista_aristas[aux_pivote]];
-	}
-	
-	//nuevo par
-	aux2_pivote = std::make_pair(i, adjList[i][k]);
-	aux2_pivote2 = std::make_pair(adjList[i][k],i);
-	if(map_lista_aristas[aux2_pivote] == 0){
-	  std::cout << i << "," << adjList[i][k] << ">>" << bandwidth[map_lista_aristas[aux2_pivote2]]  << ")";
-	  val2 = bandwidth[map_lista_aristas[aux2_pivote2]];
-	}else{
-	  std::cout << i << "," << adjList[i][k] << ">>" << bandwidth[map_lista_aristas[aux2_pivote]] << ")";
-	  val2 = bandwidth[map_lista_aristas[aux2_pivote]];
-	}
-	max_bw = abs(val1-val2);
-	max_bandwidth.push_back(max_bw);
-	std::cout << "=" << max_bw << std::endl;
-      }
-    }
-  }
-  
-
-  //https://www.geeksforgeeks.org/how-to-find-the-maximum-element-of-a-vector-using-stl-in-c/
   std::cout << "\nMAX BANDWIDTH:"
 	    << *std::max_element(max_bandwidth.begin(), max_bandwidth.end())
 	    << std::endl;
-  ****/
+
+}
+
+void Graph::make_swap(int i, int j){
+
+  std::swap(peso_arista[i],peso_arista[j]);
+  
+}
+
+//O(w+p)
+void Graph::incremental_evaluation(){
   
 }
