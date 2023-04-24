@@ -119,34 +119,22 @@ void Graph::loadGraph(std::istream &input){
     
   }
   
-  
-  
-  //std::cout << lista_aristas[0].first << "," << lista_aristas[0].second << std::endl;
-  //std::cout << lista_aristas[1].first << "," << lista_aristas[1].second << std::endl;
-  
-  //std::cout << adjList.size()  << std::endl;
-   
   // loop over each vertex and its neighbors
   for (int i = 0; i < adjList.size(); i++) {
     for (int j = 0; j < adjList[i].size(); j++) {
-      
-      int v = adjList[i][j];
-            
-      for(int k=0; k< adjList[v].size();k++){
-	int w = adjList[v][k];
-	if(w<i){
-	  //if(i<w){
-	  edge_pairs.push_back(std::make_pair(std::make_pair(v,w),std::make_pair(v,i)));
-	  std::cout << "i - " << i << std::endl;
-	  std::cout << "v - " << v << std::endl;
-	  std::cout << "w - " << w << std::endl;
-	  //edge_pairs.push_back(std::make_pair(std::make_pair(v,w),std::make_pair(v,i)));
-	}
+      std::pair<int,int> pivote = std::make_pair(i,adjList[i][j]);
+      for(int k=j+1; k< adjList[i].size();k++){
+	edge_pairs.push_back(std::make_pair(pivote,std::make_pair(i,adjList[i][k])));
       }
     }
   }
-  
-  std::cout << "forme arriba cosas" << std::endl;
+}
+
+void Graph::print_list_pair_edges(){
+
+  std::cout << "-------------------------" << std::endl;
+  std::cout << "LISTA PARES ARISTAS" << std::endl;
+  std::cout << "-------------------------" << std::endl;
   
   // loop over each edge and print its vertices
   for (const auto& edge_pair : edge_pairs) {
@@ -154,9 +142,7 @@ void Graph::loadGraph(std::istream &input){
     std::cout << "(" << edge_pair.second.first << ", " << edge_pair.second.second << ")"
 	      << std::endl;
   }
-  
-  //exit(-1);
-  
+  std::cout << "-------------------------" << std::endl;
 }
 
 void Graph::print_edges(){

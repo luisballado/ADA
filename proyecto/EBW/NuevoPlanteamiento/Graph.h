@@ -43,6 +43,7 @@ class Graph {
     void loadGraph(std::istream &input);
     void print_edges();
     void print_graph();
+    void print_list_pair_edges();
     void random_label();
     void sequential_label();
     void greedy_label();
