@@ -15,7 +15,7 @@ int main(){
   g.sequential_label(); //etiquetar de forma sequencial
   g.print_list_pair_edges();
   g.classic_evaluation();
-  //g.random_label(); //etiquetar de forma random
+  g.random_label(); //etiquetar de forma random
   g.make_swap(0,8);
   g.classic_evaluation();
   

@@ -27,8 +27,8 @@ class Graph {
     std::vector<int> peso_arista;
     std::vector<int> max_bandwidth;
     std::vector<std::pair<std::pair<int,int>,std::pair<int,int>>> edge_pairs;
-
     std::vector<std::pair<int,int>> edge_pairs_simple;
+    int maxbandwidth;
     void split(std::string line, std::vector<int> &res);
     
   public:

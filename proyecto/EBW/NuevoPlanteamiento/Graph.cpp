@@ -16,6 +16,8 @@ Graph::Graph(){
   adjList.clear();
   map_aristas.clear();
   peso_arista.clear();
+  max_bandwidth.clear();
+  edge_pairs.clear();
 }
 
 //tipo garbage collector
@@ -25,6 +27,8 @@ Graph::~Graph(){
   adjList.clear();
   map_aristas.clear();
   peso_arista.clear();
+  max_bandwidth.clear();
+  edge_pairs.clear();
 }
 
 void Graph::split(std::string line, std::vector<int> & res){
@@ -169,11 +173,10 @@ void Graph::print_list_pair_edges(){
   std::cout << "LISTA PARES ARISTAS INDICES" << std::endl;
   std::cout << "-----------------------------" << std::endl;
 
+  //imprimir todo
   for (const auto& edge_pair : edge_pairs_simple) {
     std::cout << "(" << edge_pair.first << " - " << edge_pair.second << ")" << std::endl;
   }
-  
-  
   
   std::cout << "-------------------------" << std::endl;
 }
@@ -271,15 +274,51 @@ void Graph::classic_evaluation(){
 	      << std::endl;
   };
 
+  maxbandwidth = *std::max_element(max_bandwidth.begin(), max_bandwidth.end());
+  
   std::cout << "\nMAX BANDWIDTH:"
-	    << *std::max_element(max_bandwidth.begin(), max_bandwidth.end())
+	    << maxbandwidth
 	    << std::endl;
 
 }
 
 void Graph::make_swap(int i, int j){
 
+  std::cout << "-------------------------" << std::endl;
+  std::cout << "HACIENDO SWAP 0 - 8" << std::endl;
+  std::cout << "-------------------------" << std::endl;
+  
   std::swap(peso_arista[i],peso_arista[j]);
+
+  //evaluar solo donde los pares i y j cambiaron
+
+  //Estas son las parejas que cambiaron su valor i
+  std::vector<std::pair<int, int>> result_pairs1;
+  
+  
+  for (auto& pair : edge_pairs_simple) {
+    if (pair.first == i || pair.second == i) {
+      result_pairs1.push_back(pair);
+    }
+  }
+  
+  std::cout << "Pares que contienen al index " << i << ":\n";
+  for (auto& pair : result_pairs1) {
+    std::cout << "(" << pair.first << ", " << pair.second << ")\n";
+  }
+
+  std::vector<std::pair<int, int>> result_pairs2;
+  for (auto& pair2 : edge_pairs_simple) {
+    if (pair2.first == j || pair2.second == j) {
+      result_pairs2.push_back(pair2);
+    }
+  }
+  
+  std::cout << "Pares que contienen al indice " << j << ":\n";
+  for (auto& pair2 : result_pairs2) {
+    std::cout << "(" << pair2.first << ", " << pair2.second << ")\n";
+  }
+    
   
 }
 
