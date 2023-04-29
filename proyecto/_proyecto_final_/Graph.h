@@ -31,7 +31,7 @@ private:
   // Lista de adyacencia (vector de vectores)
   std::vector<std::vector<int>> adjList;
   std::map<std::pair<int, int>, EdgeInfo> aristas; //(nodo1,nodo2), ObjetoEdgeInfo
-  std::vector<EdgeInfo> aristas_v;
+  std::vector<std::map<std::pair<int,int>,EdgeInfo>::iterator> aristaPosition;
   std::vector<std::pair<int, int>> aristasAdyacentes; // (idArista1, idArista2)
   std::vector<int> currentDifferences;
   std::vector<int> solucion;  
@@ -47,8 +47,8 @@ public:
   void printLabeling();
   void setConsecutiveLabeling();
   void setRandomLabeling();
-  int getSolutionCostSwap(int u, int v, bool show);
-  int getSolutionCost(bool show);
+  int getSolutionCost();
+  int getSolutionCostIncrementally(int u, int v);
   
   void makeSwap(int u, int v);
 };

@@ -17,9 +17,9 @@ Graph::Graph() {
   numEdges = 0;
   adjList.clear();
   aristas.clear();
-  aristas_v.clear();
   aristasAdyacentes.clear();
   solucion.clear();
+  aristaPosition.clear();
   // semilla del generador de numeros aleatorios (time-based)
   seed = std::chrono::system_clock::now().time_since_epoch().count();
   // inicializar el generador con la semilla creada
@@ -32,9 +32,9 @@ Graph::~Graph() {
   numEdges = 0;
   adjList.clear();
   aristas.clear();
-  aristas_v.clear();
   aristasAdyacentes.clear();
   solucion.clear();
+  aristaPosition.clear();
 }
 
 void Graph::split(std::string line, std::vector<int> &res) {
@@ -79,6 +79,8 @@ void Graph::loadGraph(std::istream &input) {
       // resize respecto al size de numNodes
       adjList.resize(numNodes + 1); //1 basado
       solucion.resize(numEdges);
+      aristaPosition.resize(numEdges);
+      currentDifferences = std::vector<int>(numEdges, 0);
       
       i++;
       continue;
@@ -117,13 +119,14 @@ void Graph::loadGraph(std::istream &input) {
     
     // nodos unicos
     if (nodoU < nodoV){
-      aristas.insert(std::make_pair(std::make_pair(nodoU,nodoV),EdgeInfo(index))); // map aristas nodoU,nodoV,index
-      aristas_v.push_back(EdgeInfo(index));
+      std::pair<std::map<std::pair<int,int>,EdgeInfo>::iterator, bool> ret;
+      ret = aristas.insert(std::make_pair(std::make_pair(nodoU,nodoV),EdgeInfo(index))); // map aristas nodoU,nodoV,index
+      aristaPosition[index] = ret.first;
     }else{
-      aristas.insert(std::make_pair(std::make_pair(nodoV,nodoU),EdgeInfo(index))); // map aristas nodoU,nodoV,index
-      aristas_v.push_back(EdgeInfo(index));
+      std::pair<std::map<std::pair<int,int>,EdgeInfo>::iterator, bool> ret;
+      ret = aristas.insert(std::make_pair(std::make_pair(nodoV,nodoU),EdgeInfo(index))); // map aristas nodoU,nodoV,index
+      aristaPosition[index] = ret.first;
     }
-    
     i++;
     index++; //index para el objeto EdgeInfo
   } 
@@ -155,17 +158,16 @@ void Graph::loadGraph(std::istream &input) {
           int tmpIndex = aristasAdyacentes.size()-1;
           it1->second.positions.push_back(tmpIndex);
           it2->second.positions.push_back(tmpIndex);
-          aristas_v[it1->second.index].positions.push_back(tmpIndex);
-          aristas_v[it2->second.index].positions.push_back(tmpIndex);
+          
         }
       }
     }
   }
   
-  currentDifferences.resize(aristasAdyacentes.size());
+  
   //std::cout << "currentDifferences size: " << currentDifferences.size() << std::endl;
 
-  /*
+  
   //Listado de aristas adyacentes por indice
   std::cout << "Aristas adyacentes" << std::endl;
   //O(n)
@@ -175,8 +177,9 @@ void Graph::loadGraph(std::istream &input) {
 
   std::map<std::pair<int,int>,EdgeInfo>::iterator it;
   
-  std::cout << "aristas contains:\n";
+  std::cout << "aristas contains: " << std::endl;
   //O(n)
+  
   for (it=aristas.begin(); it!=aristas.end(); ++it) {
     std::cout << "("<< it->first.first << ", " << it->first.second << ") " << it->second.index << "--";
     //O(m) lista de pares vecinas recorre un vector
@@ -184,8 +187,15 @@ void Graph::loadGraph(std::istream &input) {
       std::cout << it->second.positions[k] << " ";
     std::cout << std::endl;
   }
+  /*
+  std::cout << "arista 0: " << std::endl;
+  it = aristaPosition[0];
+  std::cout << aristaPosition[0]->second.positions[0] << std::endl;
+  std::cout << "("<< it->first.first << ", " << it->first.second << ") " << it->second.index << "--" << std::endl;
+  std::cout << "arista 5: " << std::endl;
+  it = aristaPosition[5];
+  std::cout << "("<< it->first.first << ", " << it->first.second << ") " << it->second.index << "--" << std::endl;
   */
-
 }
 
 void Graph::printGraph() {
@@ -234,109 +244,81 @@ void Graph::setRandomLabeling() {
 
 //obtener la el costo de la solución
 //O(n)
-int Graph::getSolutionCost(bool show) {
+int Graph::getSolutionCost() {
 
-  std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now(); //medir tiempo
-  
-  int _llamadas_ = 0;
   int maxDif = 0;
-  if(show)
-    std::cout << "Evalua solucion" << std::endl;
+  
+  std::cout << "Evalua solucion" << std::endl;
   
   for (int i = 0; i < (int)aristasAdyacentes.size(); i++) {
     int difAbs = std::abs(solucion[aristasAdyacentes[i].first] - solucion[aristasAdyacentes[i].second]);
-    if(show)
-      std::cout << "|" << solucion[aristasAdyacentes[i].first] << " - " << solucion[aristasAdyacentes[i].second] << "| = " << difAbs << std::endl;
-    currentDifferences[i] = difAbs; //costo
+    std::cout << "|" << solucion[aristasAdyacentes[i].first] << " - " << solucion[aristasAdyacentes[i].second] << "| = " << difAbs << std::endl;
+    currentDifferences[difAbs]++; //costo
     //se queda con el maximo
     if (difAbs > maxDif)
       maxDif = difAbs;
-    _llamadas_++;
   }
-
-  std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-  
-  std::cout << "-------------------------------------" << std::endl;
-  std::cout << "llamadas a funcion: " << _llamadas_ << std::endl;
-  std::cout << "Tiempo ejecución  " << std::endl; 
-  
-  std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
-  std::cout << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
-  std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
-  
   return maxDif;
 }
-
-int Graph::getSolutionCostSwap(int u, int v, bool show) {
-
-  std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now(); //medir tiempo
-
-  std::swap(solucion[u],solucion[v]); //efectuar intercambio u,v entrada
-
-  int _llamadas_ = 0;
-
-  //ir quedandose con el max
-  int maxDif1 = 0;
-  int maxDif2 = 0;
-  
-  //std::cout << "Las aristas vecinas de: " << u << " son:" << aristas_v[u].positions.size() << std::endl;
-  
-  //no evaluar todas la lista de aristasAdyacentes
-  if(show){
-    for(int i = 0; i < aristas_v[u].positions.size();i++)
-      std::cout << aristas_v[u].positions[i] << " ";
-    std::cout << std::endl;
-  }
-
-  for (int i = 0; i < (int)aristas_v[u].positions.size(); i++) {
-    int difAbs = std::abs(solucion[aristasAdyacentes[aristas_v[u].positions[i]].first] - solucion[aristasAdyacentes[aristas_v[u].positions[i]].second]);
-    if(show){
-      std::cout << "|" << solucion[aristasAdyacentes[aristas_v[u].positions[i]].first] << " - " 
-        << solucion[aristasAdyacentes[aristas_v[u].positions[i]].second] << "| = " << difAbs << std::endl;
-    }
-    //currentDifferences[i] = difAbs; //costo
-    //se queda con el maximo
-    if (difAbs > maxDif1)
-      maxDif1 = difAbs;
-    _llamadas_++;
-  }
-
-
-  if(show){
-    std::cout << "----------------------" << std::endl;
-    std::cout << "Las aristas vecinas de: " << v << " son:" << aristas_v[v].positions.size() << std::endl;
-    
-    for(int i = 0; i < aristas_v[v].positions.size();i++)
-      std::cout << aristas_v[v].positions[i] << " ";
-    std::cout << std::endl;
-  }
-  
-  for (int i = 0; i < (int)aristas_v[v].positions.size(); i++) {
-    int difAbs = std::abs(solucion[aristasAdyacentes[aristas_v[v].positions[i]].first] - solucion[aristasAdyacentes[aristas_v[v].positions[i]].second]);
-    if(show){
-      std::cout << "|" << solucion[aristasAdyacentes[aristas_v[v].positions[i]].first] << " - " 
-        << solucion[aristasAdyacentes[aristas_v[v].positions[i]].second] << "| = " << difAbs << std::endl;
-    }
-    //currentDifferences[i] = difAbs; //costo
-    //se queda con el maximo
-    if (difAbs > maxDif2)
-      maxDif2 = difAbs;
-    _llamadas_++;
-  }
-
-  std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-  
-  std::cout << "-------------------------------------" << std::endl;
-  std::cout << "llamadas a funcion: " << _llamadas_ << std::endl;
-  std::cout << "Tiempo ejecución  "<< std::endl; 
-  std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
-  std::cout << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
-  std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
-  
-  return std::max(maxDif1,maxDif2);
-}
-
 //hacer un swap
 void Graph::makeSwap(int u, int v) {
   std::swap(solucion[u], solucion[v]);  
+}
+
+int Graph::getSolutionCostIncrementally(int arista1, int arista2) {
+  int maxDif = 0, difAbsOld = 0, difAbsNew = 0;
+  std::vector<int> copyCurrentDifferences(currentDifferences);
+  int labelArista1, labelArista2;
+  int labelNewArista1, labelNewArista2;
+  labelArista1 = labelNewArista2 = solucion[arista1];
+  labelArista2 = labelNewArista1 = solucion[arista2];
+  std::map<std::pair<int,int>,EdgeInfo>::iterator it;
+  std::cout << std::endl;
+  std::cout << "Evalua solucion incremental" << std::endl;
+  it = aristaPosition[arista1];
+  std::cout << "Aristas adyacentes implicadas (arista1)" << std::endl;
+  for (int k = 0; k < (int)it->second.positions.size(); k++) {
+      std::cout << "arista adyacente: " << it->second.positions[k] << std::endl;
+      int j = it->second.positions[k];
+      std::cout << "aristaA: " << aristasAdyacentes[j].first << " aristaB: " << aristasAdyacentes[j].second << " ";
+      if (aristasAdyacentes[j].first == arista1) {
+        difAbsOld = std::abs(labelArista1 - solucion[aristasAdyacentes[j].second]);
+        difAbsNew = std::abs(labelNewArista1 - solucion[aristasAdyacentes[j].second]);
+        std::cout << "A" << std::endl;
+        std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
+      }
+      else {
+        difAbsOld = std::abs(solucion[aristasAdyacentes[j].first] - labelArista1);
+        difAbsNew = std::abs(solucion[aristasAdyacentes[j].first] - labelNewArista1);
+        std::cout << "B" << std::endl;
+        std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
+      }
+      copyCurrentDifferences[difAbsOld]--;
+      copyCurrentDifferences[difAbsNew]++;
+      
+  }
+  std::cout << std::endl;
+  it = aristaPosition[arista2];
+  std::cout << "Aristas adyacentes implicadas (arista2)" << std::endl;
+  for (int k = 0; k < (int)it->second.positions.size(); k++) {
+      std::cout << "arista adyacente: " << it->second.positions[k] << std::endl;
+      int j = it->second.positions[k];
+      std::cout << "aristaA: " << aristasAdyacentes[j].first << " aristaB: " << aristasAdyacentes[j].second << " ";
+      if (aristasAdyacentes[j].first == arista2) {
+        difAbsOld = std::abs(labelArista2 - solucion[aristasAdyacentes[j].second]);
+        difAbsNew = std::abs(labelNewArista2 - solucion[aristasAdyacentes[j].second]);
+        std::cout << "A" << std::endl;
+        std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
+      }
+      else {
+        difAbsOld = std::abs(solucion[aristasAdyacentes[j].first] - labelArista2);
+        difAbsNew = std::abs(solucion[aristasAdyacentes[j].first] - labelNewArista2);
+        std::cout << "B" << std::endl;
+        std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
+      }
+      copyCurrentDifferences[difAbsOld]--;
+      copyCurrentDifferences[difAbsNew]++;
+  }
+  for (maxDif = numEdges - 1; (copyCurrentDifferences[maxDif]) == 0; maxDif--);
+  return maxDif;
 }

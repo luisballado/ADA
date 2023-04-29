@@ -18,8 +18,7 @@ int main(){
   g.evaluate();
   g.random_label(); //etiquetar de forma random
   g.evaluate();
-  //g.greedy_label();
-  //g.evaluate();
+
   return 0;
   
 }
