@@ -13,7 +13,6 @@
 
 #include "EdgeInfo.h"
 
-// VALOR MUY GRANDE ¿?
 #define INF 0x3f3f3f3f 
 
 class Graph {
@@ -49,7 +48,6 @@ public:
   void setRandomLabeling();
   int getSolutionCost();
   int getSolutionCostIncrementally(int u, int v);
-  
   void makeSwap(int u, int v);
 };
 

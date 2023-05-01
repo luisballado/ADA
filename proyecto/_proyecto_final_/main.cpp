@@ -12,7 +12,7 @@ int main() {
   g.loadGraph(inputInfo); // cargar grafo
   //g.setConsecutiveLabeling();
   g.setRandomLabeling();
-  g.printLabeling();
+  //g.printLabeling();
   cost = g.getSolutionCost();
   std::cout << "classic solution cost: " << cost << std::endl;
   
@@ -24,7 +24,7 @@ int main() {
   std::cout << std::endl;
   std::cout << "Make swap(0, 5)" << std::endl;
   g.makeSwap(0, 5); //realizar un intercambio entre i,j del vector de soluciones
-  g.printLabeling();
+  //g.printLabeling();
   cost = g.getSolutionCost();
   std::cout << "classic solution cost: " << cost << std::endl;
   

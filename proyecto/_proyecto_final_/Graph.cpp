@@ -12,6 +12,8 @@
 // * AQUI SE PROGRAMA LO QUE HACEN C/U
 // ****************************************/
 
+//#define DEBUG
+
 Graph::Graph() {
   numNodes = 0;
   numEdges = 0;
@@ -169,14 +171,17 @@ void Graph::loadGraph(std::istream &input) {
 
   
   //Listado de aristas adyacentes por indice
+#ifdef DEBUG
   std::cout << "Aristas adyacentes" << std::endl;
   //O(n)
   for (int i = 0; i < (int)aristasAdyacentes.size(); i++) {
     std::cout << aristasAdyacentes[i].first << ", " << aristasAdyacentes[i].second << std::endl;
   }
-
-  std::map<std::pair<int,int>,EdgeInfo>::iterator it;
+#endif
   
+  std::map<std::pair<int,int>,EdgeInfo>::iterator it;
+
+#ifdef DEBUG
   std::cout << "aristas contains: " << std::endl;
   //O(n)
   
@@ -186,8 +191,8 @@ void Graph::loadGraph(std::istream &input) {
     for (int k = 0; k < (int)it->second.positions.size(); k++)
       std::cout << it->second.positions[k] << " ";
     std::cout << std::endl;
-  }
-  /*
+  }  
+  
   std::cout << "arista 0: " << std::endl;
   it = aristaPosition[0];
   std::cout << aristaPosition[0]->second.positions[0] << std::endl;
@@ -195,7 +200,9 @@ void Graph::loadGraph(std::istream &input) {
   std::cout << "arista 5: " << std::endl;
   it = aristaPosition[5];
   std::cout << "("<< it->first.first << ", " << it->first.second << ") " << it->second.index << "--" << std::endl;
-  */
+  
+#endif
+  
 }
 
 void Graph::printGraph() {
@@ -252,8 +259,13 @@ int Graph::getSolutionCost() {
   
   for (int i = 0; i < (int)aristasAdyacentes.size(); i++) {
     int difAbs = std::abs(solucion[aristasAdyacentes[i].first] - solucion[aristasAdyacentes[i].second]);
+
+#ifdef DEBUG
     std::cout << "|" << solucion[aristasAdyacentes[i].first] << " - " << solucion[aristasAdyacentes[i].second] << "| = " << difAbs << std::endl;
+#endif
+    
     currentDifferences[difAbs]++; //costo
+
     //se queda con el maximo
     if (difAbs > maxDif)
       maxDif = difAbs;
@@ -273,52 +285,79 @@ int Graph::getSolutionCostIncrementally(int arista1, int arista2) {
   labelArista1 = labelNewArista2 = solucion[arista1];
   labelArista2 = labelNewArista1 = solucion[arista2];
   std::map<std::pair<int,int>,EdgeInfo>::iterator it;
+
+#ifdef DEBUG
   std::cout << std::endl;
   std::cout << "Evalua solucion incremental" << std::endl;
-  it = aristaPosition[arista1];
   std::cout << "Aristas adyacentes implicadas (arista1)" << std::endl;
+#endif
+
+  it = aristaPosition[arista1];
+
   for (int k = 0; k < (int)it->second.positions.size(); k++) {
-      std::cout << "arista adyacente: " << it->second.positions[k] << std::endl;
-      int j = it->second.positions[k];
-      std::cout << "aristaA: " << aristasAdyacentes[j].first << " aristaB: " << aristasAdyacentes[j].second << " ";
-      if (aristasAdyacentes[j].first == arista1) {
-        difAbsOld = std::abs(labelArista1 - solucion[aristasAdyacentes[j].second]);
-        difAbsNew = std::abs(labelNewArista1 - solucion[aristasAdyacentes[j].second]);
-        std::cout << "A" << std::endl;
-        std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
-      }
-      else {
-        difAbsOld = std::abs(solucion[aristasAdyacentes[j].first] - labelArista1);
-        difAbsNew = std::abs(solucion[aristasAdyacentes[j].first] - labelNewArista1);
-        std::cout << "B" << std::endl;
-        std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
-      }
-      copyCurrentDifferences[difAbsOld]--;
-      copyCurrentDifferences[difAbsNew]++;
-      
+#ifdef DEBUG
+    std::cout << "arista adyacente: " << it->second.positions[k] << std::endl;
+#endif
+
+    int j = it->second.positions[k];
+#ifdef DEBUG
+    std::cout << "aristaA: " << aristasAdyacentes[j].first << " aristaB: " << aristasAdyacentes[j].second << " ";
+#endif
+
+    if (aristasAdyacentes[j].first == arista1) {
+      difAbsOld = std::abs(labelArista1 - solucion[aristasAdyacentes[j].second]);
+      difAbsNew = std::abs(labelNewArista1 - solucion[aristasAdyacentes[j].second]);
+#ifdef DEBUG
+      std::cout << "A" << std::endl;
+      std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
+#endif
+    }
+    else {
+      difAbsOld = std::abs(solucion[aristasAdyacentes[j].first] - labelArista1);
+      difAbsNew = std::abs(solucion[aristasAdyacentes[j].first] - labelNewArista1);
+#ifdef DEBUG
+      std::cout << "B" << std::endl;
+      std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
+#endif
+    }
+    copyCurrentDifferences[difAbsOld]--;
+    copyCurrentDifferences[difAbsNew]++;
+    
   }
+
+#ifdef DEBUG
   std::cout << std::endl;
-  it = aristaPosition[arista2];
   std::cout << "Aristas adyacentes implicadas (arista2)" << std::endl;
+#endif
+  it = aristaPosition[arista2];
   for (int k = 0; k < (int)it->second.positions.size(); k++) {
-      std::cout << "arista adyacente: " << it->second.positions[k] << std::endl;
-      int j = it->second.positions[k];
-      std::cout << "aristaA: " << aristasAdyacentes[j].first << " aristaB: " << aristasAdyacentes[j].second << " ";
-      if (aristasAdyacentes[j].first == arista2) {
-        difAbsOld = std::abs(labelArista2 - solucion[aristasAdyacentes[j].second]);
-        difAbsNew = std::abs(labelNewArista2 - solucion[aristasAdyacentes[j].second]);
-        std::cout << "A" << std::endl;
-        std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
-      }
-      else {
-        difAbsOld = std::abs(solucion[aristasAdyacentes[j].first] - labelArista2);
-        difAbsNew = std::abs(solucion[aristasAdyacentes[j].first] - labelNewArista2);
-        std::cout << "B" << std::endl;
-        std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
-      }
-      copyCurrentDifferences[difAbsOld]--;
-      copyCurrentDifferences[difAbsNew]++;
+#ifdef DEBUG
+    std::cout << "arista adyacente: " << it->second.positions[k] << std::endl;
+#endif
+    int j = it->second.positions[k];
+#ifdef DEBUG
+    std::cout << "aristaA: " << aristasAdyacentes[j].first << " aristaB: " << aristasAdyacentes[j].second << " ";
+#endif
+    if (aristasAdyacentes[j].first == arista2) {
+      difAbsOld = std::abs(labelArista2 - solucion[aristasAdyacentes[j].second]);
+      difAbsNew = std::abs(labelNewArista2 - solucion[aristasAdyacentes[j].second]);
+#ifdef DEBUG
+      std::cout << "A" << std::endl;
+      std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
+#endif
+    }
+    else {
+      difAbsOld = std::abs(solucion[aristasAdyacentes[j].first] - labelArista2);
+      difAbsNew = std::abs(solucion[aristasAdyacentes[j].first] - labelNewArista2);
+#ifdef DEBUG
+      std::cout << "B" << std::endl;
+      std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
+#endif
+    }
+    copyCurrentDifferences[difAbsOld]--;
+    copyCurrentDifferences[difAbsNew]++;
   }
+  //busqueda por retroceso hasta que la copia encuentre un número
   for (maxDif = numEdges - 1; (copyCurrentDifferences[maxDif]) == 0; maxDif--);
   return maxDif;
 }
