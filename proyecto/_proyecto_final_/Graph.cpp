@@ -129,8 +129,10 @@ void Graph::loadGraph(std::istream &input) {
       ret = aristas.insert(std::make_pair(std::make_pair(nodoV,nodoU),EdgeInfo(index))); // map aristas nodoU,nodoV,index
       aristaPosition[index] = ret.first;
     }
+    
     i++;
     index++; //index para el objeto EdgeInfo
+    
   } 
 
   std::pair<int, int> arista1, arista2; //pares de aristas
@@ -251,13 +253,19 @@ void Graph::setRandomLabeling() {
 
 //obtener la el costo de la solución
 //O(n)
-int Graph::getSolutionCost() {
-
+//int Graph::getSolutionCost() {
+//return vector operaciones basicas, maxDif
+std::vector<int> Graph::getSolutionCost() {
   int maxDif = 0;
+  int _calculos_ = 0;
+  std::vector<int> resultados;
   
+#ifdef DEBUG
   std::cout << "Evalua solucion" << std::endl;
-  
+#endif
+
   for (int i = 0; i < (int)aristasAdyacentes.size(); i++) {
+    _calculos_++;
     int difAbs = std::abs(solucion[aristasAdyacentes[i].first] - solucion[aristasAdyacentes[i].second]);
 
 #ifdef DEBUG
@@ -270,20 +278,37 @@ int Graph::getSolutionCost() {
     if (difAbs > maxDif)
       maxDif = difAbs;
   }
-  return maxDif;
+  resultados.push_back(_calculos_);
+  resultados.push_back(maxDif);
+  
+  return resultados;
 }
+
 //hacer un swap
 void Graph::makeSwap(int u, int v) {
   std::swap(solucion[u], solucion[v]);  
 }
 
-int Graph::getSolutionCostIncrementally(int arista1, int arista2) {
+//obtener el EdgeSize
+int Graph::getRandomNumber(){
+  std::uniform_int_distribution<> dist(0, solucion.size()-1);
+  return dist(gen);
+}
+
+std::vector<int> Graph::getSolutionCostIncrementally(int arista1, int arista2) {
+  std::vector<int> resultados;
+  int _calculos_ = 0;
+  
   int maxDif = 0, difAbsOld = 0, difAbsNew = 0;
+  
   std::vector<int> copyCurrentDifferences(currentDifferences);
+
   int labelArista1, labelArista2;
   int labelNewArista1, labelNewArista2;
+
   labelArista1 = labelNewArista2 = solucion[arista1];
   labelArista2 = labelNewArista1 = solucion[arista2];
+
   std::map<std::pair<int,int>,EdgeInfo>::iterator it;
 
 #ifdef DEBUG
@@ -293,8 +318,11 @@ int Graph::getSolutionCostIncrementally(int arista1, int arista2) {
 #endif
 
   it = aristaPosition[arista1];
-
+  
   for (int k = 0; k < (int)it->second.positions.size(); k++) {
+
+    _calculos_++;
+    
 #ifdef DEBUG
     std::cout << "arista adyacente: " << it->second.positions[k] << std::endl;
 #endif
@@ -329,35 +357,52 @@ int Graph::getSolutionCostIncrementally(int arista1, int arista2) {
   std::cout << std::endl;
   std::cout << "Aristas adyacentes implicadas (arista2)" << std::endl;
 #endif
+  
   it = aristaPosition[arista2];
   for (int k = 0; k < (int)it->second.positions.size(); k++) {
+
+    _calculos_++;
+    
 #ifdef DEBUG
     std::cout << "arista adyacente: " << it->second.positions[k] << std::endl;
 #endif
+    
     int j = it->second.positions[k];
+    
 #ifdef DEBUG
     std::cout << "aristaA: " << aristasAdyacentes[j].first << " aristaB: " << aristasAdyacentes[j].second << " ";
 #endif
+    
     if (aristasAdyacentes[j].first == arista2) {
       difAbsOld = std::abs(labelArista2 - solucion[aristasAdyacentes[j].second]);
       difAbsNew = std::abs(labelNewArista2 - solucion[aristasAdyacentes[j].second]);
+
 #ifdef DEBUG
       std::cout << "A" << std::endl;
       std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
 #endif
-    }
-    else {
+      
+    }else {
+
       difAbsOld = std::abs(solucion[aristasAdyacentes[j].first] - labelArista2);
       difAbsNew = std::abs(solucion[aristasAdyacentes[j].first] - labelNewArista2);
+
 #ifdef DEBUG
       std::cout << "B" << std::endl;
       std::cout << "Old: " << difAbsOld << " New: " << difAbsNew << std::endl;
 #endif
+      
     }
+    
     copyCurrentDifferences[difAbsOld]--;
     copyCurrentDifferences[difAbsNew]++;
+    
   }
   //busqueda por retroceso hasta que la copia encuentre un número
   for (maxDif = numEdges - 1; (copyCurrentDifferences[maxDif]) == 0; maxDif--);
-  return maxDif;
+  resultados.push_back(_calculos_);
+  resultados.push_back(maxDif);
+
+  return resultados;
+
 }

@@ -46,9 +46,10 @@ public:
   void printLabeling();
   void setConsecutiveLabeling();
   void setRandomLabeling();
-  int getSolutionCost();
-  int getSolutionCostIncrementally(int u, int v);
+  std::vector<int> getSolutionCost();
+  std::vector<int> getSolutionCostIncrementally(int u, int v);
   void makeSwap(int u, int v);
+  int getRandomNumber();
 };
 
 #endif // _GRAPH_H
