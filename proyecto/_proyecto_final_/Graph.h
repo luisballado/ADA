@@ -48,6 +48,7 @@ public:
   void setRandomLabeling();
   std::vector<int> getSolutionCost();
   std::vector<int> getSolutionCostIncrementally(int u, int v);
+  std::vector<int> getGraphInfo();
   void makeSwap(int u, int v);
   int getRandomNumber();
 };

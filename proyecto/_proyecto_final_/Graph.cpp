@@ -207,6 +207,13 @@ void Graph::loadGraph(std::istream &input) {
   
 }
 
+std::vector<int> Graph::getGraphInfo(){
+  std::vector<int> info;
+  info.push_back(numNodes);
+  info.push_back(numEdges);
+  return info;
+}
+
 void Graph::printGraph() {
   std::cout << "-------------------------" << std::endl;
   std::cout << "numNode: " << numNodes << " | "
@@ -278,6 +285,10 @@ std::vector<int> Graph::getSolutionCost() {
     if (difAbs > maxDif)
       maxDif = difAbs;
   }
+
+  //regresar un vector con num operaciones básicas
+  //regresar un vector con maxBandWidth calculado
+  
   resultados.push_back(_calculos_);
   resultados.push_back(maxDif);
   
@@ -400,6 +411,8 @@ std::vector<int> Graph::getSolutionCostIncrementally(int arista1, int arista2) {
   }
   //busqueda por retroceso hasta que la copia encuentre un número
   for (maxDif = numEdges - 1; (copyCurrentDifferences[maxDif]) == 0; maxDif--);
+  //regresar un vector con num operaciones básicas
+  //regresar un vector con maxBandWidth calculado
   resultados.push_back(_calculos_);
   resultados.push_back(maxDif);
 
