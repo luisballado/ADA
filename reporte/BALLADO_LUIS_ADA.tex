@@ -136,19 +136,29 @@
 %----------------------------------------------------------------------------------------
 \section{Introducción}
 
-\lettrine[nindent=0em,lines=3]{E}l cálculo del Edge Bandwidth es un problema importante en redes de comunicaciones para determinar la capacidad de transferencia de datos entre dos nodos en la red.\\
+\lettrine[nindent=0em,lines=3]{E}l problema Edge Bandwidth en grafos es un problema de optimización combinatoria que trata de encontrar un etiquetado a las aristas en un grafo de modo que se minimice la diferencia máxima entre las etiquetas entre las aristas adyacentes. La diferencia entre las aristas adyacentes se denomina Edge Bandwidth.\\
 
-El max bandwidth se refiere a la cantidad máxima de datos que pueden transferirse por segundo a través de una conexión entre dos nodos de la red. El cálculo puede ser de gran utilidad en diferentes situaciones como identificar cuellos de botella en la red que puedan estar afectando el rendimiento, o para planificar la expansión de una infraestructura de res. Además, es de gran utilidad en aplicaciones de transmisión de video en tiempo real, la transferencia de archivos de gran tamaño, solo por mencionar algunas aplicaciones a este problema.\\
+Son diversas aas aplicaciones del Edge Bandwidth, como el diseño de circuitos electrónicos que se utiliza para optimizar el enrutamiento entre los componentes de un chip. En el enrutamiento de redes de comunicación se utiliza para optimizar el flujo de datos a través de la red.\\
+
+El problema del cálculo del Edge Bandwidth es NP-hard, lo que significa que es poco probable que se tenga una solución de tiempo polinomial para resolverlo de forma óptima. Para ello, la aplicación de algoritmos heurísticos ó meta-heurísticos para la solución de forma eficiente. Alguno de estos algoritmos son algoritmos genéticos, evolución diferencial, búsqueda tabu, recocido simulado, solo por mencionar algunos.\\
+
+El problema de max bandwidth es importante debido a las multiples aplicaciones en diversos campos donde la teoría de grafos pueda emplearse. No es extraño entender su gran importancia, ya que la World Wide Web es un gran ejemplo de ello, así como problemas de álgebra lineal como la eliminación Gausiana\\
 
 El cálculo del \textbf{edge-bandwidth} de un grafo es el mínimo entre todos los posibles costos de aristas de la máxima diferencia entre dos aritas adyacentes. 
 
 \begin{center}
-  \[B_f(G) = max{|f(u)-f(v)|: uv \in E}\]
+  \[B_f(G) = min_f {  } max{|f(u)-f(v)|: uv \in E}\]
 \end{center}
+
+donde el mínimo es tomado de todos los posibles etiquetados $f$ en el grafo.\\
+
 
 \subsection{Objetivo del proyecto}
 
-Partiendo de ellos, se busca crear una estructura de datos que nos ayude a realizar un cálculo que, tal vez no sea el óptimo, buscar reducir los tiempos de ejecución haciendo uso de estructuras de datos capaces de poder tomar ventaja de los ciclos necesarios para poder trabajar en el problema
+Crear una estructura de datos que nos ayude a realizar un cálculo, que, tal vez no sea el óptimo. Pero buscar reducir los tiempos de ejecución que se pueden presentar en una evaluación clásica entre los pares de aristas del grafo.\\
+Haciendo uso de estructuras de datos capaz de poder tomar ventaja de los ciclos (iteraciones) necesarios para poder trabajar en el problema.\\
+
+A pesar que un objetivo inical fué la implementación de una meta-heurística para la resolución del problema, se replanteó por la falta de tiempo.
 
 \subsection{Comparativa de eficiencia de algoritmos}
 
@@ -157,13 +167,23 @@ Partiendo de ellos, se busca crear una estructura de datos que nos ayude a reali
 \newpage
 \section{Pseudocódigos}
 
+\begin{itemize}
+  \item Evaluación Clásica, es recorrer tantos elementos que contenga la lista de pares de aristas adyacentes. Es decir, este vector de aristas adyacentes almacena el índice respecto a la pertenencia en el vector de solución, es por ello que sólo con conocer su índice se obtiene el costo de la arista.\\
+
+    Quién gobierna el manejo de los cálculos es la lista de pares aristas de adyacencia, respecto al índice en su vector de solución.\\
+    
+  \item Para su versión incremental, se considera que se deberá reevaluar sólo las aristas que sufren un cambio respecto al intercambio de los costos dentro del vector de solución. Reduciendo los cálculos a sólo la evaluación de los elementos que toman participación.
+\end{itemize}
+
+
 \SetKwComment{Comment}{/* }{ */}
 
 \begin{algorithm}
 \caption{Evaluación Secuencial}\label{alg:one}
-\For{para i = 0 en lista de aristasAdyacentes}{
-  $maxDif \gets 0$
-  difAbs = abs(solucion[primer elemento respecto a la lista de aristasAdyacentes] - solucion[segundo elemento respecto a la lista de aristasAdyacentes]);\\
+$maxDif \gets 0$\;
+\For{i $\gets$ 0\; en lista de aristasAdyacentes.size()\; con paso de 1}{
+    
+  difAbs $\gets$ abs(solucion[primer elemento del par respecto a la lista de aristasAdyacentes respecto a i] - solucion[segundo elemento del par respecto a la lista de aristasAdyacentes respecto a i])\;
   \If{difAbs > maxDif}{
     $maxDif \gets difAbs$ \Comment*[r]{ir guardando el máximo}
   }
@@ -171,46 +191,77 @@ Partiendo de ellos, se busca crear una estructura de datos que nos ayude a reali
 }
 \end{algorithm}
 
-
 \SetKwComment{Comment}{/* }{ */}
 
 \begin{algorithm}
-\caption{Evaluación Incremental}\label{alg:two}
-
-\For{para i = 0 en lista de aristasAdyacentes[u].vecinos.size()}{
-  $maxDif1 \gets 0$
-  difAbs = abs(solucion[aristasAdyacentes[aristas\_v[u].positions[i]].first] - solucion[aristasAdyacentes[aristas\_v[u].positions[i]].second]); \Comment*[r]{se itera respecto a los vecinos que tenga u}
-  \If{difAbs > maxDif}{
-    $maxDif1 \gets difAbs$ \Comment*[r]{ir guardando el máximo}
+  \caption{Evaluación Incremental}\label{alg:two}
+  \KwData{$arista_1,arista_2$}
+  $maxDif1 \gets 0$; $difsAbsOld \gets 0$; $difsAbsNew \gets 0$\;
+  $labelArista1 \gets solucion[arista_1]$; $labelArista2 \gets solucion[arista_2]$\;
+  $labelNewArista1 \gets labelArista2$; $labelNewArista2 \gets labelArista1$\; \Comment*[r]{relación cruzada para obetener los cálculos nuevos antes de efectuar el swap}
+  $iterador\_arista_1 \gets$ obtener iterador de aristaPosition[$arista_1$]\;
+  \For{para k $\gets$ 0\; en $iterador\_arista_1$.vecinos.size()\; con paso de 1}{
+    j $\gets$ aristas adyacentes respecto a la posicion k\;
+    \If{el primer elemento del par en aristas adyacentes respecto a j == $arista_1$}{
+      difsAbsOld $\gets$ abs(labelArista1 - solucion[segundo elemento del par de aristas adyacentes respecto a j])\;
+      difsAbsNew $\gets$ abs(labelNewArista1 - solucion[segundo elemento del par de aristas adyacentes respecto a j])\; \Comment*[r]{calcular su nuevo costo}
+    }\Else{
+      difsAbsOld $\gets$ abs(solucion[primer elemento del par de aristas adyacentes respecto a j] - labelArista1)\;
+      difsAbsNew $\gets$ abs(solucion[primer elemento del par de aristas adyacentes respecto a j] - labelNewArista1)\; \Comment*[r]{calcular su nuevo costo}
+    }
+    Almacenar resultados en vector de diferencias\;
   }
-}
 
-\For{para i = 0 en lista de aristasAdyacentes[v].vecinos.size()}{
-  $maxDif2 \gets 0$
-  difAbs = abs(solucion[aristasAdyacentes[aristas\_v[u].positions[i]].first] - solucion[aristasAdyacentes[aristas\_v[u].positions[i]].second]); \Comment*[r]{se itera respecto a los vecinos que tenga v}
-  \If{difAbs > maxDif}{
-    $maxDif2 \gets difAbs$ \Comment*[r]{ir guardando el máximo}
+  
+  $iterador\_arista_2 \gets$ obtener iterador de aristaPosition[$arista_2$]\;
+  \For{para k $\gets$ 0\; en $iterados\_arista_2$.vecinos.size()}{
+    j $\gets$ aristas adyacentes respecto a la posicion k\;
+    \If{el primer elemento del par en aristas adyacentes respecto a j == $arista_2$}{
+      difsAbsOld $\gets$ abs(labelArista2 - solucion[segundo elemento del par de aristas adyacentes respecto a j])\;
+      difsAbsNew $\gets$ abs(labelNewArista2 - solucion[segundo elemento del par de aristas adyacentes respecto a j])\; \Comment*[r]{calcular su nuevo costo}
+    }\Else{
+      difsAbsOld $\gets$ abs(solucion[primer elemento del par de aristas adyacentes respecto a j] - labelArista2)\;
+      difsAbsNew $\gets$ abs(solucion[primer elemento del par de aristas adyacentes respecto a j] - labelNewArista2)\; \Comment*[r]{calcular su nuevo costo}
+    }
+    Almacenar resultados en vector de diferencias\;
   }
-}
 
-\Return max(maxDif1,maxDif2);
-
+  \For{para maxDif $\gets$ numEdges - 1\; vector de diferencias[maxDif] == 0\; maxDiff--}{\Comment*[r]{recorrer el vector de diferencias hasta encontrar un valor máximo}
+  }
+  
+  \Return maxDif\;
+  
 \end{algorithm}
 
-
+    
 \newpage
 \section{Análisis matemático}
 
-Nuestro primer algoritmo de evaluación secuencial tiene que recorrer los n elementos que contenga el la lista de aristas adyacentes, siendo una complejidad lineal del orden $O(n)$. Nuestro segundo algoritmo de evaluación incremental al conocer el indice, se itera respecto a los vecinos que pueda tener. Se realiza tanto para u y v, con una complejidad constante respecto a la cardinalidad de ambos $O(u+v)$ . Pero depende de la cardinalidad que pueda tener y variando de grafo en grafo.
+Nuestro primer algoritmo de evaluación clásica tiene que recorrer los n elementos que contenga el la lista de aristas adyacentes, siendo una complejidad lineal del orden $O(n)$, pero también hay que considerar las complejidades de las estructuras de datos como:
+
+\begin{itemize}
+\item Vector - El acceso a un elemento en un vector tiene una complejidad temporal constante O(1). Esto significa que el tiempo necesario para acceder a cualquier elemento en el vector es independiente del tamaño del vector.
+\item Vector - Insercción o eliminación de elementos puede tener una complejidad temporal lineal en el peor de los caos, es decir O(n).
+\end{itemize}
+
+Nuestro segundo algoritmo de evaluación incremental al conocer el indice, se itera respecto a los vecinos que las aristas implicadas puedan tener. Se realiza tanto para u y v, con una complejidad constante respecto a la cardinalidad de ambos $O(u+v)$ . Pero depende de la cardinalidad que pueda tener, variando respecto a la densidad del grafo.
+
+\subsection{Complejidad Espacial}
+
+Al estar trabajando con diferentes densidades de grafos, la complejidad espacial de los algoritmos se espresa en términos de su uso de memoria en relación al tamaño de la entrada. Es decir, para nuestro caso requerimos vectores de tamaño n para almacenar los datos de entrada, su complejidad espacial sería de $O(n)$, ya que se requiere memoria proporcional al tamaño de la entrada.\\
+
+Hay que considerar que esta es una simplificación general, ya que la complejidad espacial de un algoritmo también puede alterarse por la cantidad de variables auxiliares empleadas.
+
 
 \section{Experimentación y Resultados}
 
 La evaluación secuencial se hace respecto a la cardinalidad del vector de aristas adyacentes.\\
 
-Para evitar el barrido en los cambios de etiquetado (swap(u,v)) se propone aprovechar la primera corrida para crear un vector que almacenará un objeto de tipo EdgeInfo que contiene el índice (consecutivo usado para hacer referecia a él). De esta forma se logra evitar recorrer nuevamente para el cálculo de un nuevo \textbf{Edge Bandwidth}, reduciendo el cálculo a la cardinalidad del vector de aristas vecinas de los elementos a intercambiar en el swap(u,v) w parejas de u; p parejas de v.
+Para evitar el barrido en los cambios de etiquetado (swap(u,v)) se propone aprovechar la primera corrida para crear un vector que almacenará un objeto de tipo EdgeInfo que contiene el índice (consecutivo usado para hacer referecia a él). De esta forma se logra evitar recorrer nuevamente para el cálculo de un nuevo \textbf{Edge Bandwidth}, reduciendo el cálculo a la cardinalidad del vector de aristas vecinas de los elementos a intercambiar en el swap(u,v) w parejas de u; p parejas de v.\\
 
+De esta manera el vector se pobla al momento de ir formando la lista de adyacencia, y se agregarán los indices vecinos al iterar la lista de adyacencia formando los pares.\\
 
-De esta manera el vector se pobla al momento de ir formando la lista de adyacencia, y se agregarán los indices vecinos al iterar la lista de adyacencia formando los pares.
+Los gráficos se realizaron respecto al número de aristas y el tiempo de ejecución para cada problema. Esperando sí el incremento a medida que crece el problema. A pesar que se esperaba un crecimiento líneal, y en base a que la gráfica de tendencia con un ajuste de $R^2$ con valor cercano a 1.0 es indicativo de un mejor ajuste, se obtiene una ecuación del orden polinomial de grado 4. No cumpliendo el análisis establecido.
 
 \newpage
 
@@ -225,18 +276,18 @@ De esta manera el vector se pobla al momento de ir formando la lista de adyacenc
   \centering
   \begin{tabular}{|l|l|l|l|}
     \hline
-    Problema  & Evaluación & Llamadas  & Tiempo (ms) \\ \hline
-    n100 p0,5 & Clásica    & 11893600  & 269,86      \\ \hline
-    n100 p0,6 & Clásica    & 17349100  & 381,1       \\ \hline
-    n100 p0,7 & Clásica    & 23188000  & 502,8       \\ \hline
-    n100 p0,8 & Clásica    & 31036900  & 685,73      \\ \hline
-    n200 p0,5 & Clásica    & 97812300  & 2187,36     \\ \hline
-    n200 p0,6 & Clásica    & 140642600 & 3125,26     \\ \hline
-    n200 p0,7 & Clásica    & 190802700 & 4181,23     \\ \hline
-    n200 p0,8 & Clásica    & 249932100 & 5344,96     \\ \hline
-    n300 p0,5 & Clásica    & 338344600 & 8573,06     \\ \hline
-    n300 p0,6 & Clásica    & 481025300 & 11572,93    \\ \hline
-    n300 p0,7 & Clásica    & 653767500 & 15408,46    \\ \hline
+    Aristas  & Evaluación & Llamadas  & Tiempo (ms) \\ \hline
+    2451 & Clásica    & 11893600  & 269,86      \\ \hline
+    2962 & Clásica    & 17349100  & 381,1       \\ \hline
+    3421 & Clásica    & 23188000  & 502,8       \\ \hline
+    3961 & Clásica    & 31036900  & 685,73      \\ \hline
+    9916 & Clásica    & 97812300  & 2187,36     \\ \hline
+    11889 & Clásica    & 140642600 & 3125,26     \\ \hline
+    13844 & Clásica    & 190802700 & 4181,23     \\ \hline
+    15849 & Clásica    & 249932100 & 5344,96     \\ \hline
+    22563 & Clásica    & 338344600 & 8573,06     \\ \hline
+    26899 & Clásica    & 481025300 & 11572,93    \\ \hline
+    31364 & Clásica    & 653767500 & 15408,46    \\ \hline
   \end{tabular}
 \end{table}
 
@@ -253,18 +304,18 @@ De esta manera el vector se pobla al momento de ir formando la lista de adyacenc
   \centering
   \begin{tabular}{|l|l|l|l|}
     \hline
-    Problema  & Evaluación  & Llamadas & Tiempo (ms) \\ \hline
-    n100 p0,5 & Incremental & 192,66   & 1,26        \\ \hline
-    n100 p0,6 & Incremental & 236,1    & 1,26        \\ \hline
-    n100 p0,7 & Incremental & 271,56   & 2,03        \\ \hline
-    n100 p0,8 & Incremental & 311,46   & 2,4         \\ \hline
-    n200 p0,5 & Incremental & 401,033  & 4,23        \\ \hline
-    n200 p0,6 & Incremental & 478,86   & 5,3         \\ \hline
-    n200 p0,7 & Incremental & 550,13   & 6,43        \\ \hline
-    n200 p0,8 & Incremental & 630,96   & 7,4         \\ \hline
-    n300 p0,5 & Incremental & 593,96   & 8,7         \\ \hline
-    n300 p0,6 & Incremental & 718,53   & 10,03       \\ \hline
-    n300 p0,7 & Incremental & 838,866  & 11,8        \\ \hline
+    Aristas  & Evaluación  & Llamadas & Tiempo (ms) \\ \hline
+    2451 & Incremental & 192,66   & 1,26        \\ \hline
+    2962 & Incremental & 236,1    & 1,26        \\ \hline
+    3421 & Incremental & 271,56   & 2,03        \\ \hline
+    3961 & Incremental & 311,46   & 2,4         \\ \hline
+    9916 & Incremental & 401,033  & 4,23        \\ \hline
+    11889 & Incremental & 478,86   & 5,3         \\ \hline
+    13844 & Incremental & 550,13   & 6,43        \\ \hline
+    15849 & Incremental & 630,96   & 7,4         \\ \hline
+    22563 & Incremental & 593,96   & 8,7         \\ \hline
+    26899 & Incremental & 718,53   & 10,03       \\ \hline
+    31364 & Incremental & 838,866  & 11,8        \\ \hline
   \end{tabular}
 \end{table}
 
@@ -278,13 +329,17 @@ En la segunda grafica se observa la tendencia lineal de la evaluación increment
 \newpage
 \section{Aprendizajes}
 
-Al cursar el curso de Análisis y diseño de algortimos, logré acercarme al análisis de grafos más allá de lo visto en matemáticas discretas. El poder manipularlo, explorarlo y lograr obtener una herramienta poderosa como lo es una estructura y representación de un grafo. Es bien sabido que varios problemas en nuestra vida cotidiana se pueden llegar a representar con grafos. Tal es así que traté de llevarlo a mis otras materias, así como el empujón que siempre quise tener para comenzar a programar en C++. Salirme de mi zona de confort, y ampliar mis conocimientos en lenguajes que no pasan de moda y altamente portable.\\
+Al tomar el curso de Análisis y Diseño de Algortimos, sabía del reto de cursar una clase fuera de mi línea, pero de mi interés. Sé de la importancia de conocer algoritmos y estructuras de datos como herramientas para la resolución de problemas, herramientas disponibles cuando se necesiten al momento de desarrollar un proyecto.\\
 
-Aunque es un hecho que no repartí mi tiempo de forma equitativa entre todas las materias, logré llevar los conocimientos de clase a los demás proyectos como en computo paralelo, desarrollando el proyecto en C++ y cambiando mi paradigma a utilizar algoritmos vistos en clase.\\
+Gracias a tomar el curso, logré acercarme al estudio de grafos más allá de lo visto en matemáticas discretas. El poder manipularlo, explorarlo, logrando así obtener una herramienta poderosa como es la estructura y representación de un grafo. Es bien sabido que varios problemas en nuestra vida cotidiana se pueden llegar a representar con grafos. Tanto fué mi interés que traté de llevarlo a mis otras materias.\\
 
-Se muy bien que mi desempeño pudó ser mejor y a pesar de los altibajos logré con ayuda del Dr. Eduardo Tello a quién agradezco por sus palabras de aliento cuando imaginaba que mi proyecto de estudiar una Maestria en Ciencias se venía abajo. Eso ya no es un problema para mí, ya que considero que los conocimientos adquiridos este cuatrimestre serán de gran ayuda para el desarrollo de códigos adaptables y modulares cuando me toque regresar a la vida laboral.\\
+Con ayuda del curso obtuve ese empujón que siempre quise tener para comenzar a programar en C++. Salirme de mi zona de confort, y ampliar mis conocimientos en lenguajes que no pasan de moda y que son altamente portables.\\
 
-No espero obtener una buena calificación, pero reconozco el esfuerzo que dedique en la materia con la esperanza de obtener una nota mínima aprobatoria.
+Aunque es un hecho que no repartí mi tiempo de forma equitativa entre esta materia y las otras, logré llevar los conocimientos de clase a los demás proyectos. Cambiando así mi paradigma a utilizar algoritmos vistos en clase.\\
+
+Sé que mi desempeño pudó ser mejor y a pesar de los altibajos y el apoyo del Dr. Eduardo Arturo Rodriguez Tello, a quién agradezco por sus palabras de aliento cuando imaginaba que mi proyecto de estudiar una Maestria en Ciencias se venía abajo. Siendo eso ya no es un problema para mí, ya que considero que los conocimientos adquiridos este cuatrimestre serán de gran ayuda para el desarrollo de códigos adaptables y modulares al momento que me toque regresar a la vida laboral.\\
+
+No espero obtener una buena calificación, pero reconozco el esfuerzo que dedique en la matería, y sólo espero obtener una nota mínima aprobatoria a pesar de mis entregas tardías que pudieran confundirse con desinterés.
 
 %------------------------------------------------
 \section{Conclusiones}
@@ -300,7 +355,8 @@ El manejo de abstracciones de clases, las estructuras de datos para generar algo
 \begin{thebibliography}{0} % Bibliography - this is intentionally simple in this template
 \bibitem{calamoneri} New results on edge-bandwidth, Theoretical Computer Science, Tiziana Calamoneri(a), Annalisa Massini(a), Imrich Vrto(b), (a) Computer Science Department, University of Rome, (b) Institute of Mathematics, Slovak Academy of Sciences, Department of Informatics, Bratislava, 2003
 \bibitem{balogh} On the edge-bandwidth of graph products, Theoretical Computer Science, József Balog(a), Dhruv Mubayi(b), András Pluhár(c), (a) Department of Mathematical Sciences, The Ohio State University, Columbus OH, USA, (b) Department of Mathematics, Statistics, and Computer Science, University of Illinois, Chicago IL, USA, (c) Department of Computer Science, University of Szeged, Hungary, 2006
-    
+\bibitem{SAP} Some Applications of Graph Bandwidth to Constraint Satisfaction Problems, Ramin Zabih, Computer Science Department Stanford University, Standford California \href{https://www.cs.cornell.edu/~rdz/Papers/Z-AAAI90.pdf}{ver artículo}
+  
 \end{thebibliography}
 
 %----------------------------------------------------------------------------------------
